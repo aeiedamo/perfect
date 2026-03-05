@@ -1,0 +1,55 @@
+#!/usr/bin/bash
+
+DISK0="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
+DISK1="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
+BOOT="${DISK0}p1"
+ROOT="${DISK0}p2"
+AUX="${DISK1}p1"
+
+nvme format /dev/nvme0 -f -n 1 -l 0 -s 1 -r
+nvme format /dev/nvme1 -f -n 1 -l 0 -s 1 -r
+partprobe ${DISK0} ${DISK1}
+
+sgdisk -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -N 2 -t 2:8304 -c 2:'root' ${DISK0}
+sgdisk -I -N 1 -t 1:8304 -c 1:'aux' ${DISK1}
+
+mkfs.fat -F 32 -n 'BOOT' ${BOOT}
+
+cryptsetup luksFormat --label 'root' -q ${ROOT}
+cryptsetup luksFormat --label 'aux' -q ${AUX}
+
+cryptsetup --allow-discards --persistent open ${ROOT} root
+cryptsetup --allow-discards --persistent open ${AUX} aux
+
+mkfs.btrfs -f -L 'root' -d raid0 -m raid0 /dev/mapper/root /dev/mapper/aux
+
+mount -o 'compress=zstd' /dev/mapper/root /mnt
+btrfs subvolume create /mnt/@ /mnt/@var /mnt/@home /mnt/@snapshots
+umount /mnt
+
+mount -o 'compress=zstd,subvol=/@' /dev/mapper/root /mnt
+mount -m -o 'compress=zstd,subvol=/@var' /dev/mapper/root /mnt/var
+mount -m -o 'compress=zstd,subvol=/@home' /dev/mapper/root /mnt/home
+mount -m -o 'compress=zstd,subvol=/@snapshots' /dev/mapper/root /mnt/.snapshots
+mount -m -o 'nosuid,nodev,noexec,nosymfollow,fmask=0177,dmask=0077' ${BOOT} /mnt/boot
+
+chattr +C /mnt/var
+
+pacstrap -KM /mnt base iptables mkinitcpio
+
+genfstab -U /mnt | tee -a /mnt/etc/fstab
+
+install -m 0777 /tmp/perfect/perfect_install /mnt/usr/local/bin/
+cp -a /tmp/perfect/configs /mnt/opt/
+
+arch-chroot -S /mnt /usr/local/bin/perfect_install
+
+rm -f /mnt/usr/local/bin/perfect_install
+
+install -m 0777 /tmp/perfect/perfect_setup /mnt/usr/local/bin/
+install -m 0777 /tmp/perfect/perfect_user /mnt/usr/local/bin/
+
+pkill gpg-agent
+umount -R /mnt
+cryptsetup close root
+cryptsetup close aux
