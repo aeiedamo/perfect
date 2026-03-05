@@ -1,11 +1,6 @@
 #!/usr/bin/bash
 
-DISK0="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
-DISK1="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
-BOOT="${DISK0}p1"
-ROOT="${DISK0}p2"
-AUX="${DISK1}p1"
-UUID="$(lsblk -dno UUID /dev/mapper/root)"
+UUID="$(lsblk -dno UUID /dev/sda2)"
 
 sed -i -e '/^#en_US.UTF-8/s/^#//' -e '/^#ar_EG.UTF-8/s/^#//' /etc/locale.gen
 locale-gen
@@ -22,20 +17,13 @@ sed -i -e '/^#NoExtract/s/$/ boot\/intel-ucode.img/' -e '/^#NoExtract/s/^#//' -e
 printf '%s\n' 'Server = https://mirror.pkgbuild.com/$repo/os/$arch' | tee /etc/pacman.d/mirrorlist
 sed -i -e '/^#MAKEFLAGS/s/=.*$/="-j8"/' -e '/^#MAKEFLAGS/s/^#//' -e '/^#BUILDDIR/s/^#//' -e '/^OPTIONS/s/debug/!&/' /etc/makepkg.conf
 
-sed -i -e '/^HOOKS/s/systemd/& btrfs/' -e '/^HOOKS/s/keymap/plymouth/' -e '/^HOOKS/s/filesystems/sd-encrypt &/' /etc/mkinitcpio.conf
+sed -i -e '/^HOOKS/s/keymap/plymouth/' /etc/mkinitcpio.conf
 
-pacman -Syu --noconfirm linux linux-headers alsa-firmware alsa-utils linux-firmware linux-tools-meta intel-ucode guestfs-tools plymouth qemu-full qemu-user-static-binfmt snap-pac sof-firmware sbctl wireless-regdb base-devel bash-completion bees devtools firejail iwd modemmanager networkmanager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-noto-nerd zram-generator gdm gnome-control-center virt-manager 7zip alacrate arch-wiki-docs ardour baobab bluez-cups bluez-utils breeze btrfs-assistant calf cdrtools celluloid cronie crun cups-pdf dconf-editor distrobox dnsmasq easyeffects ebook-tools edk2-shell efibootmgr evolution-ews evolution-spamassassin fastfetch file-roller firefox firewall-applet ghostty gimp github-cli gnome-browser-connector gnome-characters gnome-firmware gnome-keyring gnome-remote-desktop gnome-shell-extension-appindicator gnome-software gnome-themes-extra gnome-tweaks gnome-user-share gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gvfs-afc gvfs-google gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive hunspell-en_us inetutils intel-media-sdk kdenlive libappindicator libayatana-appindicator libreoffice-fresh loupe lsp-plugins-lv2 malcontent man-db mda.lv2 mission-center nm-connection-editor net-tools nss-mdns obs-studio onnxruntime-cpu obsidian okular orca podman proton-vpn-gtk-app qalculate-gtk qbittorrent qt6-multimedia-gstreamer radvd rnote rust rygel samba seahorse snapshot swtpm system-config-printer telegram-desktop throttled trash-cli tuned-ppd unrar usb_modeswitch vulkan-intel wl-clipboard yt-dlp zam-plugins-lv2 zed zip
+pacman -Syu --noconfirm linux linux-headers alsa-firmware alsa-utils linux-firmware linux-tools-meta intel-ucode guestfs-tools plymouth qemu-full qemu-user-static-binfmt snap-pac sof-firmware wireless-regdb base-devel bash-completion bees devtools firejail iwd modemmanager networkmanager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-noto-nerd zram-generator gdm gnome-control-center virt-manager 7zip alacrate arch-wiki-docs ardour baobab bluez-cups bluez-utils breeze btrfs-assistant calf cdrtools celluloid cronie crun cups-pdf dconf-editor distrobox dnsmasq easyeffects ebook-tools edk2-shell efibootmgr evolution-ews evolution-spamassassin fastfetch file-roller firefox firewall-applet ghostty gimp github-cli gnome-browser-connector gnome-characters gnome-firmware gnome-keyring gnome-remote-desktop gnome-shell-extension-appindicator gnome-software gnome-themes-extra gnome-tweaks gnome-user-share gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gvfs-afc gvfs-google gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive hunspell-en_us inetutils intel-media-sdk kdenlive libappindicator libayatana-appindicator libreoffice-fresh loupe lsp-plugins-lv2 malcontent man-db mda.lv2 mission-center nm-connection-editor net-tools nss-mdns obs-studio onnxruntime-cpu obsidian okular orca podman proton-vpn-gtk-app qalculate-gtk qbittorrent qt6-multimedia-gstreamer radvd rnote rust rygel samba seahorse snapshot swtpm system-config-printer telegram-desktop throttled trash-cli tuned-ppd unrar usb_modeswitch vulkan-intel wl-clipboard yt-dlp zam-plugins-lv2 zed zip
 
-sbctl create-keys
-sbctl enroll-keys
-sbctl sign -s /boot/vmlinuz-linux
-sbctl sign -s -o /usr/lib/systemd/boot/efi/systemd-bootx64.efi.signed /usr/lib/systemd/boot/efi/systemd-bootx64.efi
-sbctl sign -s -o /usr/lib/fwupd/efi/fwupdx64.efi.signed /usr/lib/fwupd/efi/fwupdx64.efi
-sbctl sign -s /usr/share/edk2-shell/x64/Shell.efi
-
-bootctl install
+bootctl install --variables=no
 printf '%s\t%s\n' 'default' 'arch-linux.conf' | tee /boot/loader/loader.conf
-printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s%s%s %s%s%s %s %s%s %s %s %s\n' 'title' 'Arch Linux' 'linux' '/vmlinuz-linux' 'initrd' '/initramfs-linux.img' 'options' 'rd.luks.name=' "$(lsblk -dno UUID ${ROOT})" '=root' 'rd.luks.name=' "$(lsblk -dno UUID ${AUX})" '=aux' 'rd.luks.options=tpm2-device=/dev/tpmrm0' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf' 'quiet splash' | tee /boot/loader/entries/arch-linux.conf
+printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s%s %s %s %s\n' 'title' 'Arch Linux' 'linux' '/vmlinuz-linux' 'initrd' '/initramfs-linux.img' 'options' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf' 'quiet splash' | tee /boot/loader/entries/arch-linux.conf
 
 cp /usr/share/edk2-shell/x64/Shell.efi /boot/shellx64.efi
 
@@ -97,4 +85,4 @@ rm -f -r /opt/configs
 
 printf '%s\n' '--cookies-from-browser firefox -f "bv+ba/b" -S "ext" -o "${HOME}/Videos/%(webpage_url_domain)s/%(id)s-%(title)s.%(ext)s"' | tee /etc/yt-dlp.conf
 
-systemctl enable apparmor.service avahi-daemon.service beesd@${UUID}.service bluetooth.service cronie.service cups.service firewalld.service fstrim.timer fwupd-refresh.timer gdm.service gnome-remote-desktop.service libvirtd.service ModemManager.service NetworkManager.service sshd.service systemd-boot-update.service systemd-resolved.service systemd-timesyncd.service throttled.service tuned.service tuned-ppd.service virtnetworkd.service virtqemud.service virtstoraged.service
+systemctl enable apparmor.service avahi-daemon.service beesd@${UUID}.service bluetooth.service cronie.service cups.service firewalld.service fwupd-refresh.timer gdm.service gnome-remote-desktop.service libvirtd.service ModemManager.service NetworkManager.service sshd.service systemd-boot-update.service systemd-resolved.service systemd-timesyncd.service throttled.service tuned.service tuned-ppd.service virtnetworkd.service virtqemud.service virtstoraged.service

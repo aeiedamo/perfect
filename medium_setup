@@ -1,0 +1,13 @@
+#!/usr/bin/bash
+
+umount /.snapshots
+rm -f -r /.snapshots
+snapper -c root create-config /
+snapper -c root set-config 'ALLOW_GROUPS=wheel' 'SYNC_ACL=yes' 'TIMELINE_LIMIT_HOURLY=3' 'TIMELINE_LIMIT_DAILY=3' 'TIMELINE_LIMIT_WEEKLY=4' 'TIMELINE_LIMIT_MONTHLY=0' 'TIMELINE_LIMIT_YEARLY=0' 'NUMBER_LIMIT=15'
+snapper -c home create-config /home
+snapper -c home set-config 'ALLOW_GROUPS=wheel' 'SYNC_ACL=yes' 'TIMELINE_LIMIT_HOURLY=3' 'TIMELINE_LIMIT_DAILY=3' 'TIMELINE_LIMIT_WEEKLY=4' 'TIMELINE_LIMIT_MONTHLY=0' 'TIMELINE_LIMIT_YEARLY=0' 'NUMBER_LIMIT=15'
+btrfs subvolume delete /.snapshots
+mkdir /.snapshots
+mount -a
+systemctl daemon-reload
+systemctl enable snapper-boot.timer snapper-cleanup.timer
