@@ -1,0 +1,22 @@
+#!/usr/bin/bash
+
+DISK0="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
+DISK1="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
+BOOT="${DISK0}p1"
+ROOT="${DISK0}p2"
+AUX="${DISK1}p1"
+
+systemd-cryptenroll --tpm2-device /dev/tpmrm0 --tpm2-pcrs 7 ${ROOT}
+systemd-cryptenroll --tpm2-device /dev/tpmrm0 --tpm2-pcrs 7 ${AUX}
+
+umount /.snapshots
+rm -f -r /.snapshots
+snapper -c root create-config /
+snapper -c root set-config 'ALLOW_GROUPS=wheel' 'SYNC_ACL=yes' 'TIMELINE_LIMIT_HOURLY=3' 'TIMELINE_LIMIT_DAILY=3' 'TIMELINE_LIMIT_WEEKLY=4' 'TIMELINE_LIMIT_MONTHLY=0' 'TIMELINE_LIMIT_YEARLY=0' 'NUMBER_LIMIT=15'
+snapper -c home create-config /home
+snapper -c home set-config 'ALLOW_GROUPS=wheel' 'SYNC_ACL=yes' 'TIMELINE_LIMIT_HOURLY=3' 'TIMELINE_LIMIT_DAILY=3' 'TIMELINE_LIMIT_WEEKLY=4' 'TIMELINE_LIMIT_MONTHLY=0' 'TIMELINE_LIMIT_YEARLY=0' 'NUMBER_LIMIT=15'
+btrfs subvolume delete /.snapshots
+mkdir /.snapshots
+mount -a
+systemctl daemon-reload
+systemctl enable snapper-boot.timer snapper-cleanup.timer
