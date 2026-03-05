@@ -1,0 +1,38 @@
+#!/usr/bin/bash
+
+blkdiscard -f -z /dev/sda
+
+sgdisk -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -N 2 -t 2:8304 -c 2:'root' /dev/sda
+
+mkfs.fat -F 32 -n 'BOOT' /dev/sda1
+
+mkfs.btrfs -f -L 'root' -d single -m single /dev/sda2
+
+mount -o 'compress=zstd' /dev/sda2 /mnt
+btrfs subvolume create /mnt/@ /mnt/@var /mnt/@home /mnt/@snapshots
+umount /mnt
+
+mount -o 'compress=zstd,subvol=/@' /dev/sda2 /mnt
+mount -m -o 'compress=zstd,subvol=/@var' /dev/sda2 /mnt/var
+mount -m -o 'compress=zstd,subvol=/@home' /dev/sda2 /mnt/home
+mount -m -o 'compress=zstd,subvol=/@snapshots' /dev/sda2 /mnt/.snapshots
+mount -m -o 'nosuid,nodev,noexec,nosymfollow,fmask=0177,dmask=0077' /dev/sda1 /mnt/boot
+
+chattr +C /mnt/var
+
+pacstrap -KM /mnt base iptables mkinitcpio
+
+genfstab -U /mnt | tee -a /mnt/etc/fstab
+
+install -m 0777 /tmp/perfect/medium_install /mnt/usr/local/bin/
+cp -a /tmp/perfect/configs /mnt/opt/
+
+arch-chroot -S /mnt /usr/local/bin/medium_install
+
+rm -f /mnt/usr/local/bin/medium_install
+
+install -m 0777 /tmp/perfect/medium_setup /mnt/usr/local/bin/
+install -m 0777 /tmp/perfect/medium_user /mnt/usr/local/bin/
+
+pkill gpg-agent
+umount -R /mnt
