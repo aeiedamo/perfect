@@ -36,3 +36,4 @@ install -m 0777 /tmp/perfect/medium_user /mnt/usr/local/bin/
 
 pkill gpg-agent
 umount -R /mnt
+systemctl reboot --firmware-setup

@@ -1,5 +1,0 @@
-#!/usr/bin/bash
-
-git clone --depth 1 'https://github.com/aeiedamo/perfect' /tmp/perfect
-/tmp/perfect/medium_begin
-systemctl reboot --firmware-setup
