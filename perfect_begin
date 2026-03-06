@@ -53,3 +53,4 @@ pkill gpg-agent
 umount -R /mnt
 cryptsetup close root
 cryptsetup close aux
+systemctl poweroff --firmware-setup
