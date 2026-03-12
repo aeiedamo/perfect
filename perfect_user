@@ -15,6 +15,7 @@ gsettings set org.gnome.SessionManager logout-prompt false
 gnome-extensions enable 'appindicatorsupport@rgcjonas.gmail.com'
 
 printf '%s\n%s\n%s\n%s\n' 'font-family = monospace' 'font-size = 10' 'theme = light:Gruvbox Material Light,dark:Gruvbox Material Dark' 'fullscreen = true' | tee -a ${XDG_CONFIG_HOME}/ghostty/config
+printf '%s\n' '--enable-features=AcceleratedVideoDecodeLinuxGL,TouchpadOverscrollHistoryNavigation' | tee ${XDG_CONFIG_HOME}/chrome-flags.conf
 
 ssh-keygen
 gpg --full-gen-key
@@ -31,6 +32,6 @@ git config set --global tag.gpgSign true
 git clone --depth 1 'https://aur.archlinux.org/yay-bin.git' /tmp/yay-bin
 makepkg -sicD /tmp/yay-bin
 
-yay -Syu intel-compute-runtime-legacy-bin
+yay -Syu adwaita-qt6-git google-chrome intel-compute-runtime-legacy-bin
 
 sudo rm -f /usr/local/bin/perfect_user
