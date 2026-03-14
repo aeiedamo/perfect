@@ -27,7 +27,9 @@ genfstab -U /mnt | tee -a /mnt/etc/fstab
 install -m 0777 /tmp/perfect/medium_install /mnt/usr/local/bin/
 cp -a /tmp/perfect/configs /mnt/opt/
 
-arch-chroot -S /mnt /usr/local/bin/medium_install
+ln -f -s /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
+
+arch-chroot -r -S /mnt /usr/local/bin/medium_install
 
 rm -f /mnt/usr/local/bin/medium_install
 
