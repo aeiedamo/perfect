@@ -24,7 +24,7 @@ sed -i -e '/^#MAKEFLAGS/s/=.*$/="-j8"/' -e '/^#MAKEFLAGS/s/^#//' -e '/^#BUILDDIR
 
 sed -i -e '/^HOOKS/s/systemd/& btrfs/' -e '/^HOOKS/s/keymap/plymouth/' -e '/^HOOKS/s/filesystems/sd-encrypt &/' /etc/mkinitcpio.conf
 
-pacman -Syu --noconfirm linux linux-headers linux-lts linux-lts-headers alsa-firmware alsa-utils linux-firmware linux-tools-meta intel-ucode guestfs-tools plymouth qemu-full qemu-user-static-binfmt snap-pac sof-firmware sbctl wireless-regdb base-devel bash-completion bees devtools firejail iwd modemmanager networkmanager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-noto-nerd zram-generator gdm gnome-control-center virt-manager 7zip alacarte arch-wiki-docs ardour baobab bluez-cups bluez-utils btrfs-assistant calf cdrtools celluloid cronie crun cups-pdf dconf-editor distrobox dnsmasq easyeffects edk2-shell efibootmgr evolution-ews evolution-spamassassin fastfetch file-roller firefox firewall-applet ghostty gimp github-cli gnome-browser-connector gnome-characters gnome-console gnome-firmware gnome-keyring gnome-remote-desktop gnome-shell-extension-appindicator gnome-software gnome-themes-extra gnome-tweaks gnome-user-share gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gvfs-afc gvfs-dnssd gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive gvfs-smb gvfs-wsdd hunspell-en_us inetutils intel-media-sdk kdenlive libappindicator libayatana-appindicator libreoffice-fresh loupe lsp-plugins-lv2 malcontent man-db mda.lv2 mission-center nm-connection-editor net-tools nss-mdns obs-studio onnxruntime-cpu obsidian orca papers podman proton-vpn-gtk-app qalculate-gtk qbittorrent qt6ct qt6-multimedia-gstreamer radvd rnote rust rygel samba seahorse snapshot swtpm system-config-printer telegram-desktop throttled trash-cli tuned-ppd unrar usb_modeswitch vulkan-intel wl-clipboard yt-dlp zam-plugins-lv2 zed zip
+pacman -Syu --noconfirm linux linux-headers linux-lts linux-lts-headers alsa-firmware alsa-utils linux-firmware linux-tools-meta intel-ucode guestfs-tools plymouth qemu-full qemu-user-static-binfmt snap-pac sof-firmware sbctl wireless-regdb base-devel bash-completion bees devtools firejail iwd modemmanager networkmanager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-noto-nerd zram-generator gdm gnome-control-center virt-manager 7zip alacarte arch-wiki-docs ardour baobab bluez-cups bluez-utils btrfs-assistant calf cdrtools celluloid cronie crun cups-pdf dconf-editor distrobox dnsmasq easyeffects edk2-shell efibootmgr ethtool evolution-ews evolution-spamassassin fail2ban fastfetch file-roller firefox firewall-applet ghostty gimp github-cli gnome-browser-connector gnome-characters gnome-console gnome-firmware gnome-keyring gnome-remote-desktop gnome-shell-extension-appindicator gnome-software gnome-themes-extra gnome-tweaks gnome-user-share gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gst-thumbnailers gvfs-afc gvfs-dnssd gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive gvfs-smb gvfs-wsdd hunspell-en_us inetutils intel-media-sdk kdenlive libappindicator libayatana-appindicator libreoffice-fresh loupe lsp-plugins-lv2 malcontent man-db mda.lv2 mission-center nm-connection-editor net-tools nss-mdns obs-studio onnxruntime-cpu obsidian orca papers podman proton-vpn-gtk-app qalculate-gtk qbittorrent qt6ct qt6-multimedia-gstreamer radvd rnote rust rygel samba seahorse smartmontools snapshot swtpm system-config-printer telegram-desktop throttled tlp-pd tlp-rdw tlpui tmux trash-cli unrar usb_modeswitch vulkan-intel wl-clipboard yt-dlp zam-plugins-lv2 zed zip
 
 sbctl create-keys
 sbctl enroll-keys
@@ -72,6 +72,9 @@ printf '%s\n' 'export XDG_DATA_DIRS="${XDG_DATA_DIRS}:/var/lib/flatpak/exports/s
 
 printf '%s\n' "export QT_QPA_PLATFORMTHEME='qt6ct'" | tee /etc/profile.d/04-qt.sh
 
+cp /etc/skel/.bash_profile /root/
+cp /etc/skel/.bashrc /root/
+
 printf '%s\n%s\n' '[uefi_capsule]' 'DisableShimForSecureBoot=true' | tee -a /etc/fwupd/fwupd.conf
 
 sed -i -e '/^hosts/s/resolve \[\!UNAVAIL=return\]/mdns_minimal \[NOTFOUND=return\]/g' /etc/nsswitch.conf
@@ -82,6 +85,8 @@ printf '%s\n%s\n' '[device]' 'wifi.backend=iwd' | tee /etc/NetworkManager/conf.d
 mv /opt/configs/fonts/local.conf /etc/fonts/
 
 sed -i -e '/^PercentageLow/s/=.*$/=10.0/' -e '/^CriticalPowerAction/s/HybridSleep/PowerOff/' /etc/UPower/UPower.conf
+
+mv /opt/configs/tlp.d/01-main.conf /etc/tlp.d/
 
 printf '%s\n%s\n%s\n' 'user-db:user' 'system-db:gdm' 'file-db:/usr/share/gdm/greeter-dconf-defaults' | tee /etc/dconf/profile/gdm
 
@@ -101,4 +106,6 @@ rm -f -r /opt/configs
 
 printf '%s\n' '--cookies-from-browser firefox -f "bv+ba/b" -S "ext" -o "${HOME}/Videos/%(webpage_url_domain)s/%(id)s-%(title)s.%(ext)s"' | tee /etc/yt-dlp.conf
 
-systemctl enable apparmor.service avahi-daemon.service beesd@${UUID}.service bluetooth.service cronie.service cups.service firewalld.service fstrim.timer fwupd-refresh.timer gdm.service gnome-remote-desktop.service libvirtd.service ModemManager.service NetworkManager.service sshd.service systemd-boot-update.service systemd-resolved.service systemd-timesyncd.service throttled.service tuned.service tuned-ppd.service virtnetworkd.service virtqemud.service virtstoraged.service
+systemctl mask systemd-rfkill.service
+
+systemctl enable apparmor.service avahi-daemon.service beesd@${UUID}.service bluetooth.service cronie.service cups.service fail2ban.service firewalld.service fstrim.timer fwupd-refresh.timer gdm.service gnome-remote-desktop.service libvirtd.service ModemManager.service NetworkManager.service sshd.service systemd-boot-update.service systemd-resolved.service systemd-timesyncd.service throttled.service tlp.service tlp-pd.service virtnetworkd.service virtqemud.service virtstoraged.service
