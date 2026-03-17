@@ -44,7 +44,7 @@ cp -a /tmp/perfect/configs /mnt/opt/
 
 ln -f -s /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 
-arch-chroot -r -S /mnt /usr/local/bin/perfect_install
+arch-chroot -S /mnt /usr/local/bin/perfect_install
 
 rm -f /mnt/usr/local/bin/perfect_install
 

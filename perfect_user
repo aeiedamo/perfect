@@ -6,12 +6,15 @@ sudo rm -f /usr/local/bin/perfect_setup
 gsettings set org.gnome.desktop.interface font-name 'Sans 10'
 gsettings set org.gnome.desktop.interface document-font-name 'Serif 10'
 gsettings set org.gnome.desktop.interface monospace-font-name 'Monospace 10'
+gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+gsettings set org.gnome.desktop.interface gtk-enable-primary-paste true
 gsettings set org.gnome.desktop.media-handling automount false
 gsettings set org.gnome.desktop.media-handling automount-open false
 curl -L -o "${XDG_DATA_HOME}/backgrounds/default.jpg" -R -s 'https://unsplash.com/photos/24Thc8IlubM/download?force=true&w=1920'
 gsettings set org.gnome.desktop.background picture-uri "file://${XDG_DATA_HOME}/backgrounds/default.jpg"
 gsettings set org.gnome.desktop.background picture-uri-dark "file://${XDG_DATA_HOME}/backgrounds/default.jpg"
 gsettings set org.gnome.SessionManager logout-prompt false
+gsettings set org.gnome.settings-daemon.plugins.housekeeping donation-reminder-enabled false
 gnome-extensions enable 'appindicatorsupport@rgcjonas.gmail.com'
 
 printf '%s\n%s\n%s\n%s\n' 'font-family = monospace' 'font-size = 10' 'theme = light:Gruvbox Material Light,dark:Gruvbox Material Dark' 'fullscreen = true' | tee -a ${XDG_CONFIG_HOME}/ghostty/config
@@ -31,7 +34,7 @@ git config set --global tag.gpgSign true
 git clone --depth 1 'https://aur.archlinux.org/yay-bin.git' /tmp/yay-bin
 makepkg -sicD /tmp/yay-bin
 
-yay -Syu adwaita-qt6-git google-chrome intel-compute-runtime-legacy-bin
+yay -Syu adwaita-qt6 google-chrome intel-compute-runtime-legacy-bin
 
 printf '%s\n' '--enable-features=AcceleratedVideoDecodeLinuxGL,TouchpadOverscrollHistoryNavigation' | tee ${XDG_CONFIG_HOME}/chrome-flags.conf
 
