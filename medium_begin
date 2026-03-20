@@ -1,22 +1,26 @@
 #!/usr/bin/bash
 
-blkdiscard -f -z /dev/sda
+DISK="$(realpath /dev/disk/by-id/ata-SAMSUNG_MZVLB256HAHQ-000_S45UNX0N104146)"
+BOOT="${DISK}1"
+ROOT="${DISK}2"
 
-sgdisk -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -N 2 -t 2:8304 -c 2:'root' /dev/sda
+blkdiscard -f -z ${DISK}
 
-mkfs.fat -F 32 -n 'BOOT' /dev/sda1
+sgdisk -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -N 2 -t 2:8304 -c 2:'root' ${DISK}
 
-mkfs.btrfs -f -L 'root' -d single -m single /dev/sda2
+mkfs.fat -F 32 -n 'BOOT' ${BOOT}
 
-mount -o 'compress=zstd' /dev/sda2 /mnt
+mkfs.btrfs -f -L 'root' -d single -m single ${ROOT}
+
+mount -o 'compress=zstd' ${ROOT} /mnt
 btrfs subvolume create /mnt/@ /mnt/@var /mnt/@home /mnt/@snapshots
 umount /mnt
 
-mount -o 'compress=zstd,subvol=/@' /dev/sda2 /mnt
-mount -m -o 'compress=zstd,subvol=/@var' /dev/sda2 /mnt/var
-mount -m -o 'compress=zstd,subvol=/@home' /dev/sda2 /mnt/home
-mount -m -o 'compress=zstd,subvol=/@snapshots' /dev/sda2 /mnt/.snapshots
-mount -m -o 'nosuid,nodev,noexec,nosymfollow,fmask=0177,dmask=0077' /dev/sda1 /mnt/boot
+mount -o 'compress=zstd,subvol=/@' ${ROOT} /mnt
+mount -m -o 'compress=zstd,subvol=/@var' ${ROOT} /mnt/var
+mount -m -o 'compress=zstd,subvol=/@home' ${ROOT} /mnt/home
+mount -m -o 'compress=zstd,subvol=/@snapshots' ${ROOT} /mnt/.snapshots
+mount -m -o 'nosuid,nodev,noexec,nosymfollow,fmask=0177,dmask=0077' ${BOOT} /mnt/boot
 
 chattr +C /mnt/var
 
