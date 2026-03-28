@@ -69,7 +69,7 @@ cp /etc/skel/.bashrc /root/
 
 printf '%s\n%s\n' '[uefi_capsule]' 'DisableShimForSecureBoot=true' | tee -a /etc/fwupd/fwupd.conf
 
-sed -i -e '/^hosts/s/resolve \[\!UNAVAIL=return\]/mdns_minimal \[NOTFOUND=return\]/g' /etc/nsswitch.conf
+sed -i -e '/^hosts/s/resolve \[\!UNAVAIL=return\]/mdns_minimal \[NOTFOUND=return\]/g' -e '/^hosts/s/$/& libvirt libvirt_guest' /etc/nsswitch.conf
 
 printf '%s\n%s\n' '[main]' 'dns=systemd-resolved' | tee /etc/NetworkManager/conf.d/dns.conf
 printf '%s\n%s\n' '[device]' 'wifi.backend=iwd' | tee /etc/NetworkManager/conf.d/wifi_backend.conf
