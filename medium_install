@@ -98,6 +98,6 @@ rm -f -r /opt/configs
 
 printf '%s\n' '--cookies-from-browser firefox -f "bv+ba/b" -S "ext" -o "${HOME}/Videos/%(webpage_url_domain)s/%(id)s-%(title)s.%(ext)s"' | tee /etc/yt-dlp.conf
 
-systemctl mask systemd-rfkill.service
+systemctl mask systemd-rfkill.service systemd-rfkill.socket
 
 systemctl enable apparmor.service avahi-daemon.service beesd@${UUID}.service bluetooth.service chronyd.service cronie.service cups.service fail2ban.service firewalld.service fwupd-refresh.timer gdm.service gnome-remote-desktop.service libvirtd.service ModemManager.service NetworkManager.service sshd.service systemd-boot-update.service systemd-resolved.service throttled.service tlp.service tlp-pd.service virtnetworkd.service virtnodedevd.service virtqemud.service virtstoraged.service
