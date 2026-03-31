@@ -18,6 +18,8 @@ gsettings set org.gnome.settings-daemon.plugins.housekeeping donation-reminder-e
 gnome-extensions enable 'appindicatorsupport@rgcjonas.gmail.com'
 
 printf '%s\n%s\n%s\n%s\n' 'font-family = monospace' 'font-size = 10' 'theme = light:Gruvbox Material Light,dark:Gruvbox Material Dark' 'fullscreen = true' | tee -a ${XDG_CONFIG_HOME}/ghostty/config
+mkdir -p ${XDG_CONFIG_HOME}/easyeffects/output/
+git clone --depth 1 'https://github.com/BayouGuru67/Linux_Audio.git' ${XDG_CONFIG_HOME}/easyeffects/output/
 
 ssh-keygen
 gpg --full-gen-key
