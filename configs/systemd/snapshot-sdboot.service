@@ -1,0 +1,10 @@
+[Unit]
+Description=Add new systemd-boot entries for snapshots.
+After=snapper-boot.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/snapshot-sdboot
+
+[Install]
+WantedBy=graphical.target

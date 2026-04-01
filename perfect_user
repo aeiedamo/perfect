@@ -36,7 +36,7 @@ git config set --global tag.gpgSign true
 git clone --depth 1 'https://aur.archlinux.org/yay-bin.git' /tmp/yay-bin
 makepkg -sicD /tmp/yay-bin
 
-yay -Syu adwaita-qt6 google-chrome intel-compute-runtime-legacy-bin
+yay -Syu --needed --noremovemake adwaita-qt6 google-chrome intel-compute-runtime-legacy-bin
 
 printf '%s\n' '--enable-features=AcceleratedVideoDecodeLinuxGL,TouchpadOverscrollHistoryNavigation' | tee ${XDG_CONFIG_HOME}/chrome-flags.conf
 
