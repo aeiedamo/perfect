@@ -1,0 +1,30 @@
+#!/usr/bin/bash
+
+DISK0="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
+DISK1="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
+BOOT="${DISK0}p1"
+ROOT="${DISK0}p2"
+AUX="${DISK1}p1"
+UUID="$(lsblk -dno UUID /dev/mapper/root)"
+
+TWODAYSPRIOR="$(date --date '2 days ago' "+%a %d %b %Y")"
+YESTERDAY="$(date --date 'yesterday' "+%a %d %b %Y")"
+TODAY="$(date --date 'today' "+%a %d %b %Y")"
+
+SNAPSHOT0="$(snapper list -t single | grep 'timeline' | grep "${TWODAYSPRIOR}" | cut -d ' ' -f 1 | head -1)"
+SNAPSHOT1="$(snapper list -t single | grep 'timeline' | grep "${YESTERDAY}" | cut -d ' ' -f 1 | head -1)"
+SNAPSHOT2="$(snapper list -t single | grep 'timeline' | grep "${TODAY}" | cut -d ' ' -f 1 | head -1)"
+SNAPSHOT3="$(snapper list -t single | grep 'boot' | tail -1 | cut -d ' ' -f 1)"
+
+SNAPSHOTS=( "${SNAPSHOT0}" "${SNAPSHOT1}" "${SNAPSHOT2}" "${SNAPSHOT3}" )
+
+[ -f /boot/loader/entries/snapshot-${SNAPSHOT0}.conf ] || rm -f "$(ls -1 /boot/loader/entries/snapshot-* 2>/dev/null | head -1)"
+[ -f /boot/loader/entries/snapshot-${SNAPSHOT3}.conf ] || rm -f "$(ls -1 /boot/loader/entries/snapshot-* 2>/dev/null | tail -1)"
+
+create_config() {
+	[ -f /boot/loader/entries/snapshot-$1.conf ] || printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s%s%s %s%s%s %s %s%s %s%s%s %s %s\n' 'title' "Snapshot #$1" 'linux' '/vmlinuz-linux-lts' 'initrd' '/initramfs-linux-lts.img' 'options' 'rd.luks.name=' "$(lsblk -dno UUID ${ROOT})" '=root' 'rd.luks.name=' "$(lsblk -dno UUID ${AUX})" '=aux' 'rd.luks.options=tpm2-device=/dev/tpmrm0' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@snapshots/' "$1" '/snapshot' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee /boot/loader/entries/snapshot-$1.conf
+}
+
+for CONF in ${SNAPSHOTS[@]}; do
+	[ -z ${CONF} ] || create_config ${CONF}
+done
