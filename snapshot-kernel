@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+cp /boot/vmlinuz-linux /boot/vmlinuz-linux-snapshot
+cp /boot/initramfs-linux.img /boot/initramfs-linux-snapshot.img

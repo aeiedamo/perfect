@@ -51,6 +51,7 @@ rm -f /mnt/usr/local/bin/perfect_install
 install -m 0777 /tmp/perfect/perfect_setup /mnt/usr/local/bin/
 install -m 0777 /tmp/perfect/perfect_user /mnt/usr/local/bin/
 
+install -m 0777 /tmp/perfect/snapshot-kernel /mnt/usr/local/bin/
 install -m 0777 /tmp/perfect/snapshot-sdboot /mnt/usr/local/bin/
 install -m 0777 /tmp/perfect/configs/systemd/snapshot-sdboot.service /mnt/etc/systemd/system/
 
