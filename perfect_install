@@ -22,9 +22,9 @@ sed -i -e '/^#NoExtract/s/$/ boot\/intel-ucode.img/' -e '/^#NoExtract/s/^#//' -e
 printf '%s\n%s\n' 'Server = https://mirror.pkgbuild.com/$repo/os/$arch' 'Server = https://fastly.mirror.pkgbuild.com/$repo/os/$arch' | tee /etc/pacman.d/mirrorlist
 sed -i -e '/^#MAKEFLAGS/s/=.*$/="-j8"/' -e '/^#MAKEFLAGS/s/^#//' -e '/^#BUILDDIR/s/^#//' -e '/^OPTIONS/s/debug/!&/' /etc/makepkg.conf
 
-sed -i -e '/^HOOKS/s/systemd/& btrfs/' -e '/^HOOKS/s/keymap/plymouth/' -e '/^HOOKS/s/filesystems/sd-encrypt &/' /etc/mkinitcpio.conf
+sed -i -e '/^HOOKS/s/systemd/& plymouth btrfs/' -e '/^HOOKS/s/keymap //' -e '/^HOOKS/s/filesystems/sd-encrypt &/' /etc/mkinitcpio.conf
 
-pacman -Syu --needed --noconfirm linux linux-headers linux-lts linux-lts-headers alsa-firmware alsa-utils linux-firmware linux-tools-meta intel-ucode guestfs-tools plymouth qemu-full qemu-user-static-binfmt snap-pac sof-firmware sbctl wireless-regdb base-devel bash-completion bees devtools firejail iwd modemmanager networkmanager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-noto-nerd zram-generator gdm gnome-control-center virt-manager 7zip alacarte android-tools arch-wiki-docs ardour baobab bluez-cups bluez-utils btrfs-assistant calf cdrtools celluloid chrony cronie crun cups-pdf dconf-editor distrobox dnsmasq easyeffects edk2-shell efibootmgr ethtool evolution-ews evolution-spamassassin fail2ban fastfetch fd file-roller firefox firewall-applet flatpak-xdg-utils foliate fzf ghostty gimp github-cli gnome-browser-connector gnome-characters gnome-console gnome-firmware gnome-keyring gnome-remote-desktop gnome-shell-extension-appindicator gnome-software gnome-themes-extra gnome-tweaks gnome-user-share gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gst-thumbnailers gvfs-afc gvfs-dnssd gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive gvfs-smb gvfs-wsdd hunspell-en_us inetutils intel-media-sdk kdenlive libappindicator libayatana-appindicator libreoffice-fresh loupe lsp-plugins-lv2 malcontent man-db mda.lv2 mission-center nm-connection-editor net-tools networkmanager-l2tp networkmanager-pptp nss-mdns obs-studio onnxruntime-cpu obsidian orca papers podman proton-vpn-gtk-app qalculate-gtk qbittorrent qt6ct qt6-multimedia-gstreamer radvd ripgrep rnote rust rygel samba seahorse smartmontools snapshot swtpm system-config-printer telegram-desktop throttled tlp-pd tlp-rdw tlpui tmux trash-cli unrar usb_modeswitch vulkan-intel wl-clipboard yt-dlp zam-plugins-lv2 zed zip
+pacman -Syu --needed --noconfirm linux linux-headers linux-lts linux-lts-headers alsa-firmware alsa-utils linux-firmware linux-tools-meta intel-ucode guestfs-tools plymouth qemu-full qemu-user-static-binfmt snap-pac sof-firmware sbctl wireless-regdb base-devel bash-completion bees devtools firejail iwd modemmanager networkmanager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-cascadia-code ttf-noto-nerd zram-generator gdm gnome-control-center virt-manager 7zip alacarte android-tools arch-wiki-docs ardour baobab bluez-cups bluez-utils btrfs-assistant calf cdrtools celluloid chrony cronie crun cups-pdf dconf-editor distrobox dnsmasq easyeffects edk2-shell efibootmgr ethtool evolution-ews evolution-spamassassin fail2ban fastfetch fd file-roller firefox firewall-applet flatpak-xdg-utils foliate fzf ghostty gimp github-cli gnome-browser-connector gnome-characters gnome-console gnome-firmware gnome-keyring gnome-remote-desktop gnome-shell-extension-appindicator gnome-software gnome-themes-extra gnome-tweaks gnome-user-share gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gst-thumbnailers gvfs-afc gvfs-dnssd gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive gvfs-smb gvfs-wsdd hunspell-en_us inetutils intel-media-sdk kdenlive libappindicator libayatana-appindicator libreoffice-fresh loupe lsp-plugins-lv2 malcontent man-db mda.lv2 mission-center nm-connection-editor net-tools networkmanager-l2tp networkmanager-pptp nss-mdns obs-studio onnxruntime-cpu obsidian orca papers podman proton-vpn-gtk-app qalculate-gtk qbittorrent qt6ct qt6-multimedia-gstreamer radvd ripgrep rnote rust rygel samba seahorse smartmontools snapshot swtpm system-config-printer telegram-desktop throttled tlp-pd tlp-rdw tlpui tmux trash-cli unrar usb_modeswitch vulkan-intel wl-clipboard yt-dlp zam-plugins-lv2 zed zip
 
 sbctl create-keys
 sbctl enroll-keys
@@ -34,12 +34,16 @@ sbctl sign -s -o /usr/lib/systemd/boot/efi/systemd-bootx64.efi.signed /usr/lib/s
 sbctl sign -s -o /usr/lib/fwupd/efi/fwupdx64.efi.signed /usr/lib/fwupd/efi/fwupdx64.efi
 sbctl sign -s /usr/share/edk2-shell/x64/Shell.efi
 
+printf '%s%s%s %s%s%s %s %s%s %s %s %s\n' 'rd.luks.name=' "$(lsblk -dno UUID ${ROOT})" '=root' 'rd.luks.name=' "$(lsblk -dno UUID ${AUX})" '=aux' 'rd.luks.options=tpm2-device=/dev/tpmrm0' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee /etc/kernel/cmdline
+
 bootctl install --variables=no
 printf '%s\t%s\n' 'default' '@saved' | tee /boot/loader/loader.conf
-printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s%s%s %s%s%s %s %s%s %s %s %s\n' 'title' 'Arch Linux' 'linux' '/vmlinuz-linux' 'initrd' '/initramfs-linux.img' 'options' 'rd.luks.name=' "$(lsblk -dno UUID ${ROOT})" '=root' 'rd.luks.name=' "$(lsblk -dno UUID ${AUX})" '=aux' 'rd.luks.options=tpm2-device=/dev/tpmrm0' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee /boot/loader/entries/arch-linux.conf
-printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s%s%s %s%s%s %s %s%s %s %s %s\n' 'title' 'Arch Linux LTS' 'linux' '/vmlinuz-linux-lts' 'initrd' '/initramfs-linux-lts.img' 'options' 'rd.luks.name=' "$(lsblk -dno UUID ${ROOT})" '=root' 'rd.luks.name=' "$(lsblk -dno UUID ${AUX})" '=aux' 'rd.luks.options=tpm2-device=/dev/tpmrm0' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee /boot/loader/entries/arch-linux-lts.conf
+printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n' 'title' 'Arch Linux' 'linux' '/vmlinuz-linux' 'initrd' '/initramfs-linux.img' 'options' "$(cat /etc/kernel/cmdline)" | tee /boot/loader/entries/arch-linux.conf
+printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n' 'title' 'Arch Linux LTS' 'linux' '/vmlinuz-linux-lts' 'initrd' '/initramfs-linux-lts.img' 'options' "$(cat /etc/kernel/cmdline)" | tee /boot/loader/entries/arch-linux-lts.conf
 
 cp /usr/share/edk2-shell/x64/Shell.efi /boot/shellx64.efi
+
+mv /opt/configs/pacman.d/hooks/ /etc/pacman.d/
 
 mv /etc/bees/beesd.conf.sample /etc/bees/beesd.conf
 sed -i -e "/^UUID/s/=.*$/=${UUID}/" -e '/^# DB_SIZE/s/^# //' /etc/bees/beesd.conf
@@ -89,6 +93,8 @@ mv /opt/configs/fonts/local.conf /etc/fonts/
 sed -i -e '/^PercentageLow/s/=.*$/=10.0/' -e '/^CriticalPowerAction/s/HybridSleep/PowerOff/' /etc/UPower/UPower.conf
 
 mv /opt/configs/tlp.d/01-main.conf /etc/tlp.d/
+
+printf '%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n%s\n' 'Section "InputClass"' 'Identifier "system-keyboard"' 'MatchIsKeyboard "on"' 'Option "XkbLayout" "us,eg"' 'Option "XkbVariant" ","' 'Option "XkbOptions" "grp:win_space_toggle"' 'EndSection' | tee /etc/X11/xorg.conf.d/00-keyboard.conf
 
 printf '%s\n%s\n%s\n' 'user-db:user' 'system-db:gdm' 'file-db:/usr/share/gdm/greeter-dconf-defaults' | tee /etc/dconf/profile/gdm
 
