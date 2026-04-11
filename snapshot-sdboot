@@ -26,7 +26,8 @@ SNAPSHOTS=( "${SNAPSHOT0}" "${SNAPSHOT1}" "${SNAPSHOT2}" "${SNAPSHOT3}" )
 { [ -f /boot/vmlinuz-linux-snapshot ] && [ -f /boot/initramfs-linux-snapshot.img ] ; } || snapshot-kernel
 
 create_config() {
-	[ -f /boot/loader/entries/snapshot-$1.conf ] || printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s%s%s %s%s%s %s %s%s %s%s%s %s %s\n' 'title' "Snapshot #$1" 'linux' '/vmlinuz-linux-snapshot' 'initrd' '/initramfs-linux-snapshot.img' 'options' 'rd.luks.name=' "$(lsblk -dno UUID ${ROOT})" '=root' 'rd.luks.name=' "$(lsblk -dno UUID ${AUX})" '=aux' 'rd.luks.options=tpm2-device=/dev/tpmrm0' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@snapshots/' "$1" '/snapshot' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee /boot/loader/entries/snapshot-$1.conf
+	CREATED_AT="$(snapper list -t single | grep -w "$1" | cut -d ' ' -f 3-9)"
+	[ -f /boot/loader/entries/snapshot-$1.conf ] || printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s%s%s %s%s%s %s %s%s %s%s%s %s %s\n' 'title' "Snapshot #$1 @ ${CREATED_AT}" 'linux' '/vmlinuz-linux-snapshot' 'initrd' '/initramfs-linux-snapshot.img' 'options' 'rd.luks.name=' "$(lsblk -dno UUID ${ROOT})" '=root' 'rd.luks.name=' "$(lsblk -dno UUID ${AUX})" '=aux' 'rd.luks.options=tpm2-device=/dev/tpmrm0' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@snapshots/' "$1" '/snapshot' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee /boot/loader/entries/snapshot-$1.conf
 }
 
 for CONF in ${SNAPSHOTS[@]}; do
