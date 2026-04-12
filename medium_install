@@ -72,7 +72,7 @@ cp /etc/skel/.bashrc /root/
 sed -i -e '/^PS1\b/d' /root/.bashrc
 printf '%s\n' "PS1=' \[\e[92;1;4m\]⮜ \A | \u | \w | \$? ⮞\[\e[0m\] '" | tee -a /root/.bashrc
 
-printf '%s\n' '' 'set show-all-if-ambiguous on' 'set colored-stats on' 'set visible-stats on' 'set mark-symlinked-directories on' 'set colored-completion-prefix on' 'set menu-complete-display-prefix on' 'set echo-control-characters off' '' '"\e[A": history-search-backward' '"\e[B": history-search-forward' | tee -a /root/.inputrc
+printf '%s\n' '"\e[A": history-search-backward' '"\e[B": history-search-forward' '' 'set bell-style none' 'set echo-control-characters off' 'set show-all-if-ambiguous on' 'set colored-stats on' 'set visible-stats on' 'set mark-symlinked-directories on' 'set colored-completion-prefix on' 'set menu-complete-display-prefix on' 'set revert-all-at-newline on' | tee -a /root/.inputrc
 
 printf '%s\n' '[uefi_capsule]' 'DisableShimForSecureBoot=true' | tee -a /etc/fwupd/fwupd.conf
 
