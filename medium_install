@@ -31,7 +31,7 @@ printf '%s\t%s\n' 'default' '@saved' | tee /boot/loader/loader.conf
 printf '%s\t%s\n' 'title' 'Arch Linux' 'linux' '/vmlinuz-linux' 'initrd' '/initramfs-linux.img' 'options' "$(cat /etc/kernel/cmdline)" | tee /boot/loader/entries/arch-linux.conf
 printf '%s\t%s\n' 'title' 'Arch Linux LTS' 'linux' '/vmlinuz-linux-lts' 'initrd' '/initramfs-linux-lts.img' 'options' "$(cat /etc/kernel/cmdline)" | tee /boot/loader/entries/arch-linux-lts.conf
 
-cp /usr/share/edk2-shell/x64/Shell.efi /boot/shellx64.efi
+cp /usr/share/edk2-shell/x64/Shell_Full.efi /boot/shellx64.efi
 
 mv /etc/bees/beesd.conf.sample /etc/bees/beesd.conf
 sed -i -e "/^UUID/s/=.*$/=${UUID}/" -e '/^# DB_SIZE/s/^# //' /etc/bees/beesd.conf
