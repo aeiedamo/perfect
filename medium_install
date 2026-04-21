@@ -88,7 +88,7 @@ sed -i -e '/^PercentageLow/s/=.*$/=10.0/' -e '/^CriticalPowerAction/s/HybridSlee
 mv /opt/configs/tlp.d/01-main.conf /etc/tlp.d/
 
 mkdir -p /etc/X11/xorg.conf.d
-printf '%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n%s\n' 'Section "InputClass"' 'Identifier "system-keyboard"' 'MatchIsKeyboard "on"' 'Option "XkbLayout" "us,eg"' 'Option "XkbVariant" ","' 'Option "XkbOptions" "grp:win_space_toggle"' 'EndSection' | tee /etc/X11/xorg.conf.d/00-keyboard.conf
+printf '%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n%s\n' 'Section "InputClass"' 'Identifier "system-keyboard"' 'MatchIsKeyboard "on"' 'Option "XkbLayout" "us,eg"' 'Option "XkbModel" "pc104"' 'Option "XkbVariant" ","' 'Option "XkbOptions" "grp:win_space_toggle"' 'EndSection' | tee /etc/X11/xorg.conf.d/00-keyboard.conf
 
 printf '%s\n%s\n%s\n' 'user-db:user' 'system-db:gdm' 'file-db:/usr/share/gdm/greeter-dconf-defaults' | tee /etc/dconf/profile/gdm
 

@@ -13,15 +13,14 @@ TWODAYSPRIOR="$(date --date '2 days ago' "+%a %d %b %Y")"
 YESTERDAY="$(date --date 'yesterday' "+%a %d %b %Y")"
 TODAY="$(date --date 'today' "+%a %d %b %Y")"
 
-SNAPSHOT0="$(snapper list -t single | grep 'timeline' | grep "${TWODAYSPRIOR}" | cut -d ' ' -f 1 | head -1)"
-SNAPSHOT1="$(snapper list -t single | grep 'timeline' | grep "${YESTERDAY}" | cut -d ' ' -f 1 | head -1)"
-SNAPSHOT2="$(snapper list -t single | grep 'timeline' | grep "${TODAY}" | cut -d ' ' -f 1 | head -1)"
-SNAPSHOT3="$(snapper list -t single | grep 'boot' | tail -1 | cut -d ' ' -f 1)"
+SNAPSHOTS=(
+	"$(snapper list -t single | grep 'timeline' | grep "${TWODAYSPRIOR}" | cut -d ' ' -f 1 | head -1)"
+	"$(snapper list -t single | grep 'timeline' | grep "${YESTERDAY}" | cut -d ' ' -f 1 | head -1)"
+	"$(snapper list -t single | grep 'timeline' | grep "${TODAY}" | cut -d ' ' -f 1 | head -1)"
+	"$(snapper list -t single | grep 'boot' | tail -1 | cut -d ' ' -f 1)"
+)
 
-SNAPSHOTS=( "${SNAPSHOT0}" "${SNAPSHOT1}" "${SNAPSHOT2}" "${SNAPSHOT3}" )
-
-[ -f /boot/loader/entries/snapshot-${SNAPSHOT0}.conf ] || rm -f "$(ls -1 /boot/loader/entries/snapshot-* 2>/dev/null | head -1)"
-[ -f /boot/loader/entries/snapshot-${SNAPSHOT3}.conf ] || rm -f "$(ls -1 /boot/loader/entries/snapshot-* 2>/dev/null | tail -1)"
+rm -f /boot/loader/entries/snapshot-*
 
 { [ -f /boot/vmlinuz-linux-snapshot ] && [ -f /boot/initramfs-linux-snapshot.img ] ; } || snapshot-kernel
 
