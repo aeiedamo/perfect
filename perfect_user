@@ -27,19 +27,6 @@ printf '%s\n' 'font-family = monospace' 'font-size = 10' 'theme = light:Gruvbox 
 mkdir -p ${XDG_CONFIG_HOME}/easyeffects/output/
 git clone --depth 1 'https://github.com/BayouGuru67/Linux_Audio.git' ${XDG_CONFIG_HOME}/easyeffects/output/
 
-ssh-keygen
-gpg --full-gen-key
-GPGKEY="$(gpg -K --keyid-format long | grep 'sec' | cut -d '/' -f 2 | cut -d ' ' -f 1)"
-gpg -a -o "${HOME}/.gnupg/public-keys.d/am.asc" --export ${GPGKEY}
-
-git config set --global user.name 'AlaEldin Mohamed'
-git config set --global user.email 'aeiedamo@gmail.com'
-git config set --global init.defaultBranch 'main'
-git config set --global user.signingkey ${GPGKEY}
-git config set --global commit.gpgsign true
-git config set --global tag.gpgSign true
-git config set --global push.followTags true
-
 git clone --depth 1 'https://aur.archlinux.org/yay-bin.git' /tmp/yay-bin
 yes | makepkg -sicD /tmp/yay-bin
 

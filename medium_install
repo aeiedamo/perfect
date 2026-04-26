@@ -22,7 +22,7 @@ sed -i -e '/^#MAKEFLAGS/s/=.*$/="-j8"/' -e '/^#MAKEFLAGS/s/^#//' -e '/^#BUILDDIR
 
 sed -i -e '/^HOOKS/s/systemd/& plymouth/' -e '/^HOOKS/s/keymap //' /etc/mkinitcpio.conf
 
-pacman -Syu --needed --noconfirm linux linux-headers linux-lts linux-lts-headers scx-tools alsa-firmware alsa-utils linux-firmware linux-tools-meta intel-ucode guestfs-tools plymouth qemu-full qemu-user-static-binfmt snap-pac sof-firmware wireless-regdb base-devel bash-completion bees devtools firejail modemmanager networkmanager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-cascadia-code ttf-noto-nerd zram-generator gdm gnome-control-center virt-manager 7zip alacarte android-tools arch-wiki-docs ardour baobab bluez-cups bluez-utils btrfs-assistant calf cdrtools celluloid chrony cronie crun cups-pdf dconf-editor distrobox dnsmasq easyeffects edk2-shell efibootmgr ethtool evolution-ews evolution-spamassassin fail2ban fastfetch fd file-roller firefox-i18n-ar firewall-applet flatpak-xdg-utils foliate fzf ghostty gimp github-cli gnome-backgrounds gnome-browser-connector gnome-characters gnome-console gnome-firmware gnome-keyring gnome-remote-desktop gnome-shell-extension-appindicator gnome-software gnome-themes-extra gnome-tweaks gnome-user-share gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gst-thumbnailers gvfs-afc gvfs-dnssd gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive gvfs-smb gvfs-wsdd hunspell-en_us inetutils intel-media-sdk jdk-openjdk kdenlive libappindicator libayatana-appindicator libreoffice-fresh-ar loupe lsp-plugins-lv2 malcontent man-db mda.lv2 mission-center nm-connection-editor net-tools networkmanager-l2tp networkmanager-pptp nss-mdns obs-studio onnxruntime-cpu obsidian orca papers podman proton-vpn-gtk-app qalculate-gtk qbittorrent qt6ct qt6-multimedia-gstreamer radvd rnote rust rygel samba seahorse smartmontools snapshot swtpm system-config-printer telegram-desktop throttled tlp-pd tlp-rdw tlpui tmux trash-cli unrar usb_modeswitch vulkan-intel wl-clipboard yt-dlp zam-plugins-lv2 zip
+pacman -Syu --needed --noconfirm linux linux-headers linux-lts linux-lts-headers scx-tools alsa-firmware alsa-utils linux-firmware linux-tools-meta intel-ucode guestfs-tools plymouth qemu-full qemu-user-static-binfmt snap-pac sof-firmware wireless-regdb base-devel bash-completion bees devtools firejail modemmanager networkmanager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-cascadia-code ttf-noto-nerd zram-generator gdm gnome-control-center virt-manager 7zip alacarte android-tools arch-wiki-docs ardour baobab bluez-cups bluez-utils btrfs-assistant calf cdrtools celluloid chrony cronie crun cups-pdf dconf-editor distrobox dnsmasq easyeffects edk2-shell efibootmgr ethtool evolution-ews evolution-spamassassin fail2ban fastfetch fd file-roller firefox-i18n-ar firewall-applet flatpak-xdg-utils foliate fzf ghostty gimp github-cli gnome-backgrounds gnome-browser-connector gnome-characters gnome-console gnome-firmware gnome-keyring gnome-remote-desktop gnome-shell-extension-appindicator gnome-software gnome-themes-extra gnome-tweaks gnome-user-share gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gst-thumbnailers gvfs-afc gvfs-dnssd gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive gvfs-smb gvfs-wsdd hunspell-en_us inetutils intel-media-sdk jdk-openjdk kdenlive libappindicator libayatana-appindicator libreoffice-fresh-ar loupe lsp-plugins-lv2 malcontent man-db mda.lv2 mission-center nm-connection-editor net-tools networkmanager-l2tp networkmanager-pptp nss-mdns ntfsprogs obs-studio onnxruntime-cpu obsidian orca papers podman proton-vpn-gtk-app qalculate-gtk qbittorrent qt6ct qt6-multimedia-gstreamer radvd rnote rust rygel samba seahorse smartmontools snapshot swtpm system-config-printer telegram-desktop throttled tlp-pd tlp-rdw tlpui tmux trash-cli unrar usb_modeswitch vulkan-intel wget wl-clipboard yt-dlp zam-plugins-lv2 zip
 
 printf '%s%s %s %s %s\n' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee /etc/kernel/cmdline
 
@@ -69,7 +69,7 @@ printf '%s\n' "export QT_QPA_PLATFORMTHEME='qt6ct'" | tee /etc/profile.d/04-qt.s
 cp /etc/skel/.bash_profile /root/
 cp /etc/skel/.bashrc /root/
 
-git clone --depth 1 'https://github.com/aeiedamo/perfect' /root/perfect
+git clone 'https://github.com/aeiedamo/perfect.git' /root/perfect
 
 sed -i -e '/^PS1\b/d' /root/.bashrc
 printf '%s\n' "PS1=' \[\e[92;1;4m\]⮜ \A | \u | \w | \$? ⮞\[\e[0m\] '" 'export PATH="${PATH}:/root/perfect"' | tee -a /root/.bashrc
@@ -84,7 +84,8 @@ printf '%s\n' '[main]' 'dns=systemd-resolved' | tee /etc/NetworkManager/conf.d/d
 
 mv /opt/configs/fonts/local.conf /etc/fonts/
 
-sed -i -e '/^PercentageLow/s/=.*$/=10.0/' -e '/^CriticalPowerAction/s/HybridSleep/PowerOff/' /etc/UPower/UPower.conf
+printf '%s\n' '[UPower]' 'PercentageLow=10.0' | tee /etc/UPower/UPower.conf.d/00-upower-percentage.conf
+printf '%s\n' '[UPower]' 'AllowRiskyCriticalPowerAction=true' 'CriticalPowerAction=Suspend' | tee /etc/UPower/UPower.conf.d/01-upower-action.conf
 
 mv /opt/configs/tlp.d/01-main.conf /etc/tlp.d/
 

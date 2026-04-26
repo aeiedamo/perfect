@@ -1,10 +1,10 @@
 #!/usr/bin/bash
 
-DISK0="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
-DISK1="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
-BOOT="${DISK0}p1"
-ROOT="${DISK0}p2"
-AUX="${DISK1}p1"
+DISK="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
+DISKAUX="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
+BOOT="${DISK}p1"
+ROOT="${DISK}p2"
+AUX="${DISKAUX}p1"
 UUID="$(lsblk -dno UUID /dev/mapper/root)"
 
 sed -i -e '/^#en_US.UTF-8/s/^#//' -e '/^#ar_EG.UTF-8/s/^#//' /etc/locale.gen
@@ -24,7 +24,7 @@ sed -i -e '/^#MAKEFLAGS/s/=.*$/="-j8"/' -e '/^#MAKEFLAGS/s/^#//' -e '/^#BUILDDIR
 
 sed -i -e '/^HOOKS/s/systemd/& plymouth btrfs/' -e '/^HOOKS/s/keymap //' -e '/^HOOKS/s/filesystems/sd-encrypt &/' /etc/mkinitcpio.conf
 
-pacman -Syu --needed --noconfirm linux linux-headers linux-lts linux-lts-headers scx-tools alsa-firmware alsa-utils linux-firmware linux-tools-meta intel-ucode guestfs-tools plymouth qemu-full qemu-user-static-binfmt snap-pac sof-firmware sbctl wireless-regdb base-devel bash-completion bees devtools firejail modemmanager networkmanager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-cascadia-code ttf-noto-nerd zram-generator gdm gnome-control-center virt-manager 7zip alacarte android-tools arch-wiki-docs ardour baobab bluez-cups bluez-utils btrfs-assistant calf cdrtools celluloid chrony cronie crun cups-pdf dconf-editor distrobox dnsmasq easyeffects edk2-shell efibootmgr ethtool evolution-ews evolution-spamassassin fail2ban fastfetch fd file-roller firefox-i18n-ar firewall-applet flatpak-xdg-utils foliate fzf ghostty gimp github-cli gnome-backgrounds gnome-browser-connector gnome-characters gnome-console gnome-firmware gnome-keyring gnome-remote-desktop gnome-shell-extension-appindicator gnome-software gnome-themes-extra gnome-tweaks gnome-user-share gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gst-thumbnailers gvfs-afc gvfs-dnssd gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive gvfs-smb gvfs-wsdd hunspell-en_us inetutils intel-media-sdk jdk-openjdk kdenlive libappindicator libayatana-appindicator libreoffice-fresh-ar loupe lsp-plugins-lv2 malcontent man-db mda.lv2 mission-center nm-connection-editor net-tools networkmanager-l2tp networkmanager-pptp nss-mdns obs-studio onnxruntime-cpu obsidian orca papers podman proton-vpn-gtk-app qalculate-gtk qbittorrent qt6ct qt6-multimedia-gstreamer radvd ripgrep rnote rust rygel samba seahorse smartmontools snapshot swtpm system-config-printer telegram-desktop throttled tlp-pd tlp-rdw tlpui tmux trash-cli unrar usb_modeswitch vulkan-intel wl-clipboard yt-dlp zam-plugins-lv2 zip
+pacman -Syu --needed --noconfirm linux linux-headers linux-lts linux-lts-headers scx-tools alsa-firmware alsa-utils linux-firmware linux-tools-meta intel-ucode guestfs-tools plymouth qemu-full qemu-user-static-binfmt snap-pac sof-firmware sbctl wireless-regdb base-devel bash-completion bees devtools firejail modemmanager networkmanager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-cascadia-code ttf-noto-nerd zram-generator gdm gnome-control-center virt-manager 7zip alacarte android-tools arch-wiki-docs ardour baobab bluez-cups bluez-utils btrfs-assistant calf cdrtools celluloid chrony cronie crun cups-pdf dconf-editor distrobox dnsmasq easyeffects edk2-shell efibootmgr ethtool evolution-ews evolution-spamassassin fail2ban fastfetch fd file-roller firefox-i18n-ar firewall-applet flatpak-xdg-utils foliate fzf ghostty gimp github-cli gnome-backgrounds gnome-browser-connector gnome-characters gnome-console gnome-firmware gnome-keyring gnome-remote-desktop gnome-shell-extension-appindicator gnome-software gnome-themes-extra gnome-tweaks gnome-user-share gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gst-thumbnailers gvfs-afc gvfs-dnssd gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive gvfs-smb gvfs-wsdd hunspell-en_us inetutils intel-media-sdk jdk-openjdk kdenlive libappindicator libayatana-appindicator libreoffice-fresh-ar loupe lsp-plugins-lv2 malcontent man-db mda.lv2 mission-center nm-connection-editor net-tools networkmanager-l2tp networkmanager-pptp nss-mdns ntfsprogs obs-studio onnxruntime-cpu obsidian orca papers podman proton-vpn-gtk-app qalculate-gtk qbittorrent qt6ct qt6-multimedia-gstreamer radvd ripgrep rnote rust rygel samba seahorse smartmontools snapshot swtpm system-config-printer telegram-desktop throttled tlp-pd tlp-rdw tlpui tmux trash-cli unrar usb_modeswitch vulkan-intel wget wl-clipboard yt-dlp zam-plugins-lv2 zip
 
 sbctl create-keys
 sbctl enroll-keys
@@ -94,7 +94,8 @@ printf '%s\n' '[main]' 'dns=systemd-resolved' | tee /etc/NetworkManager/conf.d/d
 
 mv /opt/configs/fonts/local.conf /etc/fonts/
 
-sed -i -e '/^PercentageLow/s/=.*$/=10.0/' -e '/^CriticalPowerAction/s/HybridSleep/PowerOff/' /etc/UPower/UPower.conf
+printf '%s\n' '[UPower]' 'PercentageLow=10.0' | tee /etc/UPower/UPower.conf.d/00-upower-percentage.conf
+printf '%s\n' '[UPower]' 'AllowRiskyCriticalPowerAction=true' 'CriticalPowerAction=Suspend' | tee /etc/UPower/UPower.conf.d/01-upower-action.conf
 
 mv /opt/configs/tlp.d/01-main.conf /etc/tlp.d/
 
