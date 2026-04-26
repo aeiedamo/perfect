@@ -1,0 +1,26 @@
+#!/usr/bin/bash
+
+ssh-keygen
+gpg --full-gen-key
+
+GPGKEY="$(gpg -K --keyid-format long | grep 'sec' | cut -d '/' -f 2 | cut -d ' ' -f 1)"
+KEYFILE="${HOME}/.gnupg/public-keys.d/am.asc"
+gpg -a -o ${KEYFILE} --export ${GPGKEY}
+
+git config set --global user.name 'AlaEldin Mohamed'
+git config set --global user.email 'aeiedamo@gmail.com'
+git config set --global init.defaultBranch 'main'
+git config set --global user.signingkey ${GPGKEY}
+git config set --global commit.gpgsign true
+git config set --global tag.gpgSign true
+git config set --global push.followTags true
+
+gh auth login -s admin:gpg_key,admin:public_key,gist,user,repo,delete_repo
+
+ssh -T 'git@github.com'
+
+gh gpg-key add ${KEYFILE}
+
+gh config set telemetery disabled
+
+sudo rm -f /usr/local/bin/git_keys_config

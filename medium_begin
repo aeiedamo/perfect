@@ -40,6 +40,8 @@ rm -f /mnt/usr/local/bin/medium_install
 install -m 0777 /root/perfect/medium_setup /mnt/usr/local/bin/
 install -m 0777 /root/perfect/medium_user /mnt/usr/local/bin/
 
+install -m 0777 /root/perfect/git_keys_config /mnt/usr/local/bin/
+
 pkill gpg-agent
 umount -R /mnt
 systemctl reboot --firmware-setup
