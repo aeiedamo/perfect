@@ -1,27 +1,22 @@
 #!/usr/bin/bash
 
-DISK="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
-DISKAUX="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
+DISK="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
 BOOT="${DISK}p1"
 ROOT="${DISK}p2"
-AUX="${DISKAUX}p1"
 
 nvme format /dev/nvme0 -f -n 1 -l 0 -s 1 -r
 nvme format /dev/nvme1 -f -n 1 -l 0 -s 1 -r
-partprobe ${DISK} ${DISKAUX}
+partprobe /dev/nvme0n1 /dev/nvme1n1
 
 sgdisk -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -N 2 -t 2:8304 -c 2:'root' ${DISK}
-sgdisk -I -N 1 -t 1:8304 -c 1:'aux' ${DISKAUX}
 
 mkfs.fat -F 32 -n 'BOOT' ${BOOT}
 
 cryptsetup luksFormat --label 'root' -q ${ROOT}
-cryptsetup luksFormat --label 'aux' -q ${AUX}
 
 cryptsetup --allow-discards --persistent open ${ROOT} root
-cryptsetup --allow-discards --persistent open ${AUX} aux
 
-mkfs.btrfs -f -L 'root' -d raid0 -m raid0 /dev/mapper/root /dev/mapper/aux
+mkfs.btrfs -f -L 'root' -d single -m single /dev/mapper/root
 
 mount -o 'compress=zstd' /dev/mapper/root /mnt
 btrfs subvolume create /mnt/@ /mnt/@var /mnt/@home /mnt/@snapshots
@@ -60,5 +55,4 @@ install -m 0777 /root/perfect/git_keys_config /mnt/usr/local/bin/
 pkill gpg-agent
 umount -R /mnt
 cryptsetup close root
-cryptsetup close aux
 systemctl poweroff --firmware-setup
