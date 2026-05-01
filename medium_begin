@@ -5,8 +5,8 @@ BOOT="${DISK}1"
 ROOT="${DISK}2"
 
 printf '%s\n' 'ACTION=="add|change", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="9210", SUBSYSTEM=="scsi_disk", ATTR{provisioning_mode}="unmap"' | tee /etc/udev/rules.d/10-uas-discard.rules
-udevadmin control -R
-udevadmin trigger
+udevadm control -R
+udevadm trigger
 
 blkdiscard -f ${DISK}
 
