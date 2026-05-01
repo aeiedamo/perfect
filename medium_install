@@ -22,7 +22,7 @@ sed -i -e '/^#MAKEFLAGS/s/=.*$/="-j8"/' -e '/^#MAKEFLAGS/s/^#//' -e '/^#BUILDDIR
 
 sed -i -e '/^MODULES/s/(/&i915/' -e '/^HOOKS/s/systemd/& plymouth/' /etc/mkinitcpio.conf
 
-printf '%s\n' 'ACTION="add|change", ATTRS{idVendor}=="0bda", ATTRS{idProduct}="9210", SUBSYSTEM="scsi_disk", ATTR{provisioning_mode}="unmap"' | tee /etc/udev/rules.d/10-uas-discard.rules
+printf '%s\n' 'ACTION=="add|change", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="9210", SUBSYSTEM=="scsi_disk", ATTR{provisioning_mode}="unmap"' | tee /etc/udev/rules.d/10-uas-discard.rules
 
 systemd-hwdb update
 
