@@ -30,7 +30,7 @@ git clone --depth 1 'https://github.com/BayouGuru67/Linux_Audio.git' ${XDG_CONFI
 git clone --depth 1 'https://aur.archlinux.org/yay-bin.git' /tmp/yay-bin
 yes | makepkg -sicD /tmp/yay-bin
 
-yes | yay -Syu --needed adwaita-qt6 google-chrome intel-compute-runtime-legacy-bin otf-ibm-plex ttf-apple-emoji
+yes | yay -Syu --needed adwaita-qt6-git google-chrome intel-compute-runtime-legacy-bin otf-ibm-plex ttf-apple-emoji
 
 printf '%s\n' '--enable-features=AcceleratedVideoDecodeLinuxGL,TouchpadOverscrollHistoryNavigation' | tee ${XDG_CONFIG_HOME}/chrome-flags.conf
 
