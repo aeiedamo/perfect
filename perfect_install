@@ -22,9 +22,11 @@ sed -i -e '/^#NoExtract/s/$/ boot\/intel-ucode.img/' -e '/^#NoExtract/s/^#//' -e
 printf '%s\n' 'Server = https://mirror.pkgbuild.com/$repo/os/$arch' 'Server = https://fastly.mirror.pkgbuild.com/$repo/os/$arch' | tee /etc/pacman.d/mirrorlist
 sed -i -e '/^#MAKEFLAGS/s/=.*$/="-j8"/' -e '/^#MAKEFLAGS/s/^#//' -e '/^#BUILDDIR/s/^#//' -e '/^OPTIONS/s/debug/!&/' /etc/makepkg.conf
 
-sed -i -e '/^HOOKS/s/systemd/& plymouth btrfs/' -e '/^HOOKS/s/keymap //' -e '/^HOOKS/s/filesystems/sd-encrypt &/' /etc/mkinitcpio.conf
+sed -i -e '/^MODULES/s/(/i915/' -e '/^HOOKS/s/systemd/& plymouth btrfs/' -e '/^HOOKS/s/filesystems/sd-encrypt &/' /etc/mkinitcpio.conf
 
-pacman -Syu --needed --noconfirm linux linux-headers linux-lts linux-lts-headers scx-tools alsa-firmware alsa-utils linux-firmware linux-tools-meta intel-ucode guestfs-tools plymouth qemu-full qemu-user-static-binfmt snap-pac sof-firmware sbctl wireless-regdb base-devel bash-completion bees devtools firejail modemmanager networkmanager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-cascadia-code ttf-noto-nerd zram-generator gdm gnome-control-center virt-manager 7zip alacarte android-tools arch-wiki-docs ardour baobab bluez-cups bluez-utils btrfs-assistant calf cdrtools celluloid chrony cronie crun cups-pdf dconf-editor distrobox dnsmasq easyeffects edk2-shell efibootmgr ethtool evolution-ews evolution-spamassassin fail2ban fastfetch fd file-roller firefox-i18n-ar firewall-applet flatpak-xdg-utils foliate fzf ghostty gimp github-cli gnome-backgrounds gnome-browser-connector gnome-characters gnome-console gnome-firmware gnome-keyring gnome-remote-desktop gnome-shell-extension-appindicator gnome-software gnome-themes-extra gnome-tweaks gnome-user-share gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gst-thumbnailers gvfs-afc gvfs-dnssd gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive gvfs-smb gvfs-wsdd hunspell-en_us inetutils intel-media-sdk jdk-openjdk kdenlive libappindicator libayatana-appindicator libreoffice-fresh-ar loupe lsp-plugins-lv2 malcontent man-db mda.lv2 mission-center nm-connection-editor net-tools networkmanager-l2tp networkmanager-pptp nss-mdns ntfsprogs obs-studio onnxruntime-cpu obsidian orca papers podman proton-vpn-gtk-app qalculate-gtk qbittorrent qt6ct qt6-multimedia-gstreamer radvd ripgrep rnote rust rygel samba seahorse smartmontools snapshot swtpm system-config-printer telegram-desktop throttled tlp-pd tlp-rdw tlpui tmux trash-cli unrar usb_modeswitch vulkan-intel wget wl-clipboard yt-dlp zam-plugins-lv2 zip
+systemd-hwdb update
+
+pacman -Syu --needed --noconfirm linux linux-headers linux-lts linux-lts-headers scx-tools alsa-firmware alsa-utils linux-firmware linux-tools-meta intel-ucode guestfs-tools plymouth qemu-full qemu-user-static-binfmt snap-pac sof-firmware sbctl wireless-regdb base-devel bash-completion bees devtools firejail modemmanager networkmanager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-cascadia-code ttf-noto-nerd zram-generator gdm gnome-control-center virt-manager 7zip alacarte android-tools arch-wiki-docs ardour baobab bluez-cups bluez-utils btrfs-assistant calf cdrtools celluloid chrony cronie crun cups-pdf dconf-editor distrobox dnsmasq easyeffects edk2-shell efibootmgr ethtool evolution-ews evolution-spamassassin fail2ban fastfetch fd file-roller firefox-i18n-ar firewall-applet flatpak-xdg-utils foliate fzf ghostty gimp github-cli glab gnome-backgrounds gnome-browser-connector gnome-characters gnome-console gnome-firmware gnome-keyring gnome-remote-desktop gnome-shell-extension-appindicator gnome-software gnome-themes-extra gnome-tweaks gnome-user-share gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gst-thumbnailers gvfs-afc gvfs-dnssd gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive gvfs-smb gvfs-wsdd hunspell-en_us inetutils intel-media-sdk jdk-openjdk kdenlive libappindicator libayatana-appindicator libreoffice-fresh-ar loupe lsp-plugins-lv2 malcontent man-db mda.lv2 mission-center nm-connection-editor net-tools networkmanager-l2tp networkmanager-pptp nss-mdns ntfsprogs obs-studio onnxruntime-cpu obsidian orca papers podman proton-vpn-gtk-app qalculate-gtk qbittorrent qt6ct qt6-multimedia-gstreamer radvd ripgrep rnote rust rygel samba seahorse smartmontools snapshot swtpm system-config-printer telegram-desktop throttled tlp-pd tlp-rdw tlpui tmux trash-cli unrar usb_modeswitch vulkan-intel wget wl-clipboard yt-dlp zam-plugins-lv2 zed zip
 
 sbctl create-keys
 sbctl enroll-keys
@@ -45,8 +47,7 @@ cp /usr/share/edk2-shell/x64/Shell_Full.efi /boot/shellx64.efi
 
 mv /opt/configs/pacman.d/hooks/ /etc/pacman.d/
 
-mv /etc/bees/beesd.conf.sample /etc/bees/beesd.conf
-sed -i -e "/^UUID/s/=.*$/=${UUID}/" -e '/^# DB_SIZE/s/^# //' /etc/bees/beesd.conf
+printf '%s\n' "UUID=${UUID}" "DB_SIZE=$((2**30))" | tee /etc/bees/beesd_root.conf
 
 printf '%s\n' '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/01-wheel
 
@@ -90,11 +91,13 @@ printf '%s\n' '[uefi_capsule]' 'DisableShimForSecureBoot=true' | tee -a /etc/fwu
 
 sed -i -e '/^hosts/s/resolve \[\!UNAVAIL=return\]/mdns_minimal \[NOTFOUND=return\]/g' -e '/^hosts/s/$/& libvirt libvirt_guest' /etc/nsswitch.conf
 
+sed -i -e '/^DefaultZone/s/=.*$/=trusted/' /etc/firewalld/firewalld.conf
+
 printf '%s\n' '[main]' 'dns=systemd-resolved' | tee /etc/NetworkManager/conf.d/dns.conf
 
 mv /opt/configs/fonts/local.conf /etc/fonts/
 
-printf '%s\n' '[UPower]' 'PercentageLow=10.0' | tee /etc/UPower/UPower.conf.d/00-upower-percentage.conf
+printf '%s\n' '[UPower]' 'PercentageLow=20.0' 'PercentageCritical=10.0' 'PercentageAction=5.0' | tee /etc/UPower/UPower.conf.d/00-upower-percentage.conf
 printf '%s\n' '[UPower]' 'AllowRiskyCriticalPowerAction=true' 'CriticalPowerAction=Suspend' | tee /etc/UPower/UPower.conf.d/01-upower-action.conf
 
 mv /opt/configs/tlp.d/01-main.conf /etc/tlp.d/
@@ -120,4 +123,4 @@ rm -f -r /opt/configs
 
 printf '%s\n' '--cookies-from-browser firefox -f "bv+ba/b" -S "ext" -o "${HOME}/Videos/%(webpage_url_domain)s/%(id)s-%(title)s.%(ext)s"' | tee /etc/yt-dlp.conf
 
-systemctl enable apparmor.service avahi-daemon.service beesd@${UUID}.service bluetooth.service chronyd.service cronie.service cups.service fail2ban.service firewalld.service fstrim.timer fwupd-refresh.timer gdm.service gnome-remote-desktop.service libvirtd.service ModemManager.service NetworkManager.service sshd.service systemd-boot-update.service systemd-resolved.service throttled.service tlp.service tlp-pd.service virtnetworkd.service virtnodedevd.service virtqemud.service virtstoraged.service
+systemctl enable apparmor.service avahi-daemon.service beesd@${UUID}.service bluetooth.service chronyd.service cronie.service cups.service fail2ban.service firewalld.service fstrim.timer fwupd-refresh.timer gdm.service gnome-remote-desktop.service libvirtd.service ModemManager.service NetworkManager.service sshd.service systemd-boot-update.service systemd-resolved.service throttled.service tlp.service tlp-pd.service virtlogd.service virtnetworkd.service virtnodedevd.service virtqemud.service virtstoraged.service
