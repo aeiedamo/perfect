@@ -10,17 +10,19 @@ gpg -a -o ${KEYFILE} --export ${GPGKEY}
 git config set --global user.name 'AlaEldin Mohamed'
 git config set --global user.email 'aeiedamo@gmail.com'
 git config set --global init.defaultBranch 'main'
-git config set --global user.signingkey ${GPGKEY}
-git config set --global commit.gpgsign true
+git config set --global user.signingKey ${GPGKEY}
+git config set --global commit.gpgSign true
 git config set --global tag.gpgSign true
 git config set --global push.followTags true
 
-gh auth login -s admin:gpg_key,admin:public_key,gist,user,repo,delete_repo
-
+gh auth login -c -p 'ssh' -s 'admin:gpg_key,admin:public_key,gist,user,repo,delete_repo' -w
 ssh -T 'git@github.com'
+gh gpg-key add ${KEYFILE} -t 'AlaEldin Mohamed <aeiedamo@gmail.com>'
+gh config set telemetry disabled
 
-gh gpg-key add ${KEYFILE}
-
-gh config set telemetery disabled
+glab auth login -g 'ssh' --use-keyring --web
+glab ssh-key add "${HOME}/.ssh.id_ed25519.pub" -t 'am@aeiedamo'
+ssh -T 'git@gitlab.com'
+glab gpg-key add ${KEYFILE}
 
 sudo rm -f /usr/local/bin/git_keys_config
