@@ -15,11 +15,13 @@ sgdisk -I -N 1 -t 1:8304 -c 1:'aux' ${DISKAUX}
 
 mkfs.fat -F 32 -n 'BOOT' ${BOOT}
 
-cryptsetup luksFormat --label 'root' -q ${ROOT}
-cryptsetup luksFormat --label 'aux' -q ${AUX}
+read -p 'Enter Passphrase: ' -r PASSWD
 
-cryptsetup --allow-discards --persistent open ${ROOT} root
-cryptsetup --allow-discards --persistent open ${AUX} aux
+printf '%s\n' "${PASSWD}" | cryptsetup luksFormat --label 'root' -q ${ROOT}
+printf '%s\n' "${PASSWD}" | cryptsetup luksFormat --label 'aux' -q ${AUX}
+
+printf '%s\n' "${PASSWD}" | cryptsetup open --allow-discards --persistent ${ROOT} root
+printf '%s\n' "${PASSWD}" | cryptsetup open --allow-discards --persistent ${AUX} aux
 
 mkfs.btrfs -f -L 'root' -d raid0 -m raid0 /dev/mapper/root /dev/mapper/aux
 

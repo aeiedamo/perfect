@@ -4,11 +4,7 @@ DISK="$(realpath /dev/disk/by-id/ata-SAMSUNG_MZVLB256HAHQ-000_S45UNX0N104146)"
 BOOT="${DISK}1"
 ROOT="${DISK}2"
 
-printf '%s\n' 'ACTION=="add|change", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="9210", SUBSYSTEM=="scsi_disk", ATTR{provisioning_mode}="unmap"' | tee /etc/udev/rules.d/10-uas-discard.rules
-udevadm control -R
-udevadm trigger
-
-blkdiscard -f ${DISK}
+blkdiscard -f -z ${DISK}
 
 sgdisk -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -N 2 -t 2:8304 -c 2:'root' ${DISK}
 

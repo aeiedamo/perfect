@@ -26,7 +26,7 @@ sed -i -e '/^MODULES/s/(/&i915/' -e '/^HOOKS/s/systemd/& plymouth btrfs/' -e '/^
 
 systemd-hwdb update
 
-pacman -Syu --needed --noconfirm linux linux-headers linux-lts linux-lts-headers scx-tools alsa-firmware alsa-utils linux-firmware linux-tools-meta intel-ucode guestfs-tools plymouth qemu-full qemu-user-static-binfmt snap-pac sof-firmware sbctl wireless-regdb base-devel bash-completion bees devtools firejail modemmanager networkmanager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-cascadia-code ttf-noto-nerd zram-generator gdm gnome-control-center virt-manager 7zip alacarte android-tools arch-wiki-docs ardour baobab bluez-cups bluez-utils btrfs-assistant calf cdrtools celluloid chrony cronie crun cups-pdf dconf-editor distrobox dnsmasq easyeffects edk2-shell efibootmgr ethtool evolution-ews evolution-spamassassin fail2ban fastfetch fd file-roller firefox-i18n-ar firewall-applet flatpak-xdg-utils foliate fzf ghostty gimp github-cli glab gnome-backgrounds gnome-browser-connector gnome-characters gnome-console gnome-firmware gnome-keyring gnome-remote-desktop gnome-shell-extension-appindicator gnome-software gnome-themes-extra gnome-tweaks gnome-user-share gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gst-thumbnailers gvfs-afc gvfs-dnssd gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive gvfs-smb gvfs-wsdd hunspell-en_us inetutils intel-media-sdk jdk-openjdk kdenlive libappindicator libayatana-appindicator libreoffice-fresh-ar loupe lsp-plugins-lv2 malcontent man-db mda.lv2 mission-center nm-connection-editor net-tools networkmanager-l2tp networkmanager-pptp nss-mdns ntfsprogs obs-studio onnxruntime-cpu obsidian orca papers podman proton-vpn-gtk-app qalculate-gtk qbittorrent qt6ct qt6-multimedia-gstreamer radvd ripgrep rnote rust rygel samba seahorse smartmontools snapshot swtpm system-config-printer telegram-desktop throttled tlp-pd tlp-rdw tlpui tmux trash-cli unrar usb_modeswitch vulkan-intel wget wl-clipboard yt-dlp zam-plugins-lv2 zed zip
+pacman -Syu --needed --noconfirm linux linux-headers linux-lts linux-lts-headers scx-tools alsa-firmware alsa-utils linux-firmware linux-tools-meta intel-ucode guestfs-tools plymouth qemu-full qemu-user-static-binfmt snap-pac sof-firmware sbctl wireless-regdb base-devel bash-completion bees devtools firejail modemmanager networkmanager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-cascadia-code ttf-noto-nerd zram-generator gdm gnome-control-center virt-manager 7zip alacarte android-tools arch-wiki-docs ardour baobab bluez-cups bluez-utils btrfs-assistant calf cdrtools celluloid chrony cronie crun cups-pdf dconf-editor distrobox dnsmasq easyeffects edk2-shell efibootmgr ethtool evolution-ews evolution-spamassassin fail2ban fastfetch fd file-roller firefox-i18n-ar firewall-applet flatpak-xdg-utils foliate fzf ghostty gimp github-cli glab gnome-backgrounds gnome-browser-connector gnome-characters gnome-console gnome-firmware gnome-keyring gnome-remote-desktop gnome-shell-extension-appindicator gnome-software gnome-themes-extra gnome-tweaks gnome-user-share gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gst-thumbnailers gvfs-afc gvfs-dnssd gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive gvfs-smb gvfs-wsdd hunspell-en_us inetutils intel-media-sdk iwd jdk-openjdk kdenlive libappindicator libayatana-appindicator libreoffice-fresh-ar loupe lsp-plugins-lv2 malcontent man-db mda.lv2 mission-center nm-connection-editor net-tools networkmanager-l2tp networkmanager-pptp nss-mdns ntfsprogs obs-studio onnxruntime-cpu obsidian orca papers podman proton-vpn-gtk-app qalculate-gtk qbittorrent qt6ct qt6-multimedia-gstreamer radvd ripgrep rnote rust rygel samba seahorse smartmontools snapshot swtpm system-config-printer telegram-desktop throttled tlp-pd tlp-rdw tlpui tmux trash-cli unrar usb_modeswitch vulkan-intel waydroid wget wl-clipboard yt-dlp zam-plugins-lv2 zed zip
 
 sbctl create-keys
 sbctl enroll-keys
@@ -34,7 +34,7 @@ sbctl sign -s /boot/vmlinuz-linux
 sbctl sign -s /boot/vmlinuz-linux-lts
 sbctl sign -s -o /usr/lib/systemd/boot/efi/systemd-bootx64.efi.signed /usr/lib/systemd/boot/efi/systemd-bootx64.efi
 sbctl sign -s -o /usr/lib/fwupd/efi/fwupdx64.efi.signed /usr/lib/fwupd/efi/fwupdx64.efi
-sbctl sign -s /usr/share/edk2-shell/x64/Shell_Full.efi
+sbctl sign -s -o /boot/shellx64.efi /usr/share/edk2-shell/x64/Shell_Full.efi
 
 printf '%s%s%s %s%s%s %s %s%s %s %s %s\n' 'rd.luks.name=' "$(lsblk -dno UUID ${ROOT})" '=root' 'rd.luks.name=' "$(lsblk -dno UUID ${AUX})" '=aux' 'rd.luks.options=tpm2-device=/dev/tpmrm0' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee /etc/kernel/cmdline
 
@@ -43,20 +43,20 @@ printf '%s\t%s\n' 'default' '@saved' | tee /boot/loader/loader.conf
 printf '%s\t%s\n' 'title' 'Arch Linux' 'sort-key' '0' 'linux' '/vmlinuz-linux' 'initrd' '/initramfs-linux.img' 'options' "$(cat /etc/kernel/cmdline)" | tee /boot/loader/entries/arch-linux.conf
 printf '%s\t%s\n' 'title' 'Arch Linux LTS' 'sort-key' '1' 'linux' '/vmlinuz-linux-lts' 'initrd' '/initramfs-linux-lts.img' 'options' "$(cat /etc/kernel/cmdline)" | tee /boot/loader/entries/arch-linux-lts.conf
 
-cp /usr/share/edk2-shell/x64/Shell_Full.efi /boot/shellx64.efi
-
 mv /opt/configs/pacman.d/hooks/ /etc/pacman.d/
 
-printf '%s\n' "UUID=${UUID}" "DB_SIZE=$((2**30))" | tee /etc/bees/beesd_root.conf
+printf '%s\n' "UUID=${UUID}" 'DB_SIZE=1073741824' | tee /etc/bees/beesd_root.conf
 
-printf '%s\n' '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/01-wheel
+printf '%s\n' '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/00-wheel
 
-printf '%s\n' 'polkit.addRule(function(action, subject) { if (subject.isInGroup("wheel")) { return polkit.Result.YES; }});' | tee /etc/polkit-1/rules.d/01-wheel.rules
+printf '%s\n' 'polkit.addRule(function(action, subject) { if (subject.isInGroup("wheel")) { return polkit.Result.YES; }});' | tee /etc/polkit-1/rules.d/00-wheel.rules
 
-passwd root
+read -p 'Enter Password: ' -r PASSWD
+
+printf '%s\n' "${PASSWD}" "${PASSWD}" | passwd root
 
 useradd -c 'AlaEldin Mohamed' -G audio,disk,kvm,libvirt,log,storage,wheel -m am
-passwd am
+printf '%s\n' "${PASSWD}" "${PASSWD}" | passwd am
 
 sed -i -e '/SA/s/^#//' /etc/conf.d/wireless-regdom
 
@@ -65,19 +65,19 @@ printf '%s\n' 'options psmouse synaptics_intertouch=1' | tee /etc/modprobe.d/psm
 printf '%s\n' '[zram0]' 'zram-size=ram' 'compression-algorithm=zstd' | tee /etc/systemd/zram-generator.conf
 
 mkdir -p /etc/systemd/logind.conf.d/
-printf '%s\n' '[Login]' 'HandleLidSwitch=ignore' 'HandleLidSwitchExternalPower=ignore' | tee /etc/systemd/logind.conf.d/lid.conf
+printf '%s\n' '[Login]' 'HandleLidSwitch=ignore' 'HandleLidSwitchExternalPower=ignore' | tee /etc/systemd/logind.conf.d/00-lid.conf
 
 sed -i -e '/^#MulticastDNS/s/yes/no/' -e '/^#MulticastDNS/s/^#//' /etc/systemd/resolved.conf
 
-printf '%s\n' 'ListenAddress aeiedamo.local' | tee /etc/ssh/sshd_config.d/01-local.conf
+printf '%s\n' 'ListenAddress aeiedamo.local' | tee /etc/ssh/sshd_config.d/00-local.conf
 
-printf '%s\n' "export EDITOR='vim' VISUAL='vim'" | tee /etc/profile.d/01-editor.sh
+printf '%s\n' "export EDITOR='vim' VISUAL='vim'" | tee /etc/profile.d/00-editor.sh
 
-printf '%s\n' 'export XDG_CONFIG_HOME="${HOME}/.config" XDG_DATA_HOME="${HOME}/.local/share" XDG_STATE_HOME="${HOME}/.local/state"' | tee /etc/profile.d/02-xdg.sh
+printf '%s\n' 'export XDG_CONFIG_HOME="${HOME}/.config" XDG_DATA_HOME="${HOME}/.local/share" XDG_STATE_HOME="${HOME}/.local/state"' | tee /etc/profile.d/01-xdg.sh
 
-printf '%s\n' 'export XDG_DATA_DIRS="${XDG_DATA_DIRS}:/var/lib/flatpak/exports/share:${XDG_DATA_HOME}/flatpak/exports/share"' | tee /etc/profile.d/03-flatpak.sh
+printf '%s\n' 'export XDG_DATA_DIRS="${XDG_DATA_DIRS}:/var/lib/flatpak/exports/share:${XDG_DATA_HOME}/flatpak/exports/share"' | tee /etc/profile.d/02-flatpak.sh
 
-printf '%s\n' "export QT_QPA_PLATFORMTHEME='qt6ct'" | tee /etc/profile.d/04-qt.sh
+printf '%s\n' "export QT_QPA_PLATFORMTHEME='qt6ct'" | tee /etc/profile.d/03-qt.sh
 
 cp /etc/skel/.bash_profile /root/
 cp /etc/skel/.bashrc /root/
@@ -93,14 +93,14 @@ sed -i -e '/^hosts/s/resolve \[\!UNAVAIL=return\]/mdns_minimal \[NOTFOUND=return
 
 sed -i -e '/^DefaultZone/s/=.*$/=trusted/' /etc/firewalld/firewalld.conf
 
-printf '%s\n' '[main]' 'dns=systemd-resolved' | tee /etc/NetworkManager/conf.d/dns.conf
+printf '%s\n' '[main]' 'dns=systemd-resolved' | tee /etc/NetworkManager/conf.d/00-dns.conf
 
 mv /opt/configs/fonts/local.conf /etc/fonts/
 
 printf '%s\n' '[UPower]' 'PercentageLow=20.0' 'PercentageCritical=10.0' 'PercentageAction=5.0' | tee /etc/UPower/UPower.conf.d/00-upower-percentage.conf
 printf '%s\n' '[UPower]' 'AllowRiskyCriticalPowerAction=true' 'CriticalPowerAction=Suspend' | tee /etc/UPower/UPower.conf.d/01-upower-action.conf
 
-mv /opt/configs/tlp.d/01-main.conf /etc/tlp.d/
+mv /opt/configs/tlp.d/00-main.conf /etc/tlp.d/
 
 mkdir -p /etc/X11/xorg.conf.d
 printf '%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n%s\n' 'Section "InputClass"' 'Identifier "system-keyboard"' 'MatchIsKeyboard "on"' 'Option "XkbLayout" "us,eg"' 'Option "XkbModel" "pc104"' 'Option "XkbVariant" ","' 'Option "XkbOptions" "grp:win_space_toggle"' 'EndSection' | tee /etc/X11/xorg.conf.d/00-keyboard.conf
@@ -108,11 +108,11 @@ printf '%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n%s\n' 'Section "InputClass"' 'Id
 printf '%s\n' 'user-db:user' 'system-db:gdm' 'file-db:/usr/share/gdm/greeter-dconf-defaults' | tee /etc/dconf/profile/gdm
 
 mkdir -p /etc/dconf/db/gdm.d/
-printf '%s\n' '[org/gnome/desktop/interface]' "font-name='Sans 10'" | tee /etc/dconf/db/gdm.d/01-font
-printf '%s\n' '[org/gnome/desktop/interface]' 'show-battery-percentage=true' | tee /etc/dconf/db/gdm.d/02-battery-percentage
-printf '%s\n' '[org/gnome/desktop/interface]' "accent-color='yellow'" | tee /etc/dconf/db/gdm.d/03-accent-color
-printf '%s\n' '[org/gnome/login-screen]' "logo=''" | tee /etc/dconf/db/gdm.d/04-logo
-printf '%s\n' '[org/gnome/gnome-session]' 'logout-prompt=false' | tee /etc/dconf/db/gdm.d/05-logout-prompt
+printf '%s\n' '[org/gnome/desktop/interface]' "font-name='Sans 10'" | tee /etc/dconf/db/gdm.d/00-font
+printf '%s\n' '[org/gnome/desktop/interface]' 'show-battery-percentage=true' | tee /etc/dconf/db/gdm.d/01-battery-percentage
+printf '%s\n' '[org/gnome/desktop/interface]' "accent-color='yellow'" | tee /etc/dconf/db/gdm.d/02-accent-color
+printf '%s\n' '[org/gnome/login-screen]' "logo=''" | tee /etc/dconf/db/gdm.d/03-logo
+printf '%s\n' '[org/gnome/gnome-session]' 'logout-prompt=false' | tee /etc/dconf/db/gdm.d/04-logout-prompt
 
 dconf update
 
