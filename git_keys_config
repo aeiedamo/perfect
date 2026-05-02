@@ -6,6 +6,7 @@ gpg --full-gen-key
 GPGKEY="$(gpg -K --keyid-format long | grep 'sec' | cut -d '/' -f 2 | cut -d ' ' -f 1)"
 KEYFILE="${HOME}/.gnupg/public-keys.d/am.asc"
 gpg -a -o ${KEYFILE} --export ${GPGKEY}
+printf '%s\n' 'Test' | gpg --clearsign
 
 git config set --global user.name 'AlaEldin Mohamed'
 git config set --global user.email 'aeiedamo@gmail.com'
