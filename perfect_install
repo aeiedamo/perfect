@@ -67,6 +67,8 @@ printf '%s\n' '[zram0]' 'zram-size=ram' 'compression-algorithm=zstd' | tee /etc/
 mkdir -p /etc/systemd/logind.conf.d/
 printf '%s\n' '[Login]' 'HandleLidSwitch=ignore' 'HandleLidSwitchExternalPower=ignore' | tee /etc/systemd/logind.conf.d/00-lid.conf
 
+mv /opt/configs/systemd/system/snapshot-sdboot.service /etc/systemd/system/
+
 sed -i -e '/^#MulticastDNS/s/yes/no/' -e '/^#MulticastDNS/s/^#//' /etc/systemd/resolved.conf
 
 printf '%s\n' 'ListenAddress aeiedamo.local' | tee /etc/ssh/sshd_config.d/00-local.conf
