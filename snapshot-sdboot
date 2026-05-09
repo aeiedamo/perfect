@@ -4,7 +4,6 @@
 
 DISK0="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
 DISK1="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
-BOOT="${DISK0}p1"
 ROOT="${DISK0}p2"
 AUX="${DISK1}p1"
 UUID="$(lsblk -dno UUID /dev/mapper/root)"
@@ -25,9 +24,9 @@ rm -f /boot/loader/entries/snapshot-*
 { [ -f /boot/vmlinuz-linux-snapshot ] && [ -f /boot/initramfs-linux-snapshot.img ] ; } || snapshot-kernel
 
 create_config() {
-	[ -f /boot/loader/entries/snapshot-$1.conf ] || printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s%s%s %s%s%s %s %s%s %s%s%s %s %s\n' 'title' "Snapshot #$1" 'linux' '/vmlinuz-linux-snapshot' 'initrd' '/initramfs-linux-snapshot.img' 'options' 'rd.luks.name=' "$(lsblk -dno UUID ${ROOT})" '=root' 'rd.luks.name=' "$(lsblk -dno UUID ${AUX})" '=aux' 'rd.luks.options=tpm2-device=/dev/tpmrm0' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@snapshots/' "$1" '/snapshot' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee /boot/loader/entries/snapshot-$1.conf
+	[ -f "/boot/loader/entries/snapshot-$1.conf" ] || printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s%s%s %s%s%s %s %s%s %s%s%s %s %s\n' 'title' "Snapshot #$1" 'linux' '/vmlinuz-linux-snapshot' 'initrd' '/initramfs-linux-snapshot.img' 'options' 'rd.luks.name=' "$(lsblk -dno UUID "${ROOT}")" '=root' 'rd.luks.name=' "$(lsblk -dno UUID "${AUX}")" '=aux' 'rd.luks.options=tpm2-device=/dev/tpmrm0' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@snapshots/' "$1" '/snapshot' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee "/boot/loader/entries/snapshot-$1.conf"
 }
 
-for CONF in ${SNAPSHOTS[@]}; do
-	[ -z ${CONF} ] || create_config ${CONF}
+for CONF in "${SNAPSHOTS[@]}"; do
+	[ -z "${CONF}" ] || create_config "${CONF}"
 done

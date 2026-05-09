@@ -3,10 +3,10 @@
 sudo perfect_setup
 sudo rm -f /usr/local/bin/perfect_setup
 
-sed -i -e '/^PS1\b/d' ${HOME}/.bashrc
-printf '%s\n' "PS1=' \[\e[33;1;4m\]⮜ \A | \u | \w | \$? ⮞\[\e[0m\] '" | tee -a ${HOME}/.bashrc
+sed -i -e '/^PS1\b/d' "${HOME}/.bashrc"
+printf '%s\n' "PS1=' \[\e[33;1;4m\]⮜ \A | \u | \w | \$? ⮞\[\e[0m\] '" | tee -a "${HOME}/.bashrc"
 
-printf '%s\n' '"\e[A": history-search-backward' '"\e[B": history-search-forward' '' 'set bell-style none' 'set echo-control-characters off' 'set show-all-if-ambiguous on' 'set colored-stats on' 'set visible-stats on' 'set mark-symlinked-directories on' 'set completion-ignore-case on' 'set completion-map-case on' 'set colored-completion-prefix on' 'set menu-complete-display-prefix on' 'set revert-all-at-newline on' '$if Bash' 'Tab: menu-complete' '$endif' | tee -a ${HOME}/.inputrc
+printf '%s\n' '"\e[A": history-search-backward' '"\e[B": history-search-forward' '' 'set bell-style none' 'set echo-control-characters off' 'set show-all-if-ambiguous on' 'set colored-stats on' 'set visible-stats on' 'set mark-symlinked-directories on' 'set completion-ignore-case on' 'set completion-map-case on' 'set colored-completion-prefix on' 'set menu-complete-display-prefix on' 'set revert-all-at-newline on' '$if Bash' 'Tab: menu-complete' '$endif' | tee -a "${HOME}/.inputrc"
 
 gsettings set org.gnome.desktop.interface font-name 'Sans 10'
 gsettings set org.gnome.desktop.interface document-font-name 'Serif 10'
@@ -23,15 +23,15 @@ gsettings set org.gnome.settings-daemon.plugins.housekeeping donation-reminder-e
 gsettings set org.gnome.shell disable-extension-version-validation true
 gnome-extensions enable 'appindicatorsupport@rgcjonas.gmail.com'
 
-printf '%s\n' '--enable-features=AcceleratedVideoDecodeLinuxGL,TouchpadOverscrollHistoryNavigation' | tee ${XDG_CONFIG_HOME}/chrome-flags.conf
+printf '%s\n' '--enable-features=AcceleratedVideoDecodeLinuxGL,TouchpadOverscrollHistoryNavigation' | tee "${XDG_CONFIG_HOME}/chrome-flags.conf"
 
-printf '%s\n' 'font-family = monospace' 'font-size = 10' 'theme = light:Gruvbox Material Light,dark:Gruvbox Material Dark' 'window-decoration = none' 'maximize = true' | tee -a ${XDG_CONFIG_HOME}/ghostty/config
+printf '%s\n' 'font-family = monospace' 'font-size = 10' 'theme = light:Gruvbox Material Light,dark:Gruvbox Material Dark' 'window-decoration = none' 'maximize = true' | tee -a "${XDG_CONFIG_HOME}/ghostty/config"
 
-mkdir -p ${XDG_CONFIG_HOME}/easyeffects/output/
-git clone --depth 1 'https://github.com/BayouGuru67/Linux_Audio.git' ${XDG_CONFIG_HOME}/easyeffects/output/
+mkdir -p "${XDG_CONFIG_HOME}/easyeffects/output/"
+git clone --depth 1 'https://github.com/BayouGuru67/Linux_Audio.git' "${XDG_CONFIG_HOME}/easyeffects/output/"
 
-mkdir -p ${XDG_DATA_HOME}/images
-chattr +C ${XDG_DATA_HOME}/images
+mkdir -p "${XDG_DATA_HOME}/images"
+chattr +C "${XDG_DATA_HOME}/images"
 
 yes | yay -Syu --needed otf-ibm-plex ttf-apple-emoji
 

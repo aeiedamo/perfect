@@ -8,20 +8,20 @@ AUX="${DISKAUX}p1"
 
 nvme format /dev/nvme0 -f -n 1 -l 0 -s 1 -r
 nvme format /dev/nvme1 -f -n 1 -l 0 -s 1 -r
-partprobe ${DISK} ${DISKAUX}
+partprobe "${DISK}" "${DISKAUX}"
 
-sgdisk -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -N 2 -t 2:8304 -c 2:'root' ${DISK}
-sgdisk -I -N 1 -t 1:8304 -c 1:'aux' ${DISKAUX}
+sgdisk -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -N 2 -t 2:8304 -c 2:'root' "${DISK}"
+sgdisk -I -N 1 -t 1:8304 -c 1:'aux' "${DISKAUX}"
 
-mkfs.fat -F 32 -n 'BOOT' ${BOOT}
+mkfs.fat -F 32 -n 'BOOT' "${BOOT}"
 
 read -p 'Enter Passphrase: ' -r PASSWD
 
-printf '%s\n' "${PASSWD}" | cryptsetup luksFormat --label 'root' -q ${ROOT}
-printf '%s\n' "${PASSWD}" | cryptsetup luksFormat --label 'aux' -q ${AUX}
+printf '%s\n' "${PASSWD}" | cryptsetup luksFormat --label 'root' -q "${ROOT}"
+printf '%s\n' "${PASSWD}" | cryptsetup luksFormat --label 'aux' -q "${AUX}"
 
-printf '%s\n' "${PASSWD}" | cryptsetup open --allow-discards --persistent ${ROOT} root
-printf '%s\n' "${PASSWD}" | cryptsetup open --allow-discards --persistent ${AUX} aux
+printf '%s\n' "${PASSWD}" | cryptsetup open --allow-discards --persistent "${ROOT}" root
+printf '%s\n' "${PASSWD}" | cryptsetup open --allow-discards --persistent "${AUX}" aux
 
 mkfs.btrfs -f -L 'root' -d raid0 -m raid0 /dev/mapper/root /dev/mapper/aux
 
@@ -33,7 +33,7 @@ mount -o 'compress=zstd,subvol=/@' /dev/mapper/root /mnt
 mount -m -o 'compress=zstd,subvol=/@var' /dev/mapper/root /mnt/var
 mount -m -o 'compress=zstd,subvol=/@home' /dev/mapper/root /mnt/home
 mount -m -o 'compress=zstd,subvol=/@snapshots' /dev/mapper/root /mnt/.snapshots
-mount -m -o 'nosuid,nodev,noexec,nosymfollow,fmask=0177,dmask=0077' ${BOOT} /mnt/boot
+mount -m -o 'nosuid,nodev,noexec,nosymfollow,fmask=0177,dmask=0077' "${BOOT}" /mnt/boot
 
 chattr +C /mnt/var
 
