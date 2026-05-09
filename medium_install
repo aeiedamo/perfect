@@ -1,7 +1,6 @@
 #!/usr/bin/bash
 
 DISK="$(realpath /dev/disk/by-id/ata-SAMSUNG_MZVLB256HAHQ-000_S45UNX0N104146)"
-BOOT="${DISK}1"
 ROOT="${DISK}2"
 UUID="$(lsblk -dno UUID ${ROOT})"
 

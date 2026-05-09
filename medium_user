@@ -27,6 +27,9 @@ printf '%s\n' 'font-family = monospace' 'font-size = 10' 'theme = light:Gruvbox 
 mkdir -p ${XDG_CONFIG_HOME}/easyeffects/output/
 git clone --depth 1 'https://github.com/BayouGuru67/Linux_Audio.git' ${XDG_CONFIG_HOME}/easyeffects/output/
 
+mkdir -p ${XDG_DATA_HOME}/images
+chattr +C ${XDG_DATA_HOME}/images
+
 git clone --depth 1 'https://aur.archlinux.org/yay-bin.git' /tmp/yay-bin
 yes | makepkg -sicD /tmp/yay-bin
 
