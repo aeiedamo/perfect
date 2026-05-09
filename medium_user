@@ -23,18 +23,16 @@ gsettings set org.gnome.settings-daemon.plugins.housekeeping donation-reminder-e
 gsettings set org.gnome.shell disable-extension-version-validation true
 gnome-extensions enable 'appindicatorsupport@rgcjonas.gmail.com'
 
+printf '%s\n' '--enable-features=AcceleratedVideoDecodeLinuxGL,TouchpadOverscrollHistoryNavigation' | tee ${XDG_CONFIG_HOME}/chrome-flags.conf
+
 printf '%s\n' 'font-family = monospace' 'font-size = 10' 'theme = light:Gruvbox Material Light,dark:Gruvbox Material Dark' 'window-decoration = none' 'maximize = true' | tee -a ${XDG_CONFIG_HOME}/ghostty/config
+
 mkdir -p ${XDG_CONFIG_HOME}/easyeffects/output/
 git clone --depth 1 'https://github.com/BayouGuru67/Linux_Audio.git' ${XDG_CONFIG_HOME}/easyeffects/output/
 
 mkdir -p ${XDG_DATA_HOME}/images
 chattr +C ${XDG_DATA_HOME}/images
 
-git clone --depth 1 'https://aur.archlinux.org/yay-bin.git' /tmp/yay-bin
-yes | makepkg -sicD /tmp/yay-bin
-
-yes | yay -Syu --needed adwaita-qt6-git google-chrome intel-compute-runtime-legacy-bin otf-ibm-plex ttf-apple-emoji
-
-printf '%s\n' '--enable-features=AcceleratedVideoDecodeLinuxGL,TouchpadOverscrollHistoryNavigation' | tee ${XDG_CONFIG_HOME}/chrome-flags.conf
+yes | yay -Syu --needed otf-ibm-plex ttf-apple-emoji
 
 sudo rm -f /usr/local/bin/medium_user
