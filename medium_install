@@ -68,14 +68,14 @@ printf '%s\n' "export EDITOR='vim' VISUAL='vim'" | tee /etc/profile.d/00-editor.
 
 printf '%s\n' 'export XDG_CONFIG_HOME="${HOME}/.config" XDG_DATA_HOME="${HOME}/.local/share" XDG_STATE_HOME="${HOME}/.local/state"' | tee /etc/profile.d/01-xdg.sh
 
-printf '%s\n' 'export XDG_DATA_DIRS="${XDG_DATA_DIRS}:/var/lib/flatpak/exports/share:"${XDG_DATA_HOME}/flatpak/exports/share""' | tee /etc/profile.d/02-flatpak.sh
+printf '%s\n' 'export XDG_DATA_DIRS="${XDG_DATA_DIRS}:/var/lib/flatpak/exports/share:${XDG_DATA_HOME}/flatpak/exports/share"' | tee /etc/profile.d/02-flatpak.sh
 
 printf '%s\n' "export QT_QPA_PLATFORMTHEME='qt6ct'" | tee /etc/profile.d/03-qt.sh
 
 cp /etc/skel/.bash_profile /root/
 cp /etc/skel/.bashrc /root/
 
-git clone 'https://github.com/aeiedamo/perfect.git' /root/perfect
+git clone 'https://gitlab.com/aeiedamo/perfect.git' /root/perfect
 
 sed -i -e '/^PS1\b/d' /root/.bashrc
 printf '%s\n' "PS1=' \[\e[92;1;4m\]⮜ \A | \u | \w | \$? ⮞\[\e[0m\] '" 'export PATH="${PATH}:/root/perfect"' | tee -a /root/.bashrc
