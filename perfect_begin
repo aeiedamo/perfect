@@ -45,8 +45,8 @@ install -m 0777 /root/perfect/perfect_install /mnt/usr/local/bin/
 install -m 0777 /root/perfect/perfect_setup /mnt/usr/local/bin/
 install -m 0777 /root/perfect/perfect_user /mnt/usr/local/bin/
 
-install -m 0777 /root/perfect/snapshot-kernel /mnt/usr/local/bin/
-install -m 0777 /root/perfect/snapshot-sdboot /mnt/usr/local/bin/
+install -m 0777 /root/perfect/snapshot_kernel /mnt/usr/local/bin/
+install -m 0777 /root/perfect/snapshot_sdboot /mnt/usr/local/bin/
 
 install -m 0777 /root/perfect/git_keys_config /mnt/usr/local/bin/
 

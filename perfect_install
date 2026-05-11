@@ -65,7 +65,7 @@ sed -i -e '/SA/s/^#//' /etc/conf.d/wireless-regdom
 
 printf '%s\n' 'options psmouse synaptics_intertouch=1' | tee /etc/modprobe.d/psmouse.conf
 
-mv /opt/configs/systemd/system/snapshot-sdboot.service /etc/systemd/system/
+mv /opt/configs/systemd/system/snapshot_sdboot.service /etc/systemd/system/
 
 printf '%s\n' '[zram0]' 'zram-size=ram' 'compression-algorithm=zstd' | tee /etc/systemd/zram-generator.conf
 

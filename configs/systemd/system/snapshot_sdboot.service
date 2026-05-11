@@ -4,7 +4,7 @@ After=snapper-boot.service
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/bin/snapshot-sdboot
+ExecStart=/usr/local/bin/snapshot_sdboot
 
 [Install]
 WantedBy=graphical.target
