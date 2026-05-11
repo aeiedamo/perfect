@@ -3,6 +3,8 @@
 sudo medium_setup
 sudo rm -f /usr/local/bin/medium_setup
 
+mkdir -p "${HOME}/.local/bin"
+
 sed -i -e '/^PS1\b/d' "${HOME}/.bashrc"
 printf '%s\n' "PS1=' \[\e[33;1;4m\]⮜ \A | \u | \w | \$? ⮞\[\e[0m\] '" | tee -a "${HOME}/.bashrc"
 

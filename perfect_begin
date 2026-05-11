@@ -58,7 +58,7 @@ arch-chroot -S /mnt /usr/local/bin/perfect_install
 
 rm -f /mnt/usr/local/bin/perfect_install
 
-pkill gpg-agent
+pkill -9 gpg-agent
 umount -R /mnt
 cryptsetup close root
 cryptsetup close aux
