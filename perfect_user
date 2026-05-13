@@ -23,6 +23,12 @@ gsettings set org.gnome.desktop.background picture-uri-dark "file://${XDG_DATA_H
 gsettings set org.gnome.SessionManager logout-prompt false
 gsettings set org.gnome.settings-daemon.plugins.housekeeping donation-reminder-enabled false
 gsettings set org.gnome.shell disable-extension-version-validation true
+gsettings set org.gnome.nautilus.preferences date-time-format 'detailed'
+gsettings set org.gnome.nautilus.preferences default-folder-viewer 'list-view'
+gsettings set org.gnome.nautilus.preferences show-create-link true
+gsettings set org.gnome.nautilus.preferences show-delete-permanently true
+gsettings set org.gtk.gtk4.settings.file-chooser sort-directories-first true
+gsettings set ca.desrt.dconf-editor.Settings show-warning false
 gnome-extensions enable 'appindicatorsupport@rgcjonas.gmail.com'
 
 printf '%s\n' '--enable-features=AcceleratedVideoDecodeLinuxGL,TouchpadOverscrollHistoryNavigation' | tee "${XDG_CONFIG_HOME}/chrome-flags.conf"
