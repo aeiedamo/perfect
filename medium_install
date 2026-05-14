@@ -113,13 +113,14 @@ printf '%s\n' '[org/gnome/gnome-session]' 'logout-prompt=false' | tee /etc/dconf
 
 dconf update
 
-mv /opt/configs/backgrounds/stairs.xml /usr/share/gnome-backgrounds-properties/
+printf '%s\n' '[User]' 'Session=gnome' 'Icon=/var/lib/AccountsService/icons/am' 'SystemAccount=false' | tee /var/lib/AccountsService/users/am
+mv /opt/configs/pfp/am /var/lib/AccountsService/icons/
+
+mv /opt/configs/backgrounds/stairs.xml /usr/share/gnome-background-properties/
 mv /opt/configs/backgrounds/personal /usr/share/backgrounds/
 
 printf '%s\n' 'pref("general.config.filename", "firefox.cfg");' 'pref("general.config.obscure_value", 0);' | tee /usr/lib/firefox/defaults/pref/autoconfig.js
 mv /opt/configs/firefox/firefox.cfg /usr/lib/firefox/
-
-rm -f -r /opt/configs
 
 printf '%s\n' '--cookies-from-browser firefox -f "bv+ba/b" -S "ext" -o "${HOME}/Videos/%(webpage_url_domain)s/%(id)s-%(title)s.%(ext)s"' | tee /etc/yt-dlp.conf
 

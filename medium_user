@@ -40,4 +40,5 @@ chattr +C "${XDG_DATA_HOME}/images"
 
 yes | yay -Syu --needed otf-ibm-plex ttf-apple-emoji
 
+sudo rm -f -r /opt/configs
 sudo rm -f /usr/local/bin/medium_user
