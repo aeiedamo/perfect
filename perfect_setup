@@ -1,9 +1,9 @@
 #!/usr/bin/bash
 
-DISK="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
-DISKAUX="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
-ROOT="${DISK}p2"
-AUX="${DISKAUX}p1"
+export DISK="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
+export DISKAUX="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
+export ROOT="${DISK}p2"
+export AUX="${DISKAUX}p1"
 
 systemd-cryptenroll --tpm2-device /dev/tpmrm0 --tpm2-pcrs 7 "${ROOT}"
 systemd-cryptenroll --tpm2-device /dev/tpmrm0 --tpm2-pcrs 7 "${AUX}"

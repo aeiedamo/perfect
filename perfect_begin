@@ -1,10 +1,10 @@
 #!/usr/bin/bash
 
-DISK="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
-DISKAUX="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
-BOOT="${DISK}p1"
-ROOT="${DISK}p2"
-AUX="${DISKAUX}p1"
+export DISK="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
+export DISKAUX="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
+export BOOT="${DISK}p1"
+export ROOT="${DISK}p2"
+export AUX="${DISKAUX}p1"
 
 nvme format /dev/nvme0 -f -n 1 -l 0 -s 1 -r
 nvme format /dev/nvme1 -f -n 1 -l 0 -s 1 -r
