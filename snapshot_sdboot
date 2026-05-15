@@ -2,21 +2,23 @@
 
 [ "$(bootctl status | grep '^ Current Entry:' | cut -d ' ' -f 4)" = 'arch-linux.conf' ] || { printf '%s\n' 'Will not snapshot current kernel.' && exit 1; }
 
-DISK0="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
-DISK1="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
-ROOT="${DISK0}p2"
-AUX="${DISK1}p1"
+DISK="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
+DISKAUX="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
+ROOT="${DISK}p2"
+AUX="${DISKAUX}p1"
 UUID="$(lsblk -dno UUID /dev/mapper/root)"
 
-TWODAYSPRIOR="$(date --date '2 days ago' "+%a %d %b %Y")"
-YESTERDAY="$(date --date 'yesterday' "+%a %d %b %Y")"
-TODAY="$(date --date 'today' "+%a %d %b %Y")"
+DAYSAGO_0="$(date --date 'today' "+%Y-%m-%d")"
+DAYSAGO_1="$(date --date 'yesterday' "+%Y-%m-%d")"
+DAYSAGO_2="$(date --date '2 days ago' "+%Y-%m-%d")"
+
+export ROOT AUX UUID DAYSAGO_0 DAYSAGO_1 DAYSAGO_2
 
 SNAPSHOTS=(
-	"$(snapper list -t single | grep 'timeline' | grep "${TWODAYSPRIOR}" | cut -d ' ' -f 1 | head -1)"
-	"$(snapper list -t single | grep 'timeline' | grep "${YESTERDAY}" | cut -d ' ' -f 1 | head -1)"
-	"$(snapper list -t single | grep 'timeline' | grep "${TODAY}" | cut -d ' ' -f 1 | head -1)"
-	"$(snapper list -t single | grep 'boot' | tail -1 | cut -d ' ' -f 1)"
+	"$(snapper --csvout list -t single --columns number,date,description | grep 'boot' | tail -1)"
+	"$(snapper --csvout list -t single --columns number,date,description | grep 'timeline' | grep "${DAYSAGO_0}" | head -1)"
+	"$(snapper --csvout list -t single --columns number,date,description | grep 'timeline' | grep "${DAYSAGO_1}" | head -1)"
+	"$(snapper --csvout list -t single --columns number,date,description | grep 'timeline' | grep "${DAYSAGO_2}" | head -1)"
 )
 
 rm -f /boot/loader/entries/snapshot_*
@@ -24,9 +26,13 @@ rm -f /boot/loader/entries/snapshot_*
 { [ -f /boot/vmlinuz-linux-snapshot ] && [ -f /boot/initramfs-linux-snapshot.img ] ; } || snapshot_kernel
 
 create_config() {
-	[ -f "/boot/loader/entries/snapshot_$1.conf" ] || printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s%s%s %s%s%s %s %s%s %s%s%s %s %s\n' 'title' "Snapshot #$1" 'linux' '/vmlinuz-linux-snapshot' 'initrd' '/initramfs-linux-snapshot.img' 'options' 'rd.luks.name=' "$(lsblk -dno UUID "${ROOT}")" '=root' 'rd.luks.name=' "$(lsblk -dno UUID "${AUX}")" '=aux' 'rd.luks.options=tpm2-device=/dev/tpmrm0' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@snapshots/' "$1" '/snapshot' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee "/boot/loader/entries/snapshot_$1.conf"
+	[ -f "/boot/loader/entries/snapshot_$1.conf" ] || printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s%s%s %s%s%s %s %s%s %s%s%s %s %s\n' 'title' "Snapshot @ $2" 'sort-key' "$1" 'linux' '/vmlinuz-linux-snapshot' 'initrd' '/initramfs-linux-snapshot.img' 'options' 'rd.luks.name=' "$(lsblk -dno UUID "${ROOT}")" '=root' 'rd.luks.name=' "$(lsblk -dno UUID "${AUX}")" '=aux' 'rd.luks.options=tpm2-device=/dev/tpmrm0' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@snapshots/' "$1" '/snapshot' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee "/boot/loader/entries/snapshot_$1.conf"
 }
 
 for CONF in "${SNAPSHOTS[@]}"; do
-	[ -z "${CONF}" ] || create_config "${CONF}"
+	if [ -n "${CONF}" ]; then
+		NUM="$(printf '%s\n' "${CONF}" | cut -d ',' -f 1)"
+		TIME="$(printf '%s\n' "${CONF}" | cut -d ',' -f 2)"
+		create_config "${NUM}" "${TIME}"
+	fi
 done
