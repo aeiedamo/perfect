@@ -113,18 +113,23 @@ mkdir -p /etc/X11/xorg.conf.d
 printf '%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n%s\n' 'Section "InputClass"' 'Identifier "system-keyboard"' 'MatchIsKeyboard "on"' 'Option "XkbLayout" "us,eg"' 'Option "XkbModel" "pc104"' 'Option "XkbVariant" ","' 'Option "XkbOptions" "grp:win_space_toggle"' 'EndSection' | tee /etc/X11/xorg.conf.d/00-keyboard.conf
 
 printf '%s\n' 'user-db:user' 'system-db:gdm' 'file-db:/usr/share/gdm/greeter-dconf-defaults' | tee /etc/dconf/profile/gdm
+printf '%s\n' 'user-db:user' 'system-db:local' | tee /etc/dconf/profile/user
 
-mkdir -p /etc/dconf/db/gdm.d/
-printf '%s\n' '[org/gnome/desktop/interface]' "font-name='Sans 10'" | tee /etc/dconf/db/gdm.d/00-font
+mkdir -p /etc/dconf/db/gdm.d/ /etc/dconf/db/local.d/
+printf '%s\n' '[org/gnome/desktop/interface]' "font-name='Sans 10'" "document-font-name='Serif 10'" "monospace-font-name='Monospace 10'" | tee /etc/dconf/db/gdm.d/00-fonts
 printf '%s\n' '[org/gnome/desktop/interface]' 'show-battery-percentage=true' | tee /etc/dconf/db/gdm.d/01-battery-percentage
 printf '%s\n' '[org/gnome/desktop/interface]' "accent-color='yellow'" | tee /etc/dconf/db/gdm.d/02-accent-color
 printf '%s\n' '[org/gnome/login-screen]' "logo=''" | tee /etc/dconf/db/gdm.d/03-logo
 printf '%s\n' '[org/gnome/gnome-session]' 'logout-prompt=false' | tee /etc/dconf/db/gdm.d/04-logout-prompt
 
-dconf update
-
 printf '%s\n' '[User]' 'Session=gnome' 'Icon=/var/lib/AccountsService/icons/am' 'SystemAccount=false' | tee /var/lib/AccountsService/users/am
 mv /opt/configs/pfp/am /var/lib/AccountsService/icons/
+
+printf '%s\n' '[org/gnome/desktop/interface]' "font-name='Sans 10'" "document-font-name='Serif 10'" "monospace-font-name='Monospace 10'" | tee /etc/dconf/db/local.d/00-fonts
+printf '%s\n' '[org/gnome/shell]' "enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com']" | tee /etc/dconf/db/local.d/01-enabled-extensions
+printf '%s\n' '[org/gnome/shell]' "favorite-apps=['firefox.desktop', 'com.mitchellh.ghostty.desktop', 'org.gnome.Nautilus.desktop', 'io.missioncenter.MissionCenter.desktop', 'proton.vpn.app.gtk.desktop', 'org.telegram.desktop.desktop', 'virt-manager.desktop', 'code.desktop', 'obsidian.desktop']" | tee /etc/dconf/db/local.d/02-favorite-apps
+
+dconf update
 
 mv /opt/configs/backgrounds/stairs.xml /usr/share/gnome-background-properties/
 mv /opt/configs/backgrounds/personal /usr/share/backgrounds/
