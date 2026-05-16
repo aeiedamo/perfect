@@ -5,7 +5,7 @@ set -e -u -o pipefail
 ssh-keygen
 gpg --full-gen-key
 
-GPGKEY="$(gpg -K --keyid-format long | grep 'sec' | cut -d '/' -f 2 | cut -d ' ' -f 1)"
+GPGKEY="$(gpg -K --keyid-format long --with-colons | awk -F: '/^sec/{print $5; exit;}')"
 KEYFILE="${HOME}/.gnupg/public-keys.d/am.asc"
 export GPGKEY KEYFILE
 gpg -a -o "${KEYFILE}" --export "${GPGKEY}"

@@ -9,8 +9,8 @@ ROOT="${DISK}p2"
 AUX="${DISKAUX}p1"
 export DISK DISKAUX BOOT ROOT AUX
 
-nvme format ${DISK%n*} -f -n 1 -l 0 -s 1 -r
-nvme format ${DISKAUX%n*} -f -n 1 -l 0 -s 1 -r
+nvme format "${DISK%n*}" -f -n 1 -l 0 -s 1 -r
+nvme format "${DISKAUX%n*}" -f -n 1 -l 0 -s 1 -r
 partprobe "${DISK}" "${DISKAUX}"
 
 sgdisk -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -N 2 -t 2:8304 -c 2:'root' "${DISK}"
