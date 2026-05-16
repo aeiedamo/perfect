@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+set -e -u -o pipefail
+
 DISK="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
 DISKAUX="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
 BOOT="${DISK}p1"
@@ -7,8 +9,8 @@ ROOT="${DISK}p2"
 AUX="${DISKAUX}p1"
 export DISK DISKAUX BOOT ROOT AUX
 
-nvme format /dev/nvme0 -f -n 1 -l 0 -s 1 -r
-nvme format /dev/nvme1 -f -n 1 -l 0 -s 1 -r
+nvme format ${DISK%n*} -f -n 1 -l 0 -s 1 -r
+nvme format ${DISKAUX%n*} -f -n 1 -l 0 -s 1 -r
 partprobe "${DISK}" "${DISKAUX}"
 
 sgdisk -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -N 2 -t 2:8304 -c 2:'root' "${DISK}"

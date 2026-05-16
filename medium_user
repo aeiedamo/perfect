@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+set -e -u -o pipefail
+
 sudo medium_setup
 sudo rm -f /usr/local/bin/medium_setup
 
@@ -34,7 +36,7 @@ git clone --depth 1 'https://github.com/BayouGuru67/Linux_Audio.git' "${XDG_CONF
 mkdir -p "${XDG_DATA_HOME}/images"
 chattr +C "${XDG_DATA_HOME}/images"
 
-yes | yay -Syu --needed otf-ibm-plex ttf-apple-emoji
+yes | yay -Syu --needed hunspell-ar otf-ibm-plex ttf-apple-emoji
 
 sudo rm -f -r /opt/configs
 sudo rm -f /usr/local/bin/medium_user

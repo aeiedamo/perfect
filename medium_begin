@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+set -e -u -o pipefail
+
 DISK="$(realpath /dev/disk/by-id/ata-SAMSUNG_MZVLB256HAHQ-000_S45UNX0N104146)"
 BOOT="${DISK}1"
 ROOT="${DISK}2"

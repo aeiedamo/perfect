@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+set -e -u -o pipefail
+
 ssh-keygen
 gpg --full-gen-key
 
@@ -7,7 +9,7 @@ GPGKEY="$(gpg -K --keyid-format long | grep 'sec' | cut -d '/' -f 2 | cut -d ' '
 KEYFILE="${HOME}/.gnupg/public-keys.d/am.asc"
 export GPGKEY KEYFILE
 gpg -a -o "${KEYFILE}" --export "${GPGKEY}"
-printf '%s\n' 'Test' | gpg --clearsign
+printf '%s\n' 'Test' | gpg --clearsign > /dev/null
 
 git config set --global user.name 'AlaEldin Mohamed'
 git config set --global user.email 'aeiedamo@gmail.com'
@@ -18,13 +20,13 @@ git config set --global tag.gpgSign true
 git config set --global push.followTags true
 
 gh auth login -c -p 'ssh' -s 'admin:gpg_key,admin:public_key,gist,user,repo,delete_repo' -w
-ssh -T 'git@github.com'
+ssh -T 'git@github.com' || true
 gh gpg-key add "${KEYFILE}" -t 'AlaEldin Mohamed <aeiedamo@gmail.com>'
 gh config set telemetry disabled
 
 glab auth login -g 'ssh' --use-keyring --web
 glab ssh-key add "${HOME}/.ssh/id_ed25519.pub" -t 'am@aeiedamo'
-ssh -T 'git@gitlab.com'
+ssh -T 'git@gitlab.com' || true
 glab gpg-key add "${KEYFILE}"
 
 sudo rm -f /usr/local/bin/git_keys_config

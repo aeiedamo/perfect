@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+set -e -u -o pipefail
+
 umount /.snapshots
 rm -f -r /.snapshots
 snapper -c root create-config /
