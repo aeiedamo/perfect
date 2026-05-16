@@ -13,22 +13,25 @@ UUID="$(lsblk -dno UUID /dev/mapper/root)"
 DAYSAGO_0="$(date --date 'today' "+%Y-%m-%d")"
 DAYSAGO_1="$(date --date 'yesterday' "+%Y-%m-%d")"
 DAYSAGO_2="$(date --date '2 days ago' "+%Y-%m-%d")"
-LIST=$(snapper --iso --csvout list -t single --columns number,date,description)
+SNAPLIST=$(snapper --iso --csvout list -t single --columns number,date,description)
 
-export ROOT AUX UUID DAYSAGO_0 DAYSAGO_1 DAYSAGO_2 LIST
+export ROOT AUX UUID DAYSAGO_0 DAYSAGO_1 DAYSAGO_2 SNAPLIST
 
 SNAPSHOTS=(
-	"$(printf '%s\n' "${LIST}" | grep ',boot$' | tail -1)"
-	"$(printf '%s\n' "${LIST}" | grep 'timeline' | grep "${DAYSAGO_0}" | head -1)"
-	"$(printf '%s\n' "${LIST}" | grep 'timeline' | grep "${DAYSAGO_1}" | head -1)"
-	"$(printf '%s\n' "${LIST}" | grep 'timeline' | grep "${DAYSAGO_2}" | head -1)"
+	"$(printf '%s\n' "${SNAPLIST}" | grep ',boot$' | tail -1)"
+	"$(printf '%s\n' "${SNAPLIST}" | grep 'timeline' | grep "${DAYSAGO_0}" | head -1)"
+	"$(printf '%s\n' "${SNAPLIST}" | grep 'timeline' | grep "${DAYSAGO_1}" | head -1)"
+	"$(printf '%s\n' "${SNAPLIST}" | grep 'timeline' | grep "${DAYSAGO_2}" | head -1)"
 )
 
 rm -f /boot/loader/entries/snapshot_*
 
-{ [ -f /boot/vmlinuz-linux-snapshot ] && [ -f /boot/initramfs-linux-snapshot.img ] ; } || snapshot_kernel
+if ! cmp -s /boot/vmlinuz-linux /boot/vmlinuz-linux-snapshot || ! cmp -s /boot/initramfs-linux.img /boot/initramfs-linux-snapshot.img; then
+	snapshot_kernel
+fi
 
 create_config() {
+	btrfs property set -f -ts "/.snapshots/$1/snapshot" ro false
 	printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s%s%s %s%s%s %s %s%s %s%s%s %s %s\n' 'title' "Snapshot @ $2" 'sort-key' "snapshot_$1" 'linux' '/vmlinuz-linux-snapshot' 'initrd' '/initramfs-linux-snapshot.img' 'options' 'rd.luks.name=' "$(lsblk -dno UUID "${ROOT}")" '=root' 'rd.luks.name=' "$(lsblk -dno UUID "${AUX}")" '=aux' 'rd.luks.options=tpm2-device=/dev/tpmrm0' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@snapshots/' "$1" '/snapshot' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee "/boot/loader/entries/snapshot_$1.conf"
 }
 
