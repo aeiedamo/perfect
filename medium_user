@@ -23,7 +23,7 @@ gsettings set org.gnome.nautilus.preferences date-time-format 'detailed'
 gsettings set org.gnome.nautilus.preferences default-folder-viewer 'list-view'
 gsettings set org.gnome.nautilus.preferences show-create-link true
 gsettings set org.gnome.nautilus.preferences show-delete-permanently true
-gsettings set org.gtk.gtk4.settings.file-chooser sort-directories-first true
+gsettings set org.gtk.gtk4.Settings.FileChooser sort-directories-first true
 gsettings set ca.desrt.dconf-editor.Settings show-warning false
 
 printf '%s\n' '--enable-features=AcceleratedVideoDecodeLinuxGL,TouchpadOverscrollHistoryNavigation' | tee "${XDG_CONFIG_HOME}/chrome-flags.conf"
@@ -36,7 +36,7 @@ git clone --depth 1 'https://github.com/BayouGuru67/Linux_Audio.git' "${XDG_CONF
 mkdir -p "${XDG_DATA_HOME}/images"
 chattr +C "${XDG_DATA_HOME}/images"
 
-yes | yay -Syu --needed hunspell-ar otf-ibm-plex ttf-apple-emoji
+yes | yay -Syu --needed hunspell-ar otf-ibm-plex ttf-apple-emoji || true
 
 sudo rm -f -r /opt/configs
 sudo rm -f /usr/local/bin/medium_user

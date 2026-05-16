@@ -100,7 +100,7 @@ printf '%s\n' '"\e[A": history-search-backward' '"\e[B": history-search-forward'
 
 printf '%s\n' '[uefi_capsule]' 'DisableShimForSecureBoot=true' | tee -a /etc/fwupd/fwupd.conf
 
-sed -i -e '/^hosts/s/resolve \[\!UNAVAIL=return\]/mdns_minimal \[NOTFOUND=return\]/g' -e '/^hosts/s/$/& libvirt libvirt_guest' /etc/nsswitch.conf
+sed -i -e '/^hosts/s/resolve \[\!UNAVAIL=return\]/mdns_minimal \[NOTFOUND=return\]/g' -e '/^hosts/s/$/& libvirt libvirt_guest/' /etc/nsswitch.conf
 
 sed -i -e '/^DefaultZone/s/=.*$/=trusted/' /etc/firewalld/firewalld.conf
 
@@ -129,7 +129,7 @@ printf '%s\n' '[org/gnome/gnome-session]' 'logout-prompt=false' | tee /etc/dconf
 printf '%s\n' '[User]' 'Session=gnome' 'Icon=/var/lib/AccountsService/icons/am' 'SystemAccount=false' | tee /var/lib/AccountsService/users/am
 mv /opt/configs/pfp/am /var/lib/AccountsService/icons/
 
-mkdir -p /usr/share/gnome-background-properties/
+mkdir -p /usr/share/backgrounds/ /usr/share/gnome-background-properties/
 mv /opt/configs/backgrounds/stairs.xml /usr/share/gnome-background-properties/
 mv /opt/configs/backgrounds/personal /usr/share/backgrounds/
 
