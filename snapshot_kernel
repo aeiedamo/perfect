@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-set -e -u -o pipefail
+set -a -e -o pipefail -u
 
 cp /boot/vmlinuz-linux /boot/vmlinuz-linux-snapshot
 cp /boot/initramfs-linux.img /boot/initramfs-linux-snapshot.img

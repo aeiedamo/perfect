@@ -1,11 +1,10 @@
 #!/usr/bin/bash
 
-set -e -u -o pipefail
+set -a -e -o pipefail -u
 
 DISK="$(realpath /dev/disk/by-id/ata-SAMSUNG_MZVLB256HAHQ-000_S45UNX0N104146)"
 BOOT="${DISK}1"
 ROOT="${DISK}2"
-export DISK BOOT ROOT
 
 blkdiscard -f -z "${DISK}"
 partprobe "${DISK}"

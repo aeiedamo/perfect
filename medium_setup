@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-set -e -u -o pipefail
+set -a -e -o pipefail -u
 
 umount /.snapshots
 rm -f -r /.snapshots

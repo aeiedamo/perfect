@@ -1,13 +1,12 @@
 #!/usr/bin/bash
 
-set -e -u -o pipefail
+set -a -e -o pipefail -u
 
 ssh-keygen
 gpg --full-gen-key
 
 GPGKEY="$(gpg -K --keyid-format long --with-colons | awk -F: '/^sec/{print $5; exit;}')"
 KEYFILE="${HOME}/.gnupg/public-keys.d/am.asc"
-export GPGKEY KEYFILE
 gpg -a -o "${KEYFILE}" --export "${GPGKEY}"
 printf '%s\n' 'Test' | gpg --clearsign > /dev/null
 

@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-set -e -u -o pipefail
+set -a -e -o pipefail -u
 
 sudo perfect_setup
 sudo rm -f /usr/local/bin/perfect_setup

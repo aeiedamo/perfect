@@ -1,13 +1,12 @@
 #!/usr/bin/bash
 
-set -e -u -o pipefail
+set -a -e -o pipefail -u
 
 DISK="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
 DISKAUX="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
 ROOT="${DISK}p2"
 AUX="${DISKAUX}p1"
 UUID="$(lsblk -dno UUID /dev/mapper/root)"
-export ROOT AUX UUID
 
 sed -i -e '/^#en_US.UTF-8/s/^#//' -e '/^#ar_EG.UTF-8/s/^#//' /etc/locale.gen
 locale-gen
@@ -134,9 +133,10 @@ mv /opt/configs/backgrounds/stairs.xml /usr/share/gnome-background-properties/
 mv /opt/configs/backgrounds/personal /usr/share/backgrounds/
 
 printf '%s\n' '[org/gnome/desktop/interface]' "font-name='Sans 10'" "document-font-name='Serif 10'" "monospace-font-name='Monospace 10'" | tee /etc/dconf/db/local.d/00-fonts
-printf '%s\n' '[org/gnome/desktop/background]' "picture-uri='file:///usr/share/backgrounds/personal/stairs.jpg'" "picture-uri-dark='file=///usr/share/backgrounds/personal/stairs.jpg'" "picture-options='zoom'" "primary-color='#A15F30'" "secondary-color='#280D04'" "color-shading-type='solid'" | tee /etc/dconf/db/local.d/01-background
-printf '%s\n' '[org/gnome/shell]' "favorite-apps=['firefox.desktop', 'com.mitchellh.ghostty.desktop', 'org.gnome.Nautilus.desktop', 'io.missioncenter.MissionCenter.desktop', 'proton.vpn.app.gtk.desktop', 'org.telegram.desktop.desktop', 'virt-manager.desktop', 'code.desktop', 'obsidian.desktop']" | tee /etc/dconf/db/local.d/02-favorite-apps
-printf '%s\n' '[org/gnome/shell]' "enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com']" | tee /etc/dconf/db/local.d/03-enabled-extensions
+printf '%s\n' '[org/gnome/desktop/interface]' "accent-color='yellow'" | tee /etc/dconf/db/local.d/01-accent-color
+printf '%s\n' '[org/gnome/desktop/background]' "picture-uri='file:///usr/share/backgrounds/personal/stairs.jpg'" "picture-uri-dark='file:///usr/share/backgrounds/personal/stairs.jpg'" "picture-options='zoom'" "primary-color='#A15F30'" "secondary-color='#280D04'" "color-shading-type='solid'" | tee /etc/dconf/db/local.d/02-background
+printf '%s\n' '[org/gnome/shell]' "favorite-apps=['firefox.desktop', 'com.mitchellh.ghostty.desktop', 'org.gnome.Nautilus.desktop', 'io.missioncenter.MissionCenter.desktop', 'proton.vpn.app.gtk.desktop', 'org.telegram.desktop.desktop', 'virt-manager.desktop', 'code.desktop', 'obsidian.desktop']" | tee /etc/dconf/db/local.d/03-favorite-apps
+printf '%s\n' '[org/gnome/shell]' "enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com']" | tee /etc/dconf/db/local.d/04-enabled-extensions
 
 dconf update
 
