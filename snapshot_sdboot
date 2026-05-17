@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-set -a -e -o pipefail -u
+set -a -e -u
 
 [ "$(bootctl status | awk '/Current Entry:/{print $NF}')" = 'arch-linux.conf' ] || { printf '%s\n' 'Will not snapshot current kernel.' && exit 1; }
 
@@ -13,7 +13,7 @@ UUID="$(lsblk -dno UUID /dev/mapper/root)"
 DAYSAGO_0="$(date --date 'today' "+%Y-%m-%d")"
 DAYSAGO_1="$(date --date 'yesterday' "+%Y-%m-%d")"
 DAYSAGO_2="$(date --date '2 days ago' "+%Y-%m-%d")"
-SNAPLIST=$(snapper --iso --csvout list -t single --columns number,date,description)
+SNAPLIST="$(snapper --iso --csvout list -t single --columns number,date,description)"
 
 SNAPSHOTS=(
 	"$(printf '%s\n' "${SNAPLIST}" | grep ',boot$' | tail -1)"
@@ -24,7 +24,7 @@ SNAPSHOTS=(
 
 rm -f /boot/loader/entries/snapshot_*
 
-if ! cmp -s /boot/vmlinuz-linux /boot/vmlinuz-linux-snapshot || ! cmp -s /boot/initramfs-linux.img /boot/initramfs-linux-snapshot.img; then
+if [ ! -f /boot/vmlinuz-linux-snapshot ] || [ ! -f /boot/initramfs-linux-snapshot.img ]; then
 	snapshot_kernel
 fi
 
