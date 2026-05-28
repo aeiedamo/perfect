@@ -24,8 +24,12 @@ SNAPSHOTS=(
 
 rm -f /boot/loader/entries/snapshot_*
 
-if [ ! -f /boot/vmlinuz-linux-snapshot ] || [ ! -f /boot/initramfs-linux-snapshot.img ]; then
-	snapshot_kernel
+if ! cmp -s /boot/vmlinuz-linux /boot/vmlinuz-linux-snapshot; then
+	cp /boot/vmlinuz-linux /boot/vmlinuz-linux-snapshot
+fi
+
+if ! cmp -s /boot/initramfs-linux.img /boot/initramfs-linux-snapshot.img; then
+	cp /boot/initramfs-linux.img /boot/initramfs-linux-snapshot.img
 fi
 
 create_config() {

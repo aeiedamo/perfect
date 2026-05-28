@@ -2,8 +2,8 @@
 
 set -a -e -o pipefail -u
 
-DISK="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
-DISKAUX="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
+DISK="$(realpath "/dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001")"
+DISKAUX="$(realpath "/dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c")"
 BOOT="${DISK}p1"
 ROOT="${DISK}p2"
 AUX="${DISKAUX}p1"
@@ -12,20 +12,20 @@ nvme format "${DISK%n*}" -f -n 1 -l 0 -s 1 -r
 nvme format "${DISKAUX%n*}" -f -n 1 -l 0 -s 1 -r
 partprobe "${DISK}" "${DISKAUX}"
 
-sgdisk -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -N 2 -t 2:8304 -c 2:'root' "${DISK}"
-sgdisk -I -N 1 -t 1:8304 -c 1:'aux' "${DISKAUX}"
+sgdisk -U '583c89a3-2d6e-5076-8345-a7c034280362' -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -u 1:'9f72e3fe-3bef-51c5-be82-af8f52901428' -N 2 -t 2:8304 -c 2:'root' -u 2:'a749fe17-7edf-5722-ac79-49243cf80f13' "${DISK}"
+sgdisk -U '8559c2f9-e701-5c9a-bc77-2da55bcbd9ac' -I -N 1 -t 1:8304 -c 1:'aux' -u 1:'88010a47-6d13-5cb6-bb0e-a83b1c1d6016' "${DISKAUX}"
 
-mkfs.fat -F 32 -n 'BOOT' "${BOOT}"
+mkfs.fat -I -F 32 -i 'b007ef10' -n 'BOOT' "${BOOT}"
 
 read -p 'Enter Passphrase: ' -r PASSWD
 
-printf '%s\n' "${PASSWD}" | cryptsetup luksFormat --label 'root' -q "${ROOT}"
-printf '%s\n' "${PASSWD}" | cryptsetup luksFormat --label 'aux' -q "${AUX}"
+printf '%s\n' "${PASSWD}" | cryptsetup luksFormat --label 'root' --uuid '093ec609-19e9-5fb1-a10c-c8f3606b665e' -q "${ROOT}"
+printf '%s\n' "${PASSWD}" | cryptsetup luksFormat --label 'aux' --uuid '9898fcc4-cf1d-5809-a8a8-565660a561c8' -q "${AUX}"
 
 printf '%s\n' "${PASSWD}" | cryptsetup open --allow-discards --persistent "${ROOT}" root
 printf '%s\n' "${PASSWD}" | cryptsetup open --allow-discards --persistent "${AUX}" aux
 
-mkfs.btrfs -f -L 'root' -d raid0 -m raid0 /dev/mapper/root /dev/mapper/aux
+mkfs.btrfs -f -L 'root' -d raid0 -m raid0 -U 'fa768772-e1e0-5e42-8a64-a6bb21194b39' /dev/mapper/root /dev/mapper/aux
 
 mount -o 'compress=zstd' /dev/mapper/root /mnt
 btrfs subvolume create /mnt/@ /mnt/@var /mnt/@home /mnt/@snapshots
@@ -43,13 +43,15 @@ pacstrap -KM /mnt base iptables mkinitcpio
 
 genfstab -U /mnt | tee -a /mnt/etc/fstab
 
+printf '%s\n' 'export DISK="$(realpath "/dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001")" DISKAUX="$(realpath "/dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c")"' | tee /mnt/etc/profile.d/disk.sh
+printf '%s\n' 'export BOOT="${DISK}p1" ROOT="${DISK}p2" AUX="${DISKAUX}p1"' | tee /mnt/etc/profile.d/part.sh
+printf '%s\n' 'export UUID="$(lsblk -dno UUID /dev/mapper/root)"' | tee /mnt/etc/profile.d/uuid.sh
+
 install -m 0777 /root/perfect/perfect_install /mnt/usr/local/bin/
 install -m 0777 /root/perfect/perfect_setup /mnt/usr/local/bin/
-install -m 0777 /root/perfect/perfect_user /mnt/usr/local/bin/
-
-install -m 0777 /root/perfect/snapshot_kernel /mnt/usr/local/bin/
 install -m 0777 /root/perfect/snapshot_sdboot /mnt/usr/local/bin/
 
+install -m 0777 /root/perfect/user_config /mnt/usr/local/bin/
 install -m 0777 /root/perfect/git_keys_config /mnt/usr/local/bin/
 
 cp -a /root/perfect/configs /mnt/opt/
@@ -57,8 +59,9 @@ cp -a /root/perfect/configs /mnt/opt/
 ln -f -s /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 
 arch-chroot -S /mnt /usr/local/bin/perfect_install
+arch-chroot -S -u am /mnt /usr/local/bin/user_config
 
-rm -f /mnt/usr/local/bin/perfect_install
+rm -f /mnt/usr/local/bin/perfect_install /mnt/usr/local/bin/user_config
 
 pkill -9 -u root gpg-agent
 umount -R /mnt

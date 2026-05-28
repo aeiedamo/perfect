@@ -17,9 +17,10 @@ printf '%s\n' 'KEYMAP=us' 'FONT=default8x16' | tee /etc/vconsole.conf
 
 printf '%s\n' 'aeiedamo' | tee /etc/hostname
 
-sed -i -e '/^#NoExtract/s/$/ boot\/intel-ucode.img/' -e '/^#NoExtract/s/^#//' -e '/^#Color/s/^#//' -e '/^#Verbose/a DisableDownloadTimeout' -e '/^#Verbose/s/^#//' -e '/^#\[core\|^#\[extra\|^#\[multilib/,+1s/^#//' -e '$ a [chaotic-aur]' -e '$ a Server = https://cdn-mirror.chaotic.cx/$repo/$arch' /etc/pacman.conf
-printf '%s\n' 'Server = https://mirror.pkgbuild.com/$repo/os/$arch' 'Server = https://fastly.mirror.pkgbuild.com/$repo/os/$arch' | tee /etc/pacman.d/mirrorlist
-sed -i -e "/^#MAKEFLAGS/s/=.*$/=\"-j$(nproc)\"/" -e '/^#MAKEFLAGS/s/^#//' -e '/^#BUILDDIR/s/^#//' -e '/^OPTIONS/s/debug/!&/' /etc/makepkg.conf
+sed -i -e '/^#NoExtract/s/$/ boot\/intel-ucode.img/' -e '/^#NoExtract/s/^#//' -e '/^#Color/s/^#//' -e '/^#Verbose/a DisableDownloadTimeout' -e '/^#Verbose/s/^#//' -e '/^#\[core\|^#\[extra\|^#\[multilib/,+1s/^#//' -e '$ a [chaotic-aur]' -e '$ a Include = /etc/pacman.d/chaotic-aur-mirrorlist' /etc/pacman.conf
+printf '%s\n' 'Server = https://archive.archlinux.org/repos/2026/05/15/$repo/os/$arch' 'Server = https://mirror.pkgbuild.com/$repo/os/$arch' 'Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch' | tee /etc/pacman.d/mirrorlist
+printf '%s\n' 'Server = https://sa-1-mirror.chaotic.cx/$repo/$arch' 'Server = https://geo-mirror.chaotic.cx/$repo/$arch' | tee /etc/pacman.d/chaotic-aur-mirrorlist
+sed -i -e "/^#MAKEFLAGS/s/=.*$/=\"-j$(nproc)\"/" -e '/^#MAKEFLAGS/s/^#//' -e '/^OPTIONS/s/debug/!&/' /etc/makepkg.conf
 
 sed -i -e '/^MODULES/s/(/&i915/' -e '/^HOOKS/s/systemd/& plymouth btrfs/' /etc/mkinitcpio.conf
 
@@ -27,9 +28,11 @@ systemd-hwdb update
 
 pacman-key -r '3056513887B78AEB' --keyserver 'keyserver.ubuntu.com'
 pacman-key --lsign-key '3056513887B78AEB'
-pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
+pacman -U --noconfirm 'https://sa-1-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
 
-pacman -Syu --needed --noconfirm linux linux-headers linux-lts linux-lts-headers scx-tools alsa-firmware alsa-utils linux-firmware linux-tools-meta intel-ucode guestfs-tools plymouth qemu-full qemu-user-static-binfmt snap-pac sof-firmware wireless-regdb base-devel bash-completion bees devtools firejail libglvnd modemmanager networkmanager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-cascadia-code ttf-noto-nerd zram-generator gdm gnome-control-center virt-manager 7zip alacarte adwaita-qt6-git android-tools arch-wiki-docs ardour baobab bluez-cups bluez-utils btrfs-assistant calf cdrtools celluloid chrony cronie crun cups-pdf dconf-editor discord distrobox dnsmasq easyeffects edk2-shell efibootmgr element-desktop ethtool evolution-ews evolution-spamassassin fail2ban fastfetch fd file-roller firefox-i18n-ar firewall-applet flatpak-xdg-utils foliate fzf ghostty gimp github-cli glab gnome-browser-connector gnome-characters gnome-console gnome-firmware gnome-keyring gnome-remote-desktop gnome-shell-extension-appindicator gnome-software gnome-themes-extra gnome-tweaks gnome-user-share google-chrome gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gst-thumbnailers gvfs-afc gvfs-dnssd gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive gvfs-smb gvfs-wsdd hunspell-en_us inetutils intel-compute-runtime-legacy intel-gmmlib-legacy intel-graphics-compiler-legacy intel-media-sdk iwd jdk-openjdk kdenlive libappindicator libayatana-appindicator libreoffice-fresh-ar loupe lsp-plugins-lv2 malcontent man-db mda.lv2 mission-center namcap nm-connection-editor net-tools networkmanager-l2tp networkmanager-pptp npm nss-mdns ntfsprogs obs-studio onnxruntime-cpu obsidian openbsd-netcat orca papers podman proton-vpn-gtk-app qalculate-gtk qbittorrent qt6ct qt6-multimedia-gstreamer radvd rnote rust rygel samba seahorse shelly smartmontools snapshot swtpm system-config-printer telegram-desktop throttled tlp-pd tlp-rdw tlpui tmux traceroute trash-cli unrar usb_modeswitch visual-studio-code-bin vulkan-intel vulkan-tools wget wl-clipboard yay yt-dlp zam-plugins-lv2 zip
+pacman -Syu --needed --noconfirm linux linux-headers linux-lts linux-lts-headers scx-tools alsa-firmware alsa-utils linux-firmware linux-tools-meta intel-ucode guestfs-tools plymouth qemu-full qemu-user-static-binfmt snap-pac sof-firmware wireless-regdb base-devel bash-completion bees devtools firejail libglvnd modemmanager networkmanager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-cascadia-code ttf-noto-nerd zram-generator gdm gnome-control-center virt-manager 7zip alacarte adwaita-qt6-git android-tools archlinux-appstream-data arch-wiki-docs ardour baobab bluez-cups bluez-utils btrfs-assistant calf cdrtools celluloid chrony cronie crun cups-pdf dconf-editor discord distrobox dnsmasq easyeffects edk2-shell efibootmgr element-desktop ethtool evolution-ews evolution-spamassassin fail2ban fastfetch fd file-roller firefox-i18n-ar firewall-applet flatpak-xdg-utils fzf ghostty gimp github-cli glab gnome-browser-connector gnome-characters gnome-console gnome-firmware gnome-keyring gnome-remote-desktop gnome-shell-extension-appindicator gnome-software gnome-themes-extra gnome-tweaks gnome-user-share google-chrome gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gst-thumbnailers gvfs-afc gvfs-dnssd gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive gvfs-smb gvfs-wsdd hunspell-en_us inetutils intel-compute-runtime-legacy intel-gmmlib-legacy intel-graphics-compiler-legacy intel-media-sdk iwd jdk-openjdk kdenlive libappindicator libayatana-appindicator libreoffice-fresh-ar loupe lsp-plugins-lv2 malcontent man-db mda.lv2 mission-center namcap nm-connection-editor net-tools networkmanager-l2tp networkmanager-pptp npm nss-mdns ntfsprogs obs-studio onnxruntime-cpu obsidian openbsd-netcat orca podman proton-vpn-gtk-app qalculate-gtk qbittorrent qt6ct qt6-multimedia-gstreamer radvd rnote rust rygel samba seahorse shelly smartmontools snapshot swtpm system-config-printer telegram-desktop throttled tlp-pd tlp-rdw tlpui tmux traceroute trash-cli unrar usb_modeswitch visual-studio-code-bin vulkan-intel vulkan-tools wget wl-clipboard yay yt-dlp zam-plugins-lv2 zip
+
+flatpak install -y --noninteractive flathub com.github.tchx84.Flatseal org.kde.okular
 
 printf '%s%s %s %s %s\n' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee /etc/kernel/cmdline
 
@@ -74,7 +77,7 @@ printf '%s\n' 'export XDG_CONFIG_HOME="${HOME}/.config" XDG_CACHE_HOME="${HOME}/
 
 printf '%s\n' 'export XDG_DATA_DIRS="${XDG_DATA_DIRS}:/var/lib/flatpak/exports/share:${XDG_DATA_HOME}/flatpak/exports/share"' | tee /etc/profile.d/02-flatpak.sh
 
-printf '%s\n' "export QT_QPA_PLATFORMTHEME='qt6ct'" | tee /etc/profile.d/03-qt.sh
+printf '%s\n' "export QT_QPA_PLATFORM='wayland' QT_QPA_PLATFORMTHEME='qt6ct'" | tee /etc/profile.d/03-qt.sh
 
 cp /etc/skel/.bash_profile /root/
 cp /etc/skel/.bashrc /root/
@@ -111,10 +114,10 @@ printf '%s\n' 'user-db:user' 'system-db:local' | tee /etc/dconf/profile/user
 
 mkdir -p /etc/dconf/db/gdm.d/ /etc/dconf/db/local.d/
 printf '%s\n' '[org/gnome/desktop/interface]' "font-name='Sans 10'" "document-font-name='Serif 10'" "monospace-font-name='Monospace 10'" | tee /etc/dconf/db/gdm.d/00-fonts
-printf '%s\n' '[org/gnome/desktop/interface]' 'show-battery-percentage=true' | tee /etc/dconf/db/gdm.d/01-battery-percentage
-printf '%s\n' '[org/gnome/desktop/interface]' "accent-color='yellow'" | tee /etc/dconf/db/gdm.d/02-accent-color
-printf '%s\n' '[org/gnome/login-screen]' "logo=''" | tee /etc/dconf/db/gdm.d/03-logo
-printf '%s\n' '[org/gnome/gnome-session]' 'logout-prompt=false' | tee /etc/dconf/db/gdm.d/04-logout-prompt
+printf '%s\n' '[org/gnome/desktop/interface]' "accent-color='yellow'" 'show-battery-percentage=true' 'clock-show-seconds=true' | tee /etc/dconf/db/gdm.d/01-look
+printf '%s\n' '[org/gnome/login-screen]' "logo=''" | tee /etc/dconf/db/gdm.d/02-logo
+printf '%s\n' '[org/gnome/gnome-session]' 'logout-prompt=false' | tee /etc/dconf/db/gdm.d/03-logout-prompt
+printf '%s\n' '[org/gnome/desktop/input-sources]' "sources=[('xkb','us'),('xkb','eg')]" "xkb-model='pc104'" "xkb-options=['grp:win_space_toggle']" | tee /etc/dconf/db/gdm.d/04-input-sources
 
 printf '%s\n' '[User]' 'Session=gnome' 'Icon=/var/lib/AccountsService/icons/am' 'SystemAccount=false' | tee /var/lib/AccountsService/users/am
 mv /opt/configs/pfp/am /var/lib/AccountsService/icons/
@@ -123,11 +126,27 @@ mkdir -p /usr/share/backgrounds/ /usr/share/gnome-background-properties/
 mv /opt/configs/backgrounds/stairs.xml /usr/share/gnome-background-properties/
 mv /opt/configs/backgrounds/personal /usr/share/backgrounds/
 
-printf '%s\n' '[org/gnome/desktop/interface]' "font-name='Sans 10'" "document-font-name='Serif 10'" "monospace-font-name='Monospace 10'" | tee /etc/dconf/db/local.d/00-fonts
-printf '%s\n' '[org/gnome/desktop/interface]' "accent-color='yellow'" | tee /etc/dconf/db/local.d/01-accent-color
+printf '%s\n' '[org/gnome/desktop/interface]' "font-name='Sans 10'" "document-font-name='Serif 10'" "monospace-font-name='Monospace 10'" '' '[org/gnome/desktop/wm/preferences]' "titlebar-font='Sans 10'" | tee /etc/dconf/db/local.d/00-fonts
+printf '%s\n' '[org/gnome/desktop/interface]' "accent-color='yellow'" "color-scheme='prefer-dark'" "gtk-theme='Adwaita-dark'" 'show-battery-percentage=true' 'clock-show-seconds=true' 'gtk-enable-primary-paste=true' | tee /etc/dconf/db/local.d/01-look
 printf '%s\n' '[org/gnome/desktop/background]' "picture-uri='file:///usr/share/backgrounds/personal/stairs.jpg'" "picture-uri-dark='file:///usr/share/backgrounds/personal/stairs.jpg'" "picture-options='zoom'" "primary-color='#A15F30'" "secondary-color='#280D04'" "color-shading-type='solid'" | tee /etc/dconf/db/local.d/02-background
 printf '%s\n' '[org/gnome/shell]' "favorite-apps=['firefox.desktop', 'com.mitchellh.ghostty.desktop', 'org.gnome.Nautilus.desktop', 'io.missioncenter.MissionCenter.desktop', 'proton.vpn.app.gtk.desktop', 'org.telegram.desktop.desktop', 'virt-manager.desktop', 'code.desktop', 'obsidian.desktop']" | tee /etc/dconf/db/local.d/03-favorite-apps
-printf '%s\n' '[org/gnome/shell]' "enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com']" | tee /etc/dconf/db/local.d/04-enabled-extensions
+printf '%s\n' '[org/gnome/shell]' 'disable-extension-version-validation=true' "enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com']" '' '[org/gnome/shell/extensions/appindicator]' 'legacy-tray-enabled=false' | tee /etc/dconf/db/local.d/04-extensions
+printf '%s\n' '[org/gnome/desktop/sound]' 'event-sounds=false' '' '[org/gnome/desktop/wm/preferences]' 'audible-bell=false' | tee /etc/dconf/db/local.d/05-sounds
+printf '%s\n' '[org/gnome/settings-daemon/plugins/power]' "power-button-action='nothing'" 'idle-dim=false' 'power-saver-profile-on-low-battery=false' "sleep-inactive-ac-type='nothing'" "sleep-inactive-battery-type='nothing'" '' '[org/gnome/desktop/shell]' "last-selected-power-profile='performance'" '' '[org/gnome/desktop/session]' 'idle-delay=uint32 0' | tee /etc/dconf/db/local.d/06-power
+printf '%s\n' '[org/gnome/desktop/interface]' 'enable-hot-corners=false' '' '[org/gnome/mutter]' 'edge-tiling=false' 'workspaces-only-on-primary=false' | tee /etc/dconf/db/local.d/07-multitasking
+printf '%s\n' '[org/gnome/desktop/notifications]' 'show-banners=false' 'show-in-lock-screen=false' | tee /etc/dconf/db/local.d/08-notifications
+printf '%s\n' '[org/gnome/desktop/screen-time-limits]' 'history-enabled=false' | tee /etc/dconf/db/local.d/09-screen-time
+printf '%s\n' '[org/gnome/desktop/peripherals/touchpad]' "click-method='areas'" 'natural-scroll=true' 'disable-while-typing=false' 'two-finger-scrolling-enabled=true' | tee /etc/dconf/db/local.d/10-touchpad
+printf '%s\n' '[org/gnome/desktop/peripherals/mouse]' 'natural-scroll=true' | tee /etc/dconf/db/local.d/11-mouse
+printf '%s\n' '[org/gnome/desktop/input-sources]' "sources=[('xkb','us'),('xkb','eg')]" "xkb-model='pc104'" "xkb-options=['grp:win_space_toggle']" | tee /etc/dconf/db/local.d/12-input-sources
+printf '%s\n' '[org/gnome/desktop/media-handling]' 'automount=false' 'automount-open=false' | tee /etc/dconf/db/local.d/13-media-handling
+printf '%s\n' '[org/gnome/gnome-session]' 'logout-prompt=false' | tee /etc/dconf/db/local.d/14-logout-prompt
+printf '%s\n' '[org/gnome/nautilus/preferences]' "date-time-format='detailed'" "default-folder-viewer='list-view'" 'show-create-link=true' 'show-delete-permanently=true' '' '[org/gtk/settings/file-chooser]' 'sort-directories-first=true' "clock-format='12h'" '' '[org/gtk/gtk4/settings/file-chooser]' 'sort-directories-first=true' "clock-format='12h'" | tee /etc/dconf/db/local.d/15-nautilus
+printf '%s\n' '[ca/desrt/dconf-editor]' 'show-warning=false' | tee /etc/dconf/db/local.d/16-dconf-editor
+printf '%s\n' '[org/gnome/settings-daemon/plugins/housekeeping]' 'donation-reminder-enabled=false' | tee /etc/dconf/db/local.d/17-donation
+printf '%s\n' '[org/virt-manager/virt-manager]' 'enable-libguestfs-vm-inspection=true' 'system-tray=true' 'xmleditor-enabled=true' '' '[org/virt-manager/virt-manager/connections]' "autoconnect=['qemu:///session']" "uris=['qemu:///session']" '' '[org/virt-manager/virt-manager/console]' 'resize-guest=1' '' '[org/virt-manager/virt-manager/new-vm]' "cpu-default='host-passthrough'" "firmware='uefi'" "graphics-type='spice'" "storage-format='qcow2'" | tee /etc/dconf/db/local.d/18-virt-manager
+printf '%s\n' '[io/missioncenter/MissionCenter]' 'app-update-interval-u64=uint64 10' 'is-maximized=true' | tee /etc/dconf/db/local.d/19-mission-center
+printf '%s\n' '[org/gnome/Console]' 'audible-bell=false' 'ignore-scrollback-limit=true' 'last-window-maximised=true' 'visual-bell=false' | tee /etc/dconf/db/local.d/20-gnome-console
 
 dconf update
 
