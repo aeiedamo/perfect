@@ -147,6 +147,9 @@ printf '%s\n' '[org/gnome/settings-daemon/plugins/housekeeping]' 'donation-remin
 printf '%s\n' '[org/virt-manager/virt-manager]' 'enable-libguestfs-vm-inspection=true' 'system-tray=true' 'xmleditor-enabled=true' '' '[org/virt-manager/virt-manager/connections]' "autoconnect=['qemu:///session']" "uris=['qemu:///session']" '' '[org/virt-manager/virt-manager/console]' 'resize-guest=1' '' '[org/virt-manager/virt-manager/new-vm]' "cpu-default='host-passthrough'" "firmware='uefi'" "graphics-type='spice'" "storage-format='qcow2'" | tee /etc/dconf/db/local.d/18-virt-manager
 printf '%s\n' '[io/missioncenter/MissionCenter]' 'app-update-interval-u64=uint64 10' 'is-maximized=true' | tee /etc/dconf/db/local.d/19-mission-center
 printf '%s\n' '[org/gnome/Console]' 'audible-bell=false' 'ignore-scrollback-limit=true' 'last-window-maximised=true' 'visual-bell=false' | tee /etc/dconf/db/local.d/20-gnome-console
+printf '%s\n' '[org/gnome/evolution/mail]' 'layout=1' 'show-to-do-bar=false' | tee /etc/dconf/db/local.d/21-evolution
+
+dconf update
 
 dconf update
 
