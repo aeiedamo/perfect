@@ -14,5 +14,4 @@ mount -a
 systemctl daemon-reload
 systemctl enable snapper-boot.timer snapper-cleanup.timer
 
-sed -i -e '/archive.archlinux.org/d' /etc/pacman.d/mirrorlist
 rm -f -r /opt/configs /usr/local/bin/medium_setup
