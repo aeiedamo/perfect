@@ -55,10 +55,6 @@ pacstrap -KM /mnt base iptables mkinitcpio
 
 genfstab -U /mnt | tee -a /mnt/etc/fstab
 
-printf '%s\n' 'export DISK="$(realpath "/dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001")" DISKAUX="$(realpath "/dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c")"' | tee /mnt/etc/profile.d/disk.sh
-printf '%s\n' 'export BOOT="${DISK}p1" ROOT="${DISK}p2" AUX="${DISKAUX}p1"' | tee /mnt/etc/profile.d/part.sh
-printf '%s\n' 'export UUID="$(lsblk -dno UUID /dev/mapper/root)"' | tee /mnt/etc/profile.d/uuid.sh
-
 install -m 0777 /root/perfect/perfect_install /mnt/usr/local/bin/
 install -m 0777 /root/perfect/perfect_setup /mnt/usr/local/bin/
 install -m 0777 /root/perfect/snapshot_sdboot /mnt/usr/local/bin/

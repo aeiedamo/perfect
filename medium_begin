@@ -43,10 +43,6 @@ pacstrap -KM /mnt base iptables mkinitcpio
 
 genfstab -U /mnt | tee -a /mnt/etc/fstab
 
-printf '%s\n' 'export DISK="$(realpath "/dev/disk/by-id/ata-SAMSUNG_MZVLB256HAHQ-000_S45UNX0N104146")"' | tee /mnt/etc/profile.d/disk.sh
-printf '%s\n' 'export BOOT="${DISK}1" ROOT="${DISK}2"' | tee /mnt/etc/profile.d/part.sh
-printf '%s\n' 'export UUID="$(lsblk -dno UUID "${ROOT}")"' | tee /mnt/etc/profile.d/uuid.sh
-
 install -m 0777 /root/perfect/medium_install /mnt/usr/local/bin/
 install -m 0777 /root/perfect/medium_setup /mnt/usr/local/bin/
 

@@ -2,9 +2,10 @@
 
 set -a -e -o pipefail -u
 
-DISK="$(realpath /dev/disk/by-id/ata-SAMSUNG_MZVLB256HAHQ-000_S45UNX0N104146)"
+DISK="$(realpath "/dev/disk/by-id/ata-SAMSUNG_MZVLB256HAHQ-000_S45UNX0N104146")"
+BOOT="${DISK}1"
 ROOT="${DISK}2"
-UUID="$(lsblk -dno UUID "${ROOT}")"
+UUID="$(blkid -o value -s UUID "${ROOT}")"
 
 sed -i -e '/^#en_US.UTF-8/s/^#//' -e '/^#ar_EG.UTF-8/s/^#//' /etc/locale.gen
 locale-gen
