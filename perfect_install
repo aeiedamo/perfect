@@ -69,7 +69,7 @@ printf '%s\n' '[zram0]' 'zram-size=ram' 'compression-algorithm=zstd' | tee /etc/
 mkdir -p /etc/systemd/logind.conf.d/
 printf '%s\n' '[Login]' 'HandleLidSwitch=ignore' 'HandleLidSwitchExternalPower=ignore' | tee /etc/systemd/logind.conf.d/00-lid.conf
 
-sed -i -e '/^#MulticastDNS/s/yes/no/' -e '/^#MulticastDNS/s/^#//' /etc/systemd/resolved.conf
+sed -i -e '/^#MulticastDNS/s/yes/resolve/' -e '/^#MulticastDNS/s/^#//' /etc/systemd/resolved.conf
 
 printf '%s\n' 'ListenAddress aeiedamo.local' | tee /etc/ssh/sshd_config.d/00-local.conf
 
@@ -92,7 +92,7 @@ printf '%s\n' '"\e[A": history-search-backward' '"\e[B": history-search-forward'
 
 printf '%s\n' '[uefi_capsule]' 'DisableShimForSecureBoot=true' | tee -a /etc/fwupd/fwupd.conf
 
-sed -i -e '/^hosts/s/resolve \[\!UNAVAIL=return\]/mdns_minimal \[NOTFOUND=return\]/g' -e '/^hosts/s/$/& libvirt libvirt_guest/' /etc/nsswitch.conf
+sed -i -e '/^hosts/s/resolve \[\!UNAVAIL=return\]/myhostname mdns_minimal \[NOTFOUND=return\] &/g' -e '/^hosts/s/\bmyhostname \b//2g' -e '/^hosts/s/$/& libvirt libvirt_guest/' /etc/nsswitch.conf
 
 sed -i -e '/^DefaultZone/s/=.*$/=trusted/' /etc/firewalld/firewalld.conf
 

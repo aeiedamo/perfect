@@ -6,14 +6,26 @@ DISK="$(realpath "/dev/disk/by-id/ata-SAMSUNG_MZVLB256HAHQ-000_S45UNX0N104146")"
 BOOT="${DISK}1"
 ROOT="${DISK}2"
 
+genUUID() {
+	UUID="$(uuidgen -r)"
+	UUID="${1}${UUID:2}"
+	printf '%s\n' "${UUID}"
+}
+
+genID() {
+	ID="$(uuidgen -r)"
+	ID="b7${ID:0:6}"
+	printf '%s\n' "${ID}"
+}
+
 blkdiscard -f -z "${DISK}"
 partprobe "${DISK}"
 
-sgdisk -U '5aa18b36-fd82-5ef4-a29c-069e38235b24' -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -u 1:'37641da7-41ef-5d8b-b77e-5b01ddf95f5a' -N 2 -t 2:8304 -c 2:'root' -u 2:'7b522fa0-e182-5461-8124-6d7b81158b8e' "${DISK}"
+sgdisk -U "$(genUUID 'd5')" -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -u 1:"$(genUUID 'd9')" -N 2 -t 2:8304 -c 2:'root' -u 2:"$(genUUID 'd9')" "${DISK}"
 
-mkfs.fat -I -F 32 -i 'b007ef11' -n 'BOOT' "${BOOT}"
+mkfs.fat -I -F 32 -i "$(genID)" -n 'BOOT' "${BOOT}"
 
-mkfs.btrfs -f -L 'root' -d single -m single -U '8fbd2d93-3a23-5178-ab4b-71567cf60265' "${ROOT}"
+mkfs.btrfs -f -L 'root' -d single -m single -U "$(genUUID 'bf')" "${ROOT}"
 
 mount -o 'compress=zstd' "${ROOT}" /mnt
 btrfs subvolume create /mnt/@ /mnt/@var /mnt/@home /mnt/@snapshots
