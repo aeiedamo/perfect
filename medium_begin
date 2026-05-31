@@ -39,7 +39,7 @@ mount -m -o 'nosuid,nodev,noexec,nosymfollow,fmask=0177,dmask=0077' "${BOOT}" /m
 
 chattr +C /mnt/var
 
-pacstrap -KM /mnt base iptables mkinitcpio
+pacstrap -C /root/perfect/pacman.d/pacman.conf -K -M /mnt base iptables mkinitcpio
 
 genfstab -U /mnt | tee -a /mnt/etc/fstab
 
