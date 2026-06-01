@@ -114,6 +114,8 @@ mv /opt/configs/tlp.d/00-main.conf /etc/tlp.d/
 mkdir -p /etc/X11/xorg.conf.d
 printf '%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n%s\n' 'Section "InputClass"' 'Identifier "system-keyboard"' 'MatchIsKeyboard "on"' 'Option "XkbLayout" "us,eg"' 'Option "XkbModel" "pc104"' 'Option "XkbVariant" ","' 'Option "XkbOptions" "grp:win_space_toggle"' 'EndSection' | tee /etc/X11/xorg.conf.d/00-keyboard.conf
 
+mv /opt/configs/xdg/mimeapps.list /etc/xdg/
+
 printf '%s\n' 'user-db:user' 'system-db:gdm' 'file-db:/usr/share/gdm/greeter-dconf-defaults' | tee /etc/dconf/profile/gdm
 printf '%s\n' 'user-db:user' 'system-db:local' | tee /etc/dconf/profile/user
 
