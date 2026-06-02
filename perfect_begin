@@ -2,20 +2,20 @@
 
 set -a -e -o pipefail -u
 
-DISK="$(realpath "/dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001")"
-DISKAUX="$(realpath "/dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c")"
+DISK="$(realpath '/dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001')"
+DISKAUX="$(realpath '/dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c')"
 BOOT="${DISK}p1"
 ROOT="${DISK}p2"
 AUX="${DISKAUX}p1"
 
 genUUID() {
-	UUID="$(uuidgen -r)"
+	UUID="$(< /proc/sys/kernel/random/uuid)"
 	UUID="${1}${UUID:2}"
 	printf '%s\n' "${UUID}"
 }
 
 genID() {
-	ID="$(uuidgen -r)"
+	ID="$(< /proc/sys/kernel/random/uuid)"
 	ID="b7${ID:0:6}"
 	printf '%s\n' "${ID}"
 }

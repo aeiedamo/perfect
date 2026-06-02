@@ -2,18 +2,18 @@
 
 set -a -e -o pipefail -u
 
-DISK="$(realpath "/dev/disk/by-id/ata-SAMSUNG_MZVLB256HAHQ-000_S45UNX0N104146")"
+DISK="$(realpath '/dev/disk/by-id/ata-SAMSUNG_MZVLB256HAHQ-000_S45UNX0N104146')"
 BOOT="${DISK}1"
 ROOT="${DISK}2"
 
 genUUID() {
-	UUID="$(uuidgen -r)"
+	UUID="$(< /proc/sys/kernel/random/uuid)"
 	UUID="${1}${UUID:2}"
 	printf '%s\n' "${UUID}"
 }
 
 genID() {
-	ID="$(uuidgen -r)"
+	ID="$(< /proc/sys/kernel/random/uuid)"
 	ID="b7${ID:0:6}"
 	printf '%s\n' "${ID}"
 }

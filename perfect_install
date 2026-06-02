@@ -2,8 +2,8 @@
 
 set -a -e -o pipefail -u
 
-DISK="$(realpath "/dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001")"
-DISKAUX="$(realpath "/dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c")"
+DISK="$(realpath '/dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001')"
+DISKAUX="$(realpath '/dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c')"
 ROOT="${DISK}p2"
 AUX="${DISKAUX}p1"
 UUID="$(blkid -o value -s UUID /dev/mapper/root)"
@@ -48,8 +48,8 @@ printf '%s%s%s %s%s%s %s %s%s %s %s %s\n' 'rd.luks.name=' "$(blkid -o value -s U
 
 bootctl install --variables=no
 printf '%s\t%s\n' 'default' '@saved' | tee /boot/loader/loader.conf
-printf '%s\t%s\n' 'title' 'Arch Linux' 'sort-key' '0' 'linux' '/vmlinuz-linux' 'initrd' '/initramfs-linux.img' 'options' "$(cat /etc/kernel/cmdline)" | tee /boot/loader/entries/arch-linux.conf
-printf '%s\t%s\n' 'title' 'Arch Linux LTS' 'sort-key' '1' 'linux' '/vmlinuz-linux-lts' 'initrd' '/initramfs-linux-lts.img' 'options' "$(cat /etc/kernel/cmdline)" | tee /boot/loader/entries/arch-linux-lts.conf
+printf '%s\t%s\n' 'title' 'Arch Linux' 'sort-key' '0' 'linux' '/vmlinuz-linux' 'initrd' '/initramfs-linux.img' 'options' "$(< /etc/kernel/cmdline)" | tee /boot/loader/entries/arch-linux.conf
+printf '%s\t%s\n' 'title' 'Arch Linux LTS' 'sort-key' '1' 'linux' '/vmlinuz-linux-lts' 'initrd' '/initramfs-linux-lts.img' 'options' "$(< /etc/kernel/cmdline)" | tee /boot/loader/entries/arch-linux-lts.conf
 
 printf '%s\n' "UUID=${UUID}" 'DB_SIZE=1073741824' | tee /etc/bees/beesd_root.conf
 
@@ -98,7 +98,7 @@ printf '%s\n' '"\e[A": history-search-backward' '"\e[B": history-search-forward'
 
 printf '%s\n' '[uefi_capsule]' 'DisableShimForSecureBoot=true' | tee -a /etc/fwupd/fwupd.conf
 
-sed -i -e '/^hosts/s/resolve \[\!UNAVAIL=return\]/myhostname mdns_minimal \[NOTFOUND=return\] &/g' -e '/^hosts/s/\bmyhostname \b//2g' -e '/^hosts/s/$/& libvirt libvirt_guest/' /etc/nsswitch.conf
+sed -i -e '/^hosts/s/myhostname //' -e '/^hosts/s/resolve \[\!UNAVAIL=return\]/myhostname mdns_minimal \[NOTFOUND=return\] &/' -e '/^hosts/s/$/& libvirt libvirt_guest/' /etc/nsswitch.conf
 
 sed -i -e '/^DefaultZone/s/=.*$/=trusted/' /etc/firewalld/firewalld.conf
 
