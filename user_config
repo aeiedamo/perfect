@@ -25,3 +25,5 @@ mkdir -p "${XDG_DATA_HOME}/images"
 chattr +C "${XDG_DATA_HOME}/images"
 
 yes | yay -Syu hunspell-ar otf-ibm-plex ttf-apple-emoji
+
+systemctl --user enable warp-taskbar.service
