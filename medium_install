@@ -154,6 +154,8 @@ dconf update
 
 flatpak override --filesystem='xdg-config/fontconfig'
 
+mv /opt/configs/xdg/qt6ct /etc/xdg/
+
 printf '%s\n' 'pref("general.config.filename", "firefox.cfg");' 'pref("general.config.obscure_value", 0);' | tee /usr/lib/firefox/defaults/pref/autoconfig.js
 mv /opt/configs/firefox/firefox.cfg /usr/lib/firefox/
 
