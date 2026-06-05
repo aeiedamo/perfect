@@ -83,7 +83,7 @@ cp /etc/skel/.bashrc /root/
 mkdir -p /root/.cache /root/.config /root/.local/bin /root/.local/share /root/.local/state
 
 git clone 'https://gitlab.com/aeiedamo/perfect.git' /root/perfect
-printf '%s\n' 'export PATH="${PATH}:/root/perfect"' | tee /etc/profile.d/04-perfect.sh
+printf '%s\n' 'export PATH="${PATH}:/root/perfect"' | tee /etc/profile.d/03-perfect.sh
 
 sed -i -e '/^PS1\b/d' /root/.bashrc
 printf '%s\n' "PS1=' \[\e[92;1;4m\]⮜ \A | \u | \w | \$? ⮞\[\e[0m\] '" | tee -a /root/.bashrc

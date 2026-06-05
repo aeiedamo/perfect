@@ -2,7 +2,7 @@
 
 set -a -e
 
-cd ${HOME}
+cd "${HOME}"
 
 . /etc/profile
 
