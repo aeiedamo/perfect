@@ -8,6 +8,8 @@ cd "${HOME}"
 
 mkdir -p "${XDG_CACHE_HOME}" "${XDG_CONFIG_HOME}/easyeffects/output" "${XDG_CONFIG_HOME}/fontconfig" "${XDG_CONFIG_HOME}/ghostty" "${XDG_DATA_HOME}" "${XDG_STATE_HOME}" "${HOME}/.local/bin"
 
+yay -Syu --needed --noconfirm hunspell-ar otf-ibm-plex ttf-apple-emoji
+
 cp /etc/fonts/local.conf "${XDG_CONFIG_HOME}/fontconfig/fonts.conf"
 
 sed -i -e '/^PS1\b/d' "${HOME}/.bashrc"
@@ -23,7 +25,5 @@ git clone --depth 1 'https://github.com/BayouGuru67/Linux_Audio.git' "${XDG_CONF
 
 mkdir -p "${XDG_DATA_HOME}/images"
 chattr +C "${XDG_DATA_HOME}/images"
-
-yes | yay -Syu hunspell-ar otf-ibm-plex ttf-apple-emoji
 
 systemctl --user enable warp-taskbar.service
