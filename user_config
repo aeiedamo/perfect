@@ -25,5 +25,3 @@ git clone --depth 1 'https://github.com/BayouGuru67/Linux_Audio.git' "${XDG_CONF
 
 mkdir -p "${XDG_DATA_HOME}/images"
 chattr +C "${XDG_DATA_HOME}/images"
-
-systemctl --user enable warp-taskbar.service

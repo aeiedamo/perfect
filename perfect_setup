@@ -22,4 +22,7 @@ mount -a
 systemctl daemon-reload
 systemctl enable snapper-boot.timer snapper-cleanup.timer snapshot_sdboot.service
 
+warp-cli registration new
+warp-cli generate-completions bash | tee /usr/share/bash-completion/completions/warp-cli
+
 rm -f -r /opt/configs /usr/local/bin/perfect_setup
