@@ -172,4 +172,4 @@ systemctl mask systemd-timesyncd.service
 
 systemctl enable avahi-daemon.service "beesd@${UUID}.service" bluetooth.service chronyd.service cronie.service cups.service fail2ban.service firewalld.service fstrim.timer fwupd-refresh.timer gdm.service ModemManager.service NetworkManager.service sshd.service systemd-boot-update.service systemd-resolved.service throttled.service tlp.service tlp-pd.service virtinterfaced.service virtlockd.service virtlogd.service virtnetworkd.service virtnodedevd.service virtnwfilterd.service virtqemud.service virtsecretd.service virtstoraged.service warp-svc.service wpa_supplicant.service
 
-systemctl --global enable warp-svc.service
+systemctl --global enable warp-taskbar.service
