@@ -74,7 +74,7 @@ printf '%s\n' '[sshd]' 'enabled = true' | tee /etc/fail2ban/jail.d/00-sshd.conf
 
 printf '%s\n' "export EDITOR='vim' VISUAL='vim'" | tee /etc/profile.d/00-editor.sh
 
-printf '%s\n' 'export XDG_CONFIG_HOME="${HOME}/.config" XDG_CACHE_HOME="${HOME}/.cache" XDG_DATA_HOME="${HOME}/.local/share" XDG_STATE_HOME="${HOME}/.local/state" PATH="${PATH}:${HOME}/.local/bin"' | tee /etc/profile.d/01-xdg.sh
+printf '%s\n' 'export XDG_CONFIG_HOME="${HOME}/.config" XDG_CACHE_HOME="${HOME}/.cache" XDG_DATA_HOME="${HOME}/.local/share" XDG_STATE_HOME="${HOME}/.local/state" PATH="${HOME}/.local/bin:${PATH}"' | tee /etc/profile.d/01-xdg.sh
 
 printf '%s\n' "export QT_QPA_PLATFORM='wayland' QT_QPA_PLATFORMTHEME='qt6ct'" | tee /etc/profile.d/02-qt.sh
 
@@ -83,7 +83,7 @@ cp /etc/skel/.bashrc /root/
 mkdir -p /root/.cache /root/.config /root/.local/bin /root/.local/share /root/.local/state
 
 git clone 'https://gitlab.com/aeiedamo/perfect.git' /root/perfect
-printf '%s\n' 'export PATH="${PATH}:/root/perfect"' | tee /etc/profile.d/03-perfect.sh
+printf '%s\n' 'export PATH="/root/perfect:${PATH}"' | tee /etc/profile.d/03-perfect.sh
 
 sed -i -e '/^PS1\b/d' /root/.bashrc
 printf '%s\n' "PS1=' \[\e[92;1;4m\]⮜ \A | \u | \w | \$? ⮞\[\e[0m\] '" | tee -a /root/.bashrc
