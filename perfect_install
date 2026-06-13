@@ -135,7 +135,7 @@ mv /opt/configs/backgrounds/stairs.xml /usr/share/gnome-background-properties/
 mv /opt/configs/backgrounds/personal /usr/share/backgrounds/
 
 printf '%s\n' '[org/gnome/desktop/interface]' "font-name='Sans 10'" "document-font-name='Serif 10'" "monospace-font-name='Monospace 10'" '' '[org/gnome/desktop/wm/preferences]' "titlebar-font='Sans 10'" | tee /etc/dconf/db/local.d/00-fonts
-printf '%s\n' '[org/gnome/desktop/interface]' "accent-color='yellow'" "color-scheme='prefer-dark'" "gtk-theme='Adwaita-dark'" 'show-battery-percentage=true' 'clock-show-seconds=true' 'gtk-enable-primary-paste=true' | tee /etc/dconf/db/local.d/01-look
+printf '%s\n' '[org/gnome/desktop/interface]' "accent-color='yellow'" "color-scheme='prefer-dark'" "gtk-theme='Adwaita-dark'" 'show-battery-percentage=true' 'clock-show-seconds=true' 'gtk-enable-primary-paste=true' '' '[org/gnome/shell]' 'always-show-log-out=true' | tee /etc/dconf/db/local.d/01-look
 printf '%s\n' '[org/gnome/desktop/background]' "picture-uri='file:///usr/share/backgrounds/personal/stairs.jpg'" "picture-uri-dark='file:///usr/share/backgrounds/personal/stairs.jpg'" "picture-options='zoom'" "primary-color='#A15F30'" "secondary-color='#280D04'" "color-shading-type='solid'" | tee /etc/dconf/db/local.d/02-background
 printf '%s\n' '[org/gnome/shell]' 'disable-extension-version-validation=true' "enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com']" '' '[org/gnome/shell/extensions/appindicator]' 'legacy-tray-enabled=false' | tee /etc/dconf/db/local.d/03-extensions
 printf '%s\n' '[org/gnome/desktop/sound]' 'event-sounds=false' '' '[org/gnome/desktop/wm/preferences]' 'audible-bell=false' | tee /etc/dconf/db/local.d/04-sounds
