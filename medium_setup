@@ -16,5 +16,6 @@ systemctl enable snapper-boot.timer snapper-cleanup.timer
 
 yes | warp-cli registration new
 warp-cli generate-completions bash | tee /usr/share/bash-completion/completions/warp-cli
+warp-cli connect
 
 rm -f -r /opt/configs /usr/local/bin/medium_setup
