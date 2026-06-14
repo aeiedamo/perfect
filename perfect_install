@@ -19,6 +19,10 @@ printf '%s\n' 'KEYMAP=us' 'FONT=default8x16' | tee /etc/vconsole.conf
 
 printf '%s\n' 'aeiedamo' | tee /etc/hostname
 
+pacman-key -r '3056513887B78AEB' --keyserver 'keyserver.ubuntu.com'
+pacman-key --lsign-key '3056513887B78AEB'
+pacman -U --noconfirm 'https://builds.garudalinux.org/repos/chaotic-aur/chaotic-keyring.pkg.tar.zst'
+
 sed -i -e '/^#NoExtract/s/$/ boot\/intel-ucode.img/' -e '/^#NoExtract/s/^#//' -e '/^#Color/s/^#//' -e '/^#Verbose/a DisableDownloadTimeout' -e '/^#Verbose/s/^#//' -e '/^#\[core\|^#\[extra\|^#\[multilib/,+1s/^#//' -e '$ a [chaotic-aur]' -e '$ a Include = /etc/pacman.d/chaotic-mirrorlist' /etc/pacman.conf
 printf '%s\n' 'Server = https://mirror.pkgbuild.com/$repo/os/$arch' 'Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch' | tee /etc/pacman.d/mirrorlist
 printf '%s\n' 'Server = https://builds.garudalinux.org/repos/$repo/$arch' 'Server = https://geo-mirror.chaotic.cx/$repo/$arch' | tee /etc/pacman.d/chaotic-mirrorlist
@@ -27,10 +31,6 @@ sed -i -e "/^#MAKEFLAGS/s/=.*$/=\"-j$(nproc)\"/" -e '/^#MAKEFLAGS/s/^#//' -e '/^
 sed -i -e '/^MODULES/s/(/&i915/' -e '/^HOOKS/s/systemd/& plymouth btrfs/' -e '/^HOOKS/s/filesystems/sd-encrypt &/' /etc/mkinitcpio.conf
 
 systemd-hwdb update
-
-pacman-key -r '3056513887B78AEB' --keyserver 'keyserver.ubuntu.com'
-pacman-key --lsign-key '3056513887B78AEB'
-pacman -U --noconfirm 'https://builds.garudalinux.org/repos/chaotic-aur/chaotic-keyring.pkg.tar.zst'
 
 pacman -Syyuu --needed --noconfirm linux linux-headers linux-lts linux-lts-headers alsa-firmware alsa-utils guestfs-tools intel-ucode linux-firmware linux-tools-meta plymouth sbctl scx-tools snap-pac sof-firmware wireless-regdb base-devel bash-completion bees devtools firejail libglvnd modemmanager networkmanager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-cascadia-code ttf-ibmplex-mono-nerd ttf-jetbrains-mono-nerd ttf-noto-nerd zram-generator gdm gnome-control-center qemu-full qemu-guest-agent qemu-user-static-binfmt virt-manager 7zip adwaita-qt6-git alacarte android-tools archlinux-appstream-data arch-wiki-docs ardour at baobab bind bluez-cups bluez-utils btrfs-assistant calf cdrtools celluloid chrony cloudflare-warp-bin colordiff cronie crun cups-pdf dconf-editor discord distrobox dnsmasq easyeffects edk2-shell efibootmgr element-desktop ethtool evolution-ews evolution-spamassassin extension-manager fail2ban fastfetch fd file-roller firefox-i18n-ar firewall-applet flatpak-xdg-utils fzf gemini-cli ghostty gimp github-cli glab gnome-browser-connector gnome-characters gnome-console gnome-firmware gnome-keyring gnome-remote-desktop gnome-shell-extension-appindicator gnome-software gnome-themes-extra gnome-tweaks gnome-user-share google-chrome gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gst-thumbnailers gvfs-afc gvfs-dnssd gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive gvfs-smb gvfs-wsdd hunspell-en_us inetutils intel-compute-runtime-legacy intel-gmmlib-legacy intel-graphics-compiler-legacy intel-media-sdk iwd jdk-openjdk lib32-vulkan-intel libappindicator libayatana-appindicator libreoffice-fresh-ar loupe lsp-plugins-lv2 malcontent man-db mda.lv2 mission-center namcap net-tools networkmanager-l2tp networkmanager-pptp nm-connection-editor npm nss-mdns ntfsprogs obsidian obs-studio onnxruntime-cpu openbsd-netcat orca pkgstats podman proton-vpn-cli proton-vpn-gtk-app python-pip qalculate-gtk qbittorrent qt6ct qt6-multimedia-gstreamer radvd ripgrep rnote rust rygel samba seahorse shelly smartmontools snapshot steam swtpm system-config-printer telegram-desktop throttled tlp-pd tlp-rdw tlpui tmux traceroute trash-cli unrar usb_modeswitch visual-studio-code-bin vulkan-intel vulkan-tools waydroid wdiff wget wl-clipboard yay yt-dlp zam-plugins-lv2 zip
 
