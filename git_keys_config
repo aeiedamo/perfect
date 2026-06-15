@@ -2,7 +2,7 @@
 
 set -a -e -o pipefail -u
 
-ssh-keygen
+ssh-keygen -f "${HOME}/.ssh/id_ed25519" -C 'am@aeiedamo' -t ed25519
 gpg --full-gen-key
 
 GPGKEY="$(gpg -K --keyid-format long --with-colons | awk -F: '/^sec/{print $5; exit;}')"
@@ -18,14 +18,14 @@ git config set --global commit.gpgSign true
 git config set --global tag.gpgSign true
 git config set --global push.followTags true
 
-gh auth login -c -p 'ssh' -s 'admin:gpg_key,admin:public_key,gist,user,repo,delete_repo' -w
-ssh -T 'git@github.com' || true
-gh gpg-key add "${KEYFILE}" -t 'AlaEldin Mohamed <aeiedamo@gmail.com>'
-gh config set telemetry disabled
-
-glab auth login -g 'ssh' --use-keyring --web
+glab auth login --container-registry-domains 'gitlab.com,gitlab.com:443,registry.gitlab.com' -g 'ssh' --hostname 'gitlab.com' --use-keyring --web
 glab ssh-key add "${HOME}/.ssh/id_ed25519.pub" -t 'am@aeiedamo'
 ssh -T 'git@gitlab.com' || true
 glab gpg-key add "${KEYFILE}"
+
+gh auth login -c -p 'ssh' -s 'admin:gpg_key,admin:org,admin:public_key,codespace,delete:packages,delete_repo,gist,notifications,project,read:packages,repo,user,write:packages,workflow' -w
+ssh -T 'git@github.com' || true
+gh gpg-key add "${KEYFILE}" -t 'AlaEldin Mohamed <aeiedamo@gmail.com>'
+gh config set telemetry disabled
 
 sudo rm -f /usr/local/bin/git_keys_config
