@@ -53,8 +53,7 @@ printf '%s\t%s\n' 'title' 'Arch Linux LTS' 'sort-key' '1' 'linux' '/vmlinuz-linu
 
 printf '%s\n' "UUID=${UUID}" 'DB_SIZE=1073741824' | tee /etc/bees/beesd_root.conf
 
-printf '%s\n' 'Defaults !env_reset' | tee /etc/sudoers.d/00-env
-printf '%s\n' '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/01-wheel
+printf '%s\n' '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/00-wheel
 
 printf '%s\n' 'polkit.addRule(function(action, subject) { if (subject.isInGroup("wheel")) { return polkit.Result.YES; }});' | tee /etc/polkit-1/rules.d/00-wheel.rules
 
