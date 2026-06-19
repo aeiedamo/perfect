@@ -20,4 +20,6 @@ systemctl enable snapper-boot.timer snapper-cleanup.timer waydroid-container.ser
 yes | warp-cli registration new
 warp-cli generate-completions bash | tee /usr/share/bash-completion/completions/warp-cli
 
+sed -i -e '/archive.archlinux.org/d' /etc/pacman.d/mirrorlist
+
 rm -f -r /opt/configs /usr/local/bin/medium_setup

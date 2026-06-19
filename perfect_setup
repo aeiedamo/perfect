@@ -28,4 +28,6 @@ systemctl enable snapper-boot.timer snapper-cleanup.timer snapshot_sdboot.servic
 yes | warp-cli registration new
 warp-cli generate-completions bash | tee /usr/share/bash-completion/completions/warp-cli
 
+sed -i -e '/archive.archlinux.org/d' /etc/pacman.d/mirrorlist
+
 rm -f -r /opt/configs /usr/local/bin/perfect_setup
