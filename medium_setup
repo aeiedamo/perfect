@@ -12,7 +12,10 @@ btrfs subvolume delete /.snapshots
 mkdir /.snapshots
 mount -a
 systemctl daemon-reload
-systemctl enable snapper-boot.timer snapper-cleanup.timer
+
+waydroid init -s GAPPS
+
+systemctl enable snapper-boot.timer snapper-cleanup.timer waydroid-container.service
 
 yes | warp-cli registration new
 warp-cli generate-completions bash | tee /usr/share/bash-completion/completions/warp-cli
