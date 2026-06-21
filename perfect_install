@@ -33,7 +33,7 @@ pacman -Syyuu --needed --noconfirm linux linux-headers linux-lts linux-lts-heade
 flatpak install -y flathub org.kde.kdenlive org.kde.okular
 
 sbctl create-keys
-sbctl enroll-keys
+sbctl enroll-keys --yolo
 sbctl sign -s /boot/vmlinuz-linux
 sbctl sign -s /boot/vmlinuz-linux-lts
 sbctl sign -s -o /usr/lib/systemd/boot/efi/systemd-bootx64.efi.signed /usr/lib/systemd/boot/efi/systemd-bootx64.efi
