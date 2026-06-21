@@ -2,10 +2,6 @@
 
 set -a -e -o pipefail -u
 
-DISK="$(realpath '/dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001')"
-DISKAUX="$(realpath '/dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c')"
-ROOT="${DISK}p2"
-AUX="${DISKAUX}p1"
 UUID="$(blkid -o value -s UUID /dev/mapper/root)"
 
 sed -i -e '/^#en_US.UTF-8/s/^#//' -e '/^#ar_EG.UTF-8/s/^#//' /etc/locale.gen
@@ -56,8 +52,6 @@ printf '%s\n' "UUID=${UUID}" 'DB_SIZE=1073741824' | tee /etc/bees/beesd_root.con
 printf '%s\n' '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/00-wheel
 
 printf '%s\n' 'polkit.addRule(function(action, subject) { if (subject.isInGroup("wheel")) { return polkit.Result.YES; }});' | tee /etc/polkit-1/rules.d/00-wheel.rules
-
-read -p 'Enter Password: ' -r PASSWD
 
 printf '%s\n' "${PASSWD}" "${PASSWD}" | passwd root
 

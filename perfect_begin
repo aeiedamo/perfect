@@ -2,6 +2,8 @@
 
 set -a -e -o pipefail -u
 
+read -p 'Enter Password: ' -r PASSWD
+
 DISK="$(realpath '/dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001')"
 DISKAUX="$(realpath '/dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c')"
 BOOT="${DISK}p1"
@@ -29,8 +31,6 @@ sgdisk -U "$(genUUID 'd5')" -I -N 1 -t 1:8304 -c 1:'aux' -u 1:"$(genUUID 'd9')" 
 
 mkfs.fat -I -F 32 -i "$(genID)" -n 'BOOT' "${BOOT}"
 
-read -p 'Enter Passphrase: ' -r PASSWD
-
 printf '%s\n' "${PASSWD}" | cryptsetup luksFormat --label 'root' --uuid "$(genUUID 'ec')" -q "${ROOT}"
 printf '%s\n' "${PASSWD}" | cryptsetup luksFormat --label 'aux' --uuid "$(genUUID 'ec')" -q "${AUX}"
 
@@ -47,7 +47,7 @@ mount -o 'compress=zstd,subvol=/@' /dev/mapper/root /mnt
 mount -m -o 'compress=zstd,subvol=/@var' /dev/mapper/root /mnt/var
 mount -m -o 'compress=zstd,subvol=/@home' /dev/mapper/root /mnt/home
 mount -m -o 'compress=zstd,subvol=/@snapshots' /dev/mapper/root /mnt/.snapshots
-mount -m -o 'nosuid,nodev,noexec,nosymfollow,fmask=0177,dmask=0077' "${BOOT}" /mnt/boot
+mount -m -o 'nosuid,nodev,noexec,nosymfollow,fmask=0133,dmask=0022' "${BOOT}" /mnt/boot
 
 chattr +C /mnt/var
 
@@ -66,7 +66,7 @@ cp -a /root/perfect/configs /mnt/opt/
 
 ln -f -s /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 
-arch-chroot -S /mnt /usr/local/bin/perfect_install
+arch-chroot /mnt /usr/local/bin/perfect_install
 arch-chroot -S -u am /mnt /usr/local/bin/user_config
 
 rm -f /mnt/usr/local/bin/perfect_install /mnt/usr/local/bin/user_config

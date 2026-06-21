@@ -2,9 +2,6 @@
 
 set -a -e -o pipefail -u
 
-DISK="$(realpath '/dev/disk/by-id/ata-SAMSUNG_MZVLB256HAHQ-000_S45UNX0N104146')"
-BOOT="${DISK}1"
-ROOT="${DISK}2"
 UUID="$(blkid -o value -s UUID "${ROOT}")"
 
 sed -i -e '/^#en_US.UTF-8/s/^#//' -e '/^#ar_EG.UTF-8/s/^#//' /etc/locale.gen
@@ -49,8 +46,6 @@ printf '%s\n' "UUID=${UUID}" 'DB_SIZE=1073741824' | tee /etc/bees/beesd_root.con
 printf '%s\n' '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/00-wheel
 
 printf '%s\n' 'polkit.addRule(function(action, subject) { if (subject.isInGroup("wheel")) { return polkit.Result.YES; }});' | tee /etc/polkit-1/rules.d/00-wheel.rules
-
-read -p 'Enter Password: ' -r PASSWD
 
 printf '%s\n' "${PASSWD}" "${PASSWD}" | passwd root
 
