@@ -6,7 +6,7 @@ cd "${HOME}"
 
 . /etc/profile
 
-mkdir -p "${XDG_CACHE_HOME}" "${XDG_CONFIG_HOME}/easyeffects/output" "${XDG_CONFIG_HOME}/fontconfig" "${XDG_CONFIG_HOME}/ghostty" "${XDG_DATA_HOME}" "${XDG_STATE_HOME}" "${HOME}/.local/bin"
+mkdir -p "${XDG_CACHE_HOME}" "${XDG_CONFIG_HOME}/fontconfig" "${XDG_CONFIG_HOME}/ghostty" "${XDG_DATA_HOME}/easyeffects/output" "${XDG_STATE_HOME}" "${HOME}/.local/bin"
 
 yay -Syu --needed --noconfirm hunspell-ar otf-ibm-plex ttf-apple-emoji
 
@@ -21,7 +21,7 @@ printf '%s\n' '--enable-features=AcceleratedVideoDecodeLinuxGL,TouchpadOverscrol
 
 printf '%s\n' 'font-family = monospace' 'font-size = 10' 'theme = light:Gruvbox Material Light,dark:Gruvbox Material Dark' 'window-decoration = none' 'maximize = true' | tee -a "${XDG_CONFIG_HOME}/ghostty/config"
 
-git clone --depth 1 'https://github.com/BayouGuru67/Linux_Audio.git' "${XDG_CONFIG_HOME}/easyeffects/output/"
+git clone --depth 1 'https://github.com/BayouGuru67/Linux_Audio.git' "${XDG_DATA_HOME}/easyeffects/output/"
 
 mkdir -p "${XDG_DATA_HOME}/images"
 chattr +C "${XDG_DATA_HOME}/images"
