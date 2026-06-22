@@ -34,7 +34,7 @@ flatpak install -y flathub org.kde.kdenlive org.kde.okular
 
 printf '%s%s %s %s %s\n' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee /etc/kernel/cmdline
 
-bootctl --variables=no -q install
+bootctl --variables=no install &> /dev/null
 printf '%s\t%s\n' 'default' '@saved' | tee /boot/loader/loader.conf
 printf '%s\t%s\n' 'title' 'Arch Linux' 'sort-key' '0' 'linux' '/vmlinuz-linux' 'initrd' '/initramfs-linux.img' 'options' "$(< /etc/kernel/cmdline)" | tee /boot/loader/entries/arch-linux.conf
 printf '%s\t%s\n' 'title' 'Arch Linux LTS' 'sort-key' '1' 'linux' '/vmlinuz-linux-lts' 'initrd' '/initramfs-linux-lts.img' 'options' "$(< /etc/kernel/cmdline)" | tee /boot/loader/entries/arch-linux-lts.conf
