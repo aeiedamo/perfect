@@ -2,23 +2,24 @@
 
 set -a -e -u
 
-umount /.snapshots
-rm -f -r /.snapshots
-snapper -c root create-config /
-snapper -c root set-config 'ALLOW_GROUPS=wheel' 'SYNC_ACL=yes' 'TIMELINE_LIMIT_HOURLY=3' 'TIMELINE_LIMIT_DAILY=3' 'TIMELINE_LIMIT_WEEKLY=4' 'TIMELINE_LIMIT_MONTHLY=0' 'TIMELINE_LIMIT_YEARLY=0' 'NUMBER_LIMIT=15'
-snapper -c home create-config /home
-snapper -c home set-config 'ALLOW_GROUPS=wheel' 'SYNC_ACL=yes' 'TIMELINE_LIMIT_HOURLY=3' 'TIMELINE_LIMIT_DAILY=3' 'TIMELINE_LIMIT_WEEKLY=4' 'TIMELINE_LIMIT_MONTHLY=0' 'TIMELINE_LIMIT_YEARLY=0' 'NUMBER_LIMIT=15'
-btrfs subvolume delete /.snapshots
-mkdir /.snapshots
-systemctl daemon-reload
-mount -a
+sudo umount /.snapshots
+sudo rm -f -r /.snapshots
+sudo snapper -c root create-config /
+sudo snapper -c root set-config 'ALLOW_GROUPS=wheel' 'SYNC_ACL=yes' 'TIMELINE_LIMIT_HOURLY=3' 'TIMELINE_LIMIT_DAILY=3' 'TIMELINE_LIMIT_WEEKLY=4' 'TIMELINE_LIMIT_MONTHLY=0' 'TIMELINE_LIMIT_YEARLY=0' 'NUMBER_LIMIT=15'
+sudo snapper -c home create-config /home
+sudo snapper -c home set-config 'ALLOW_GROUPS=wheel' 'SYNC_ACL=yes' 'TIMELINE_LIMIT_HOURLY=3' 'TIMELINE_LIMIT_DAILY=3' 'TIMELINE_LIMIT_WEEKLY=4' 'TIMELINE_LIMIT_MONTHLY=0' 'TIMELINE_LIMIT_YEARLY=0' 'NUMBER_LIMIT=15'
+sudo btrfs subvolume delete /.snapshots
+sudo mkdir /.snapshots
+sudo systemctl daemon-reload
+sudo mount -a
 
-waydroid init -s GAPPS
+sudo waydroid init -s GAPPS
 
-systemctl enable snapper-boot.timer snapper-cleanup.timer waydroid-container.service
+sudo systemctl enable snapper-boot.timer snapper-cleanup.timer waydroid-container.service
 
-warp-cli --accept-tos generate-completions bash | tee /usr/share/bash-completion/completions/warp-cli
+warp-cli --accept-tos registration new
+warp-cli generate-completions bash | sudo tee /usr/share/bash-completion/completions/warp-cli
 
-sed -i -e '/archive.archlinux.org/d' /etc/pacman.d/mirrorlist
+sudo sed -i -e '/archive.archlinux.org/d' /etc/pacman.d/mirrorlist
 
-rm -f -r /opt/configs /usr/local/bin/medium_setup
+sudo rm -f -r /opt/configs /usr/local/bin/medium_setup
