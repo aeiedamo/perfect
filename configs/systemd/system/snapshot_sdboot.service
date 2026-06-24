@@ -1,6 +1,7 @@
 [Unit]
 Description=Add new systemd-boot entries for snapshots.
 After=snapper-boot.service
+ConditionKernelVersion=*arch*
 
 [Service]
 Type=oneshot

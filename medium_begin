@@ -27,7 +27,7 @@ sgdisk -U "$(genUUID 'd5')" -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -u 1:"$(genUUID 
 
 mkfs.fat -I -F 32 -i "$(genID)" -n 'BOOT' "${BOOT}"
 
-mkfs.btrfs -f -L 'root' -d single -m dup -U "$(genUUID 'bf')" --device-uuid "$(genUUID 'bf')" "${ROOT}"
+mkfs.btrfs -f -L 'root' -d single -m single -U "$(genUUID 'bf')" --device-uuid "$(genUUID 'bf')" "${ROOT}"
 
 mount -o 'compress=zstd' "${ROOT}" /mnt
 btrfs subvolume create /mnt/@ /mnt/@var /mnt/@home /mnt/@snapshots

@@ -37,7 +37,7 @@ printf '%s\n' "${PASSWD}" | cryptsetup luksFormat --label 'aux' --uuid "$(genUUI
 printf '%s\n' "${PASSWD}" | cryptsetup open --allow-discards --persistent "${ROOT}" root
 printf '%s\n' "${PASSWD}" | cryptsetup open --allow-discards --persistent "${AUX}" aux
 
-mkfs.btrfs -f -L 'root' -d raid0 -m raid1 -U "$(genUUID 'bf')" /dev/mapper/root /dev/mapper/aux
+mkfs.btrfs -f -L 'root' -d raid0 -m raid0 -U "$(genUUID 'bf')" /dev/mapper/root /dev/mapper/aux
 
 mount -o 'compress=zstd' /dev/mapper/root /mnt
 btrfs subvolume create /mnt/@ /mnt/@var /mnt/@home /mnt/@snapshots
