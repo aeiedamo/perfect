@@ -13,12 +13,14 @@ sudo mkdir /.snapshots
 sudo systemctl daemon-reload
 sudo mount -a
 
+yes | warp-cli registration new
+warp-cli generate-completions bash | sudo tee /usr/share/bash-completion/completions/warp-cli
+
 sudo waydroid init -s GAPPS
 
 sudo systemctl enable snapper-boot.timer snapper-cleanup.timer waydroid-container.service
 
-warp-cli --accept-tos registration new
-warp-cli generate-completions bash | sudo tee /usr/share/bash-completion/completions/warp-cli
+systemctl --user enable warp-taskbar.service
 
 sudo sed -i -e '/archive.archlinux.org/d' /etc/pacman.d/mirrorlist
 
