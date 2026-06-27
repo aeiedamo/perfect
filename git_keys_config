@@ -20,14 +20,14 @@ git config set --global push.followTags true
 
 gh auth login -c -p 'ssh' -s 'admin:gpg_key,admin:org,admin:public_key,codespace,delete:packages,delete_repo,gist,notifications,project,read:packages,repo,user,write:packages,workflow' --skip-ssh-key -w
 gh ssh-key add "${HOME}/.ssh/id_ed25519.pub" -t 'am@aeiedamo'
-ssh -T 'git@github.com' || true
+ssh -o 'StrictHostKeyChecking=accept-new' -T 'git@github.com' || true
 gh gpg-key add "${KEYFILE}" -t 'AlaEldin Mohamed <aeiedamo@gmail.com>'
 gh config set telemetry disabled
 
 glab config set -g check_update false
 glab auth login --container-registry-domains 'gitlab.com,gitlab.com:443,registry.gitlab.com' -g 'ssh' --hostname 'gitlab.com' --use-keyring --web
 glab ssh-key add "${HOME}/.ssh/id_ed25519.pub" -t 'am@aeiedamo'
-ssh -T 'git@gitlab.com' || true
+ssh -o 'StrictHostKeyChecking=accept-new' -T 'git@gitlab.com' || true
 glab gpg-key add "${KEYFILE}"
 
 sudo rm -f /usr/local/bin/git_keys_config

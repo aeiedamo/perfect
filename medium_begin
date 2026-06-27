@@ -37,7 +37,7 @@ mount -o 'compress=zstd,subvol=/@' "${ROOT}" /mnt
 mount -m -o 'compress=zstd,subvol=/@var' "${ROOT}" /mnt/var
 mount -m -o 'compress=zstd,subvol=/@home' "${ROOT}" /mnt/home
 mount -m -o 'compress=zstd,subvol=/@snapshots' "${ROOT}" /mnt/.snapshots
-mount -m -o 'fmask=0133,dmask=0022' "${BOOT}" /mnt/boot
+mount -m -o 'nosuid,nodev,noexec,nosymfollow,fmask=0177,dmask=0077' "${BOOT}" /mnt/boot
 
 chattr +C /mnt/var
 

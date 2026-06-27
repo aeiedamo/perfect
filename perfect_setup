@@ -30,6 +30,4 @@ sudo systemctl enable snapper-boot.timer snapper-cleanup.timer snapshot_sdboot.s
 
 systemctl --user enable warp-taskbar.service
 
-sudo sed -i -e '/archive.archlinux.org/d' /etc/pacman.d/mirrorlist
-
 sudo rm -f -r /opt/configs /usr/local/bin/perfect_setup
