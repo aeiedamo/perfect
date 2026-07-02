@@ -22,9 +22,26 @@ genID() {
 	printf '%s\n' "${ID}"
 }
 
+wait_sanitize() {
+	local DEV="$1"
+
+	while true; do
+		local SANITIZE_STATUS
+		SANITIZE_STATUS="$(nvme sanitize-log "${DEV}" | grep 'SSTAT' | awk -F ':' '{print $2}' | tr -d '[:space:]' 2>/dev/null)"
+
+		if [[ "${SANITIZE_STATUS}" == '0x101' ]]; then
+			printf '%s\n' "Sanitization of disk ${DEV} completed."
+			break
+		fi
+	done
+}
+
 nvme sanitize "${DISK%n*}" -a 0x02
 nvme sanitize "${DISKAUX%n*}" -a 0x02
-sleep 15
+
+wait_sanitize "${DISK%n*}"
+wait_sanitize "${DISKAUX%n*}"
+
 partprobe "${DISK}" "${DISKAUX}"
 
 sgdisk -U "$(genUUID 'd5')" -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -u 1:"$(genUUID 'd9')" -N 2 -t 2:8304 -c 2:'root' -u 2:"$(genUUID 'd9')" "${DISK}"
