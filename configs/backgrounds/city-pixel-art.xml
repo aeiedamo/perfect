@@ -3,11 +3,11 @@
 <wallpapers>
 	<wallpaper deleted="false">
 		<name>Stairs</name>
-		<filename>/usr/share/backgrounds/personal/stairs.jpg</filename>
-		<filename-dark>/usr/share/backgrounds/personal/stairs.jpg</filename-dark>
+		<filename>/usr/share/backgrounds/personal/city-pixel-art.png</filename>
+		<filename-dark>/usr/share/backgrounds/personal/city-pixel-art.png</filename-dark>
 		<options>zoom</options>
 		<shade_type>solid</shade_type>
-		<pcolor>#A15F30</pcolor>
-		<scolor>#280D04</scolor>
+		<pcolor>#363333</pcolor>
+		<scolor>#675D55</scolor>
 	</wallpaper>
 </wallpapers>
