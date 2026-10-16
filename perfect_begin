@@ -73,6 +73,9 @@ pacstrap -C /root/perfect/pacman.d/pacman.conf -K -M /mnt base iptables mkinitcp
 
 genfstab -U /mnt | tee -a /mnt/etc/fstab
 
+rm -f -r /mnt/etc/pacman.d/
+sed -i -e 's/root\/perfect/etc/g' /root/perfect/pacman.conf
+
 install -m 0777 /root/perfect/perfect_install /mnt/usr/local/bin/
 install -m 0777 /root/perfect/perfect_setup /mnt/usr/local/bin/
 install -m 0777 /root/perfect/snapshot_sdboot /mnt/usr/local/bin/
@@ -81,6 +84,7 @@ install -m 0777 /root/perfect/user_config /mnt/usr/local/bin/
 install -m 0777 /root/perfect/git_keys_config /mnt/usr/local/bin/
 
 cp -a /root/perfect/configs /mnt/opt/
+cp -r /root/perfect/pacman.d/ /mnt/etc/
 
 ln -f -s /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 
