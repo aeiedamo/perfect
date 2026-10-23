@@ -5,10 +5,8 @@ set -a -e -o pipefail -u
 read -p 'Enter Password: ' -r PASSWD
 
 DISK="$(realpath '/dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001')"
-DISKAUX="$(realpath '/dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c')"
 BOOT="${DISK}p1"
 ROOT="${DISK}p2"
-AUX="${DISKAUX}p1"
 
 genUUID() {
 	UUID="$(< /proc/sys/kernel/random/uuid)"
@@ -37,25 +35,20 @@ wait_sanitize() {
 }
 
 nvme sanitize "${DISK%n*}" -a 0x02
-nvme sanitize "${DISKAUX%n*}" -a 0x02
 
 wait_sanitize "${DISK%n*}"
-wait_sanitize "${DISKAUX%n*}"
 
-partprobe "${DISK}" "${DISKAUX}"
+partprobe "${DISK}"
 
 sgdisk -U "$(genUUID 'd5')" -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -u 1:"$(genUUID 'd9')" -N 2 -t 2:8304 -c 2:'root' -u 2:"$(genUUID 'd9')" "${DISK}"
-sgdisk -U "$(genUUID 'd5')" -I -N 1 -t 1:8304 -c 1:'aux' -u 1:"$(genUUID 'd9')" "${DISKAUX}"
 
 mkfs.fat -I -F 32 -i "$(genID)" -n 'BOOT' "${BOOT}"
 
 printf '%s\n' "${PASSWD}" | cryptsetup luksFormat --label 'root' --uuid "$(genUUID 'ec')" -q "${ROOT}"
-printf '%s\n' "${PASSWD}" | cryptsetup luksFormat --label 'aux' --uuid "$(genUUID 'ec')" -q "${AUX}"
 
 printf '%s\n' "${PASSWD}" | cryptsetup open --allow-discards --persistent "${ROOT}" root
-printf '%s\n' "${PASSWD}" | cryptsetup open --allow-discards --persistent "${AUX}" aux
 
-mkfs.btrfs -f -L 'root' -d raid0 -m raid0 -U "$(genUUID 'bf')" /dev/mapper/root /dev/mapper/aux
+mkfs.btrfs -f -L 'root' -d single -m single -U "$(genUUID 'bf')" /dev/mapper/root
 
 mount -o 'compress=zstd' /dev/mapper/root /mnt
 btrfs subvolume create /mnt/@ /mnt/@var /mnt/@home /mnt/@snapshots
