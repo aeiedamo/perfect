@@ -4,9 +4,9 @@ set -a -e -o pipefail -u
 
 UUID="$(blkid -o value -s UUID "${ROOT}")"
 
-sed -i -e '/^#en_US.UTF-8/s/^#//' -e '/^#ar_EG.UTF-8/s/^#//' /etc/locale.gen
+sed -i -e '/^#ar_EG.UTF-8 UTF-8/s/^#//' -e '/^#en_GB.UTF-8 UTF-8/s/^#//' -e '/^#en_US.UTF-8 UTF-8/s/^#//' /etc/locale.gen
 locale-gen
-printf '%s\n' 'LANG=en_US.UTF-8' | tee /etc/locale.conf
+printf '%s\n' 'LANG=en_US.UTF-8' 'LC_MEASUREMENT=en_GB.UTF-8' 'LC_TIME=en_GB.UTF-8' 'LC_PAPER=en_GB.UTF-8' | tee /etc/locale.conf
 
 ln -f -s /usr/share/zoneinfo/Asia/Riyadh /etc/localtime
 hwclock -u -w
@@ -109,7 +109,7 @@ printf '%s\n' 'user-db:user' 'system-db:local' | tee /etc/dconf/profile/user
 
 mkdir -p /etc/dconf/db/gdm.d/ /etc/dconf/db/local.d/
 printf '%s\n' '[org/gnome/desktop/interface]' "font-name='Sans 10'" "document-font-name='Serif 10'" "monospace-font-name='Monospace 10'" | tee /etc/dconf/db/gdm.d/00-fonts
-printf '%s\n' '[org/gnome/desktop/interface]' "accent-color='yellow'" 'show-battery-percentage=true' 'clock-show-seconds=true' | tee /etc/dconf/db/gdm.d/01-look
+printf '%s\n' '[org/gnome/desktop/interface]' "accent-color='yellow'" 'show-battery-percentage=true' "clock-format='12h'" 'clock-show-seconds=true' | tee /etc/dconf/db/gdm.d/01-look
 printf '%s\n' '[org/gnome/login-screen]' "logo=''" | tee /etc/dconf/db/gdm.d/02-logo
 printf '%s\n' '[org/gnome/gnome-session]' 'logout-prompt=false' | tee /etc/dconf/db/gdm.d/03-logout-prompt
 printf '%s\n' '[org/gnome/desktop/input-sources]' "sources=[('xkb','us'),('xkb','eg')]" "xkb-model='pc104'" "xkb-options=['grp:win_space_toggle']" | tee /etc/dconf/db/gdm.d/04-input-sources
@@ -122,7 +122,7 @@ mv /opt/configs/backgrounds/city-pixel-art.xml /usr/share/gnome-background-prope
 mv /opt/configs/backgrounds/personal /usr/share/backgrounds/
 
 printf '%s\n' '[org/gnome/desktop/interface]' "font-name='Sans 10'" "document-font-name='Serif 10'" "monospace-font-name='Monospace 10'" '' '[org/gnome/desktop/wm/preferences]' "titlebar-font='Sans 10'" | tee /etc/dconf/db/local.d/00-fonts
-printf '%s\n' '[org/gnome/desktop/interface]' "accent-color='yellow'" "color-scheme='prefer-dark'" "gtk-theme='Adwaita-dark'" 'show-battery-percentage=true' 'clock-show-seconds=true' 'gtk-enable-primary-paste=true' '' '[org/gnome/shell]' 'always-show-log-out=true' | tee /etc/dconf/db/local.d/01-look
+printf '%s\n' '[org/gnome/desktop/interface]' "accent-color='yellow'" "color-scheme='prefer-dark'" "gtk-theme='Adwaita-dark'" 'show-battery-percentage=true' "clock-format='12h'" 'clock-show-seconds=true' 'gtk-enable-primary-paste=true' '' '[org/gnome/shell]' 'always-show-log-out=true' | tee /etc/dconf/db/local.d/01-look
 printf '%s\n' '[org/gnome/desktop/background]' "picture-uri='file:///usr/share/backgrounds/personal/city-pixel-art.png'" "picture-uri-dark='file:///usr/share/backgrounds/personal/city-pixel-art.png'" "picture-options='zoom'" "primary-color='#A15F30'" "secondary-color='#280D04'" "color-shading-type='solid'" | tee /etc/dconf/db/local.d/02-background
 printf '%s\n' '[org/gnome/shell]' 'disable-extension-version-validation=true' "enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com', 'GPaste@gnome-shell-extensions.gnome.org', 'gsconnect@andyholmes.github.io']" '' '[org/gnome/shell/extensions/appindicator]' 'legacy-tray-enabled=false' '' '[org/gnome/shell/extensions/just-perfection]' 'panel=false' 'panel-in-overview=true' 'support-notifier-type=0' '' '[org/gnome/GPaste]' 'extension-paused=false' 'max-history-size=uint64 1000' 'primary-to-history=false' 'synchronize-clipboards=false' "storage-backend='encrypted-sqlite'" 'storage-backend-revision=uint64 3' 'track-changes=true' 'track-extension-state=true' | tee /etc/dconf/db/local.d/03-extensions
 printf '%s\n' '[org/gnome/desktop/sound]' 'event-sounds=false' '' '[org/gnome/desktop/wm/preferences]' 'audible-bell=false' | tee /etc/dconf/db/local.d/04-sounds
