@@ -2,12 +2,10 @@
 
 set -a -e -u
 
-[ "$(bootctl status | awk '/Current Entry:/{print $NF}')" = 'arch-linux.conf' ] || { printf '%s\n' 'Will not snapshot current kernel.' && exit 0; }
+[ "$(bootctl status | awk '/Current Entry:/{print $NF}')" = 'cachyos-linux.conf' ] || { printf '%s\n' 'Will not snapshot current kernel.' && exit 0; }
 
 DISK="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
-DISKAUX="$(realpath /dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c)"
 ROOT="${DISK}p2"
-AUX="${DISKAUX}p1"
 UUID="$(lsblk -dno UUID /dev/mapper/root)"
 
 DAYSAGO_0="$(date --date 'today' "+%Y-%m-%d")"
@@ -24,17 +22,17 @@ SNAPSHOTS=(
 
 rm -f /boot/loader/entries/snapshot_*
 
-if ! cmp -s /boot/vmlinuz-linux /boot/vmlinuz-linux-snapshot; then
-	cp /boot/vmlinuz-linux /boot/vmlinuz-linux-snapshot
+if ! cmp -s /boot/vmlinuz-linux-lts /boot/vmlinuz-linux-snapshot; then
+	cp /boot/vmlinuz-linux-lts /boot/vmlinuz-linux-snapshot
 fi
 
-if ! cmp -s /boot/initramfs-linux.img /boot/initramfs-linux-snapshot.img; then
-	cp /boot/initramfs-linux.img /boot/initramfs-linux-snapshot.img
+if ! cmp -s /boot/initramfs-linux-lts.img /boot/initramfs-linux-snapshot.img; then
+	cp /boot/initramfs-linux-lts.img /boot/initramfs-linux-snapshot.img
 fi
 
 create_config() {
 	btrfs property set -f -ts "/.snapshots/$1/snapshot" ro false
-	printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s%s%s %s%s%s %s %s%s %s%s%s %s %s\n' 'title' "Snapshot @ $2" 'sort-key' "snapshot_$1" 'linux' '/vmlinuz-linux-snapshot' 'initrd' '/initramfs-linux-snapshot.img' 'options' 'rd.luks.name=' "$(lsblk -dno UUID "${ROOT}")" '=root' 'rd.luks.name=' "$(lsblk -dno UUID "${AUX}")" '=aux' 'rd.luks.options=tpm2-device=/dev/tpmrm0' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@snapshots/' "$1" '/snapshot' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee "/boot/loader/entries/snapshot_$1.conf"
+	printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s%s%s %s %s%s %s%s%s %s %s\n' 'title' "Snapshot @ $2" 'sort-key' "snapshot_$1" 'linux' '/vmlinuz-linux-snapshot' 'initrd' '/initramfs-linux-snapshot.img' 'options' 'rd.luks.name=' "$(lsblk -dno UUID "${ROOT}")" '=root' 'rd.luks.options=tpm2-device=/dev/tpmrm0' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@snapshots/' "$1" '/snapshot' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee "/boot/loader/entries/snapshot_$1.conf"
 }
 
 for CONF in "${SNAPSHOTS[@]}"; do
