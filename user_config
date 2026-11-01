@@ -10,7 +10,7 @@ mkdir -p "${XDG_CACHE_HOME}" "${XDG_CONFIG_HOME}/fontconfig" "${XDG_CONFIG_HOME}
 
 sudo chmod -R 0777 /tmp
 
-yay -Syu --needed --noconfirm gnome-shell-extension-just-perfection-desktop hunspell-ar otf-ibm-plex ttf-apple-emoji
+yay -Syu --needed --noconfirm gnome-shell-extension-hidetopbar-git hunspell-ar otf-ibm-plex ttf-apple-emoji
 
 cp /etc/fonts/local.conf "${XDG_CONFIG_HOME}/fontconfig/fonts.conf"
 
