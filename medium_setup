@@ -13,13 +13,10 @@ sudo mkdir /.snapshots
 sudo systemctl daemon-reload
 sudo mount -a
 
-yes | warp-cli registration new
 warp-cli generate-completions bash | sudo tee /usr/share/bash-completion/completions/warp-cli
 
 sudo waydroid init -s GAPPS
 
 sudo systemctl enable snapper-boot.timer snapper-cleanup.timer waydroid-container.service
-
-systemctl --user enable warp-taskbar.service
 
 sudo rm -f -r /opt/configs /usr/local/bin/medium_setup
