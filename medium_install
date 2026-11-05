@@ -103,22 +103,11 @@ mv /opt/configs/kmscon/kmscon.conf /etc/kmscon/
 
 mv /opt/configs/xdg/mimeapps.list /etc/xdg/
 
-printf '%s\n' 'user-db:user' 'system-db:local' | tee /etc/dconf/profile/user
-
-mkdir -p /etc/dconf/db/local.d/
-
 printf '%s\n' '[User]' 'Session=plasma' 'Icon=/var/lib/AccountsService/icons/am' 'SystemAccount=false' | tee /var/lib/AccountsService/users/am
 mv /opt/configs/pfp/am /var/lib/AccountsService/icons/
 
 mkdir -p /usr/share/wallpapers/
 mv /opt/configs/wallpapers/personal /usr/share/wallpapers/
-
-printf '%s\n' '[org/gnome/desktop/interface]' "font-name='Sans 10'" "document-font-name='Serif 10'" "monospace-font-name='Monospace 10'" '' '[org/gnome/desktop/wm/preferences]' "titlebar-font='Sans 10'" | tee /etc/dconf/db/local.d/00-fonts
-printf '%s\n' '[ca/desrt/dconf-editor]' 'show-warning=false' | tee /etc/dconf/db/local.d/01-dconf-editor
-printf '%s\n' '[io/missioncenter/MissionCenter]' 'app-update-interval-u64=uint64 10' 'is-maximized=true' | tee /etc/dconf/db/local.d/02-mission-center
-printf '%s\n' '[org/virt-manager/virt-manager]' 'enable-libguestfs-vm-inspection=true' 'system-tray=true' 'xmleditor-enabled=true' '' '[org/virt-manager/virt-manager/connections]' "autoconnect=['qemu:///session']" "uris=['qemu:///session']" '' '[org/virt-manager/virt-manager/console]' 'resize-guest=1' '' '[org/virt-manager/virt-manager/new-vm]' "cpu-default='host-passthrough'" "firmware='uefi'" "graphics-type='spice'" "storage-format='qcow2'" | tee /etc/dconf/db/local.d/03-virt-manager
-
-dconf update
 
 flatpak override --filesystem='xdg-config/fontconfig'
 

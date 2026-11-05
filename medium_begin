@@ -65,6 +65,5 @@ arch-chroot -S -u am /mnt /usr/local/bin/user_config
 
 rm -f /mnt/usr/local/bin/medium_install /mnt/usr/local/bin/user_config
 
-pkill -9 -u root gpg-agent
 umount -R /mnt
 systemctl reboot --firmware-setup

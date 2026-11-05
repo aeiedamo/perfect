@@ -1,0 +1,13 @@
+{
+	"KPlugin": {
+		"Id": "PixelArtCity",
+		"Name": "Pixel Art City",
+		"Description": "City made with Pixel Art.",
+		"License": "CC-By-SA-4.0",
+		"Authors": [
+			{
+				"Name": "Gone65478"
+			}
+		]
+	}
+}
