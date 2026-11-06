@@ -4,9 +4,9 @@ set -a -e -u
 
 [ "$(bootctl status | awk '/Current Entry:/{print $NF}')" = 'cachyos-linux.conf' ] || { printf '%s\n' 'Will not snapshot current kernel.' && exit 0; }
 
-DISK="$(realpath /dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001)"
-ROOT="${DISK}p2"
-UUID="$(lsblk -dno UUID /dev/mapper/root)"
+POOL="/dev/md/pool"
+ROOT="/dev/mapper/root"
+UUID="$(blkid -s UUID -o value "${ROOT}")"
 
 DAYSAGO_0="$(date --date 'today' "+%Y-%m-%d")"
 DAYSAGO_1="$(date --date 'yesterday' "+%Y-%m-%d")"
@@ -32,7 +32,7 @@ fi
 
 create_config() {
 	btrfs property set -f -ts "/.snapshots/$1/snapshot" ro false
-	printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s%s%s %s %s%s %s%s%s %s %s\n' 'title' "Snapshot @ $2" 'sort-key' "snapshot_$1" 'linux' '/vmlinuz-linux-snapshot' 'initrd' '/initramfs-linux-snapshot.img' 'options' 'rd.luks.name=' "$(lsblk -dno UUID "${ROOT}")" '=root' 'rd.luks.options=tpm2-device=/dev/tpmrm0' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@snapshots/' "$1" '/snapshot' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee "/boot/loader/entries/snapshot_$1.conf"
+	printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s%s%s %s %s%s %s%s%s %s %s\n' 'title' "Snapshot @ $2" 'sort-key' "snapshot_$1" 'linux' '/vmlinuz-linux-snapshot' 'initrd' '/initramfs-linux-snapshot.img' 'options' 'raid0.default_layout=2 rd.luks.name=' "$(lsblk -dno UUID "${POOL}")" '=root' 'rd.luks.options=tpm2-device=/dev/tpmrm0' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@snapshots/' "$1" '/snapshot' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee "/boot/loader/entries/snapshot_$1.conf"
 }
 
 for CONF in "${SNAPSHOTS[@]}"; do

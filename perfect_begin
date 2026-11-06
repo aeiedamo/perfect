@@ -4,9 +4,13 @@ set -a -e -o pipefail -u
 
 read -p 'Enter Password: ' -r PASSWD
 
-DISK="$(realpath '/dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001')"
-BOOT="${DISK}p1"
-ROOT="${DISK}p2"
+DISK0="$(realpath '/dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001')"
+DISK1="$(realpath '/dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c')"
+POOLP0="${DISK0}p2"
+POOLP1="${DISK1}p1"
+BOOT="${DISK0}p1"
+POOL="/dev/md/pool"
+ROOT="/dev/mapper/root"
 
 genUUID() {
 	UUID="$(< /proc/sys/kernel/random/uuid)"
@@ -25,7 +29,7 @@ wait_sanitize() {
 
 	while true; do
 		local SANITIZE_STATUS
-		SANITIZE_STATUS="$(nvme sanitize-log "${DEV}" | grep 'SSTAT' | awk -F ':' '{print $2}' | tr -d '[:space:]' 2>/dev/null)"
+		SANITIZE_STATUS="$(nvme log sanitize "${DEV}" | grep 'SSTAT' | awk -F ':' '{print $2}' | tr -d '[:space:]' 2>/dev/null)"
 
 		if [[ "${SANITIZE_STATUS}" == '0x101' ]]; then
 			printf '%s\n' "Sanitization of disk ${DEV} completed."
@@ -34,30 +38,38 @@ wait_sanitize() {
 	done
 }
 
-nvme sanitize "${DISK%n*}" -a 0x02
+[ -e "${POOL}" ] && mdadm --stop "${POOL}" || true
 
-wait_sanitize "${DISK%n*}"
+nvme sanitize "${DISK0%n*}" -a 0x02
+nvme sanitize "${DISK1%n*}" -a 0x02
 
-partprobe "${DISK}"
+wait_sanitize "${DISK0%n*}"
+wait_sanitize "${DISK1%n*}"
 
-sgdisk -U "$(genUUID 'd5')" -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -u 1:"$(genUUID 'd9')" -N 2 -t 2:8304 -c 2:'root' -u 2:"$(genUUID 'd9')" "${DISK}"
+partprobe "${DISK0}"
+partprobe "${DISK1}"
+
+sgdisk -U "$(genUUID 'd5')" -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -u 1:"$(genUUID 'd9')" -N 2 -t 2:'fd00' -c 2:'poolp0' -u 2:"$(genUUID 'd9')" "${DISK0}"
+sgdisk -U "$(genUUID 'd5')" -I -N 1 -t 1:'fd00' -c 1:'poolp1' -u 1:"$(genUUID 'd9')" "${DISK1}"
 
 mkfs.fat -I -F 32 -i "$(genID)" -n 'BOOT' "${BOOT}"
 
-printf '%s\n' "${PASSWD}" | cryptsetup luksFormat --label 'root' --uuid "$(genUUID 'ec')" -q "${ROOT}"
+mdadm -C "${POOL}" -f -l raid0 -n 2 --homehost=any "${POOLP0}" "${POOLP1}"
 
-printf '%s\n' "${PASSWD}" | cryptsetup open --allow-discards --persistent "${ROOT}" root
+printf '%s\n' "${PASSWD}" | cryptsetup luksFormat --label 'root' --uuid "$(genUUID 'ec')" -q "${POOL}"
 
-mkfs.btrfs -f -L 'root' -d single -m single -U "$(genUUID 'bf')" /dev/mapper/root
+printf '%s\n' "${PASSWD}" | cryptsetup open --allow-discards --persistent "${POOL}" root
 
-mount -o 'compress=zstd' /dev/mapper/root /mnt
+mkfs.btrfs -f -L 'root' -d single -m single -U "$(genUUID 'bf')" "${ROOT}"
+
+mount -o 'compress=zstd' "${ROOT}" /mnt
 btrfs subvolume create /mnt/@ /mnt/@var /mnt/@home /mnt/@snapshots
 umount /mnt
 
-mount -o 'compress=zstd,subvol=/@' /dev/mapper/root /mnt
-mount -m -o 'compress=zstd,subvol=/@var' /dev/mapper/root /mnt/var
-mount -m -o 'compress=zstd,subvol=/@home' /dev/mapper/root /mnt/home
-mount -m -o 'compress=zstd,subvol=/@snapshots' /dev/mapper/root /mnt/.snapshots
+mount -o 'compress=zstd,subvol=/@' "${ROOT}" /mnt
+mount -m -o 'compress=zstd,subvol=/@var' "${ROOT}" /mnt/var
+mount -m -o 'compress=zstd,subvol=/@home' "${ROOT}" /mnt/home
+mount -m -o 'compress=zstd,subvol=/@snapshots' "${ROOT}" /mnt/.snapshots
 mount -m -o 'nosuid,nodev,noexec,nosymfollow,fmask=0177,dmask=0077' "${BOOT}" /mnt/boot
 
 chattr +C /mnt/var
@@ -65,6 +77,8 @@ chattr +C /mnt/var
 pacstrap -C /root/perfect/pacman.d/pacman.conf -K -M /mnt base iptables mkinitcpio alhp-keyring cachyos-keyring chaotic-keyring
 
 genfstab -U /mnt | tee -a /mnt/etc/fstab
+
+mdadm -D -s | tee -a /mnt/etc/mdadm.conf
 
 rm -f -r /mnt/etc/pacman.d/
 cp -r /root/perfect/pacman.d/ /mnt/etc/
@@ -89,4 +103,5 @@ rm -f /mnt/usr/local/bin/perfect_install /mnt/usr/local/bin/user_config
 
 umount -R /mnt
 cryptsetup close root
+mdadm --stop "${POOL}"
 systemctl poweroff --firmware-setup
