@@ -4,9 +4,9 @@ set -a -e -o pipefail -u
 
 UUID="$(blkid -o value -s UUID /dev/mapper/root)"
 
-sed -i -e '/^#ar_EG.UTF-8 UTF-8/s/^#//' -e '/^#en_GB.UTF-8 UTF-8/s/^#//' -e '/^#en_US.UTF-8 UTF-8/s/^#//' /etc/locale.gen
+sed -i -e '/^#ar_SA.UTF-8 UTF-8/s/^#//' -e '/^#en_GB.UTF-8 UTF-8/s/^#//' -e '/^#en_US.UTF-8 UTF-8/s/^#//' /etc/locale.gen
 locale-gen
-printf '%s\n' 'LANG=en_US.UTF-8' 'LC_MEASUREMENT=en_GB.UTF-8' 'LC_TIME=en_GB.UTF-8' 'LC_PAPER=en_GB.UTF-8' | tee /etc/locale.conf
+printf '%s\n' 'LANG=en_GB.UTF-8' | tee /etc/locale.conf
 
 ln -f -s /usr/share/zoneinfo/Asia/Riyadh /etc/localtime
 hwclock -u -w
@@ -17,14 +17,16 @@ printf '%s\n' 'aeiedamo' | tee /etc/hostname
 
 sed -i -e "/^#MAKEFLAGS/s/=.*$/=\"-j$(nproc)\"/" -e '/^#MAKEFLAGS/s/^#//' -e '/^OPTIONS/s/debug/!&/' /etc/makepkg.conf
 
-sed -i -e '/^MODULES/s/(/&i915/' -e '/^HOOKS/s/systemd/& plymouth btrfs/' -e '/^HOOKS/s/filesystems/sd-encrypt &/' /etc/mkinitcpio.conf
+sed -i -e '/^MODULES/s/(/&i915/' -e '/^HOOKS/s/systemd/& plymouth/' -e '/^HOOKS/s/filesystems/sd-encrypt &/' /etc/mkinitcpio.conf
+
+printf '%s\n' 'options i915 enable_guc=3' | tee /etc/modprobe.d/i915.conf
 
 systemd-hwdb update
 
 pacman-key --init
 pacman-key --populate archlinux alhp cachyos chaotic
 
-pacman -Syyuu --needed --noconfirm linux-cachyos linux-cachyos-headers linux-cachyos-zfs linux-lts linux-lts-headers alsa-firmware alsa-utils dkms guestfs-tools intel-ucode linux-firmware linux-tools-meta mdadm plymouth sbctl scx-tools snap-pac sof-firmware wireless-regdb zfs-utils base-devel bash-completion bees devtools edk2-shell efibootmgr firejail fwupd libglvnd noto-fonts noto-fonts-cjk noto-fonts-emoji-3d noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-cascadia-code ttf-ibmplex-mono-nerd ttf-jetbrains-mono-nerd ttf-noto-nerd zram-generator plasma-desktop plasma-login-manager plasma-nm plasma-pa qemu-full qemu-guest-agent qemu-user-static-binfmt virt-manager 7zip android-tools arch-wiki-docs ardour ark at baobab bind bluedevil bluez-cups bluez-utils breeze-gtk btrfs-assistant calf cdrtools chrony claude-code cloudflare-warp-bin colordiff cronie crun cups-pdf dconf-editor discord discover distrobox dnsmasq dolphin-plugins easyeffects ebook-tools element-desktop ethtool fail2ban fastfetch fd file-roller firefox-i18n-ar firewall-applet flatpak-kcm flatpak-xdg-utils fzf gimp github-cli glab google-chrome gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gwenview haruna hunspell-en_us inetutils intel-compute-runtime-legacy intel-gmmlib-legacy intel-graphics-compiler-legacy intel-media-sdk iwd jdk-openjdk kamoso kde-gtk-config kdeconnect kdegraphics-mobipocket kdenlive kimageformats kinfocenter kio-admin kio-fuse kio-gdrive kio-snapshot kio-zeroconf kitty kmscon konsole kscreen ksshaskpass kup kwallet-pam kwalletmanager kwrited lib32-vulkan-intel libappindicator libayatana-appindicator libreoffice-fresh-ar lsp-plugins-lv2 malcontent man-db mda.lv2 namcap net-tools networkmanager-l2tp networkmanager-pptp nix nm-connection-editor npm nss-mdns obsidian obs-studio okular onnxruntime-cpu openbsd-netcat orca packagekit-qt6 phonon-qt6-vlc pkgstats plasma-browser-integration plasma-disks plasma-firewall plasma-keyboard plasma-systemmonitor plasma-thunderbolt plymouth-kcm podman-compose print-manager proton-cachyos-slr proton-vpn-cli proton-vpn-gtk-app python-pip qalculate-qt qbittorrent qt6-multimedia-gstreamer radvd ripgrep rnote rust rygel samba seahorse shellcheck-bin shelly smartmontools snapshot spectacle sshfs starship steam swtpm system-config-printer telegram-desktop tesseract-data-eng throttled thunderbird-i18n-ar tlp-pd tlp-rdw tlpui tmux traceroute trash-cli unarchiver unrar usb_modeswitch vim visual-studio-code-bin vulkan-intel vulkan-tools waydroid wdiff wget wl-clipboard yay yt-dlp zam-plugins-lv2 zip
+pacman -Syyuu --needed --noconfirm linux-cachyos linux-cachyos-headers linux-cachyos-zfs linux-lts linux-lts-headers alsa-firmware alsa-utils dkms guestfs-tools intel-ucode linux-firmware linux-tools-meta mdadm plymouth sbctl scx-tools snap-pac sof-firmware wireless-regdb zfs-utils base-devel bash-completion bees devtools edk2-shell efibootmgr firejail fwupd libglvnd noto-fonts noto-fonts-cjk noto-fonts-emoji-3d noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-ibmplex-mono-nerd ttf-jetbrains-mono-nerd ttf-noto-nerd zram-generator plasma-desktop plasma-login-manager plasma-nm plasma-pa qemu-full qemu-guest-agent qemu-user-static-binfmt virt-manager 7zip android-tools appmenu-gtk-module arch-wiki-docs ardour ark at bind bluedevil bluez-cups bluz-obex bluez-utils breeze5 breeze-gtk btrfs-assistant calf cdrtools chrony claude-code cloudflare-warp-bin colordiff cronie crun cryfs cups-pdf dconf-editor discord discover distrobox drkonqi dnsmasq dolphin-plugins easyeffects ebook-tools element-desktop ethtool fail2ban fastfetch fd ffmpegthumbs filelight firefox-i18n-en-gb firefox-i18n-ar firewall-applet flatpak-kcm flatpak-xdg-utils fzf gimp github-cli glab google-chrome gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gwenview haruna hunspell-en_gb inetutils intel-compute-runtime-legacy intel-gmmlib-legacy intel-graphics-compiler-legacy intel-media-sdk iwd jdk-openjdk kamoso kde-gtk-config kde-pim-meta kdeconnect kdegraphics-mobipocket kdegraphics-thumbnailers kdenetwork-filesharing kdenlive kdeplasma-addons kimageformats kinfocenter kio-admin kio-extras kio-fuse kio-gdrive kio-snapshot kio-zeroconf kitty kmscon konsole krdp kscreen ksshaskpass kup kwallet-pam kwalletmanager kwayland-integration kwrited lib32-vulkan-intel libappindicator libayatana-appindicator libreoffice-fresh-ar libreoffice-fresh-en-gb lsp-plugins-lv2 malcontent man-db mda.lv2 namcap net-tools networkmanager-l2tp networkmanager-pptp nix nm-connection-editor npm nss-mdns obsidian obs-studio okular onnxruntime-cpu openbsd-netcat orca packagekit-qt6 phonon-qt6-vlc pkgstats plasma5-integration plasma-browser-integration plasma-disks plasma-firewall plasma-keyboard plasma-systemmonitor plasma-thunderbolt plasma-vault plymouth-kcm podman-compose print-manager proton-cachyos-slr proton-vpn-cli proton-vpn-gtk-app python-pip qalculate-qt qbittorrent qt6-multimedia-gstreamer radvd ripgrep rnote rust rygel samba seahorse shellcheck-bin shelly smartmontools snapshot spectacle sshfs starship steam swtpm system-config-printer telegram-desktop tesseract-data-eng throttled tlp-pd tlp-rdw tlpui tmux traceroute trash-cli unarchiver unrar usb_modeswitch vim visual-studio-code-bin vulkan-intel vulkan-tools waydroid wdiff wget wl-clipboard yay yt-dlp zam-plugins-lv2 zip
 
 sbctl create-keys
 sbctl enroll-keys --yolo
@@ -102,7 +104,7 @@ printf '%s\n' '[UPower]' 'AllowRiskyCriticalPowerAction=true' 'CriticalPowerActi
 mv /opt/configs/tlp.d/00-main.conf /etc/tlp.d/
 
 mkdir -p /etc/X11/xorg.conf.d
-printf '%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n%s\n' 'Section "InputClass"' 'Identifier "system-keyboard"' 'MatchIsKeyboard "on"' 'Option "XkbLayout" "us,eg"' 'Option "XkbModel" "pc104"' 'Option "XkbVariant" ","' 'Option "XkbOptions" "grp:win_space_toggle"' 'EndSection' | tee /etc/X11/xorg.conf.d/00-keyboard.conf
+printf '%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n%s\n' 'Section "InputClass"' 'Identifier "system-keyboard"' 'MatchIsKeyboard "on"' 'Option "XkbLayout" "us,ara"' 'Option "XkbModel" "pc104"' 'Option "XkbVariant" ","' 'Option "XkbOptions" "grp:win_space_toggle"' 'EndSection' | tee /etc/X11/xorg.conf.d/00-keyboard.conf
 
 mv /opt/configs/kmscon/kmscon.conf /etc/kmscon/
 
