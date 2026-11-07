@@ -2,6 +2,8 @@
 
 set -a -e -u
 
+chattr +C "${XDG_DATA_HOME}/images"
+
 sudo umount /.snapshots
 sudo rm -f -r /.snapshots
 sudo snapper -c root create-config /

@@ -2,28 +2,4 @@
 
 set -a -e
 
-cd "${HOME}"
-
-. /etc/profile
-
-mkdir -p "${XDG_CACHE_HOME}" "${XDG_CONFIG_HOME}/fontconfig" "${XDG_DATA_HOME}/easyeffects/output" "${XDG_STATE_HOME}" "${HOME}/.local/bin"
-
-sudo chmod -R 0777 /tmp
-
 yay -Syu --needed --noconfirm hunspell-ar otf-ibm-plex ttf-apple-emoji
-
-cp /etc/fonts/local.conf "${XDG_CONFIG_HOME}/fontconfig/fonts.conf"
-
-sed -i -e '/^PS1\b/d' "${HOME}/.bashrc"
-printf '%s\n' "PS1=' \[\e[92;1;4m\]⇐ \A | \u | \w | \$? ⇒\[\e[0m\] '" 'eval "$(starship init bash)"' | tee -a "${HOME}/.bashrc"
-
-starship preset gruvbox-rainbow -o "${XDG_CONFIG_HOME}/starship.toml"
-
-printf '%s\n' '"\e[A": history-search-backward' '"\e[B": history-search-forward' '' 'set bell-style none' 'set echo-control-characters off' 'set show-all-if-ambiguous on' 'set colored-stats on' 'set visible-stats on' 'set mark-symlinked-directories on' 'set completion-ignore-case on' 'set completion-map-case on' 'set colored-completion-prefix on' 'set menu-complete-display-prefix on' 'set revert-all-at-newline on' '$if Bash' 'Tab: menu-complete' '$endif' | tee -a "${HOME}/.inputrc"
-
-printf '%s\n' '--enable-features=AcceleratedVideoDecodeLinuxGL,TouchpadOverscrollHistoryNavigation' | tee "${XDG_CONFIG_HOME}/chrome-flags.conf"
-
-git clone --depth 1 'https://github.com/BayouGuru67/Linux_Audio.git' "${XDG_DATA_HOME}/easyeffects/output/"
-
-mkdir -p "${XDG_DATA_HOME}/images"
-chattr +C "${XDG_DATA_HOME}/images"
