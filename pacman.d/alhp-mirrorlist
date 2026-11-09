@@ -1,1 +1,2 @@
 Server = https://alhp.dev/$repo/os/$arch
+Server = https://cdn.alhp.dev/$repo/os/$arch

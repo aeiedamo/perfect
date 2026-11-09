@@ -1,5 +1,0 @@
-#!/usr/bin/bash
-
-set -a -e
-
-yay -Syu --needed --noconfirm hunspell-ar otf-ibm-plex ttf-apple-emoji

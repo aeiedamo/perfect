@@ -4,12 +4,14 @@ set -a -e -o pipefail -u
 
 UUID="$(blkid -o value -s UUID "${ROOT}")"
 
-sed -i -e '/^#ar_SA.UTF-8 UTF-8/s/^#//' -e '/^#en_GB.UTF-8 UTF-8/s/^#//' -e '/^#en_US.UTF-8 UTF-8/s/^#//' /etc/locale.gen
+sed -i -e '/^#ar_EG.UTF-8 UTF-8/s/^#//' -e '/^#en_GB.UTF-8 UTF-8/s/^#//' -e '/^#en_US.UTF-8 UTF-8/s/^#//' /etc/locale.gen
 locale-gen
 printf '%s\n' 'LANG=en_GB.UTF-8' | tee /etc/locale.conf
 
 ln -f -s /usr/share/zoneinfo/Asia/Riyadh /etc/localtime
 hwclock -u -w
+
+printf '%s\n' "${PASSWD}" "${PASSWD}" | passwd root
 
 printf '%s\n' 'KEYMAP=us' 'FONT=default8x16' | tee /etc/vconsole.conf
 
@@ -20,13 +22,18 @@ sed -i -e "/^#MAKEFLAGS/s/=.*$/=\"-j$(nproc)\"/" -e '/^#MAKEFLAGS/s/^#//' -e '/^
 sed -i -e '/^MODULES/s/(/&i915/' -e '/^HOOKS/s/systemd/& plymouth/' /etc/mkinitcpio.conf
 
 printf '%s\n' 'options i915 enable_guc=3' | tee /etc/modprobe.d/i915.conf
+printf '%s\n' 'options psmouse synaptics_intertouch=1' | tee /etc/modprobe.d/psmouse.conf
 
 systemd-hwdb update
 
 pacman-key --init
 pacman-key --populate archlinux alhp cachyos chaotic
 
-pacman -Syyuu --needed --noconfirm linux-cachyos linux-cachyos-headers linux-cachyos-zfs linux-lts linux-lts-headers alsa-firmware alsa-utils dkms guestfs-tools intel-ucode linux-firmware linux-tools-meta mdadm plymouth scx-tools snap-pac sof-firmware wireless-regdb zfs-utils base-devel bash-completion bees devtools edk2-shell efibootmgr firejail fwupd libglvnd noto-fonts noto-fonts-cjk noto-fonts-emoji-3d noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-ibmplex-mono-nerd ttf-jetbrains-mono-nerd ttf-noto-nerd zram-generator plasma-desktop plasma-login-manager plasma-nm plasma-pa qemu-full qemu-guest-agent qemu-user-static-binfmt virt-manager 7zip akonadi-calendar-tools akonadiconsole akregator android-tools appmenu-gtk-module arch-wiki-docs ardour ark at bind bluedevil bluez-cups bluez-obex bluez-utils breeze5 breeze-gtk btrfs-assistant calf cdrtools chrony claude-code cloudflare-warp-bin colordiff cronie crun cryfs cups-pdf dconf-editor discord discover distrobox drkonqi dnsmasq dolphin-plugins easyeffects ebook-tools element-desktop ethtool fail2ban fastfetch fd ffmpegthumbs filelight firefox-i18n-en-gb firefox-i18n-ar firewall-applet flatpak-kcm flatpak-xdg-utils fzf gimp github-cli glab google-chrome gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gwenview haruna hunspell-en_gb hunspell-en_us inetutils intel-compute-runtime-legacy intel-gmmlib-legacy intel-graphics-compiler-legacy intel-media-sdk iwd jdk-openjdk kaddressbook kamoso kde-gtk-config kdeconnect kdegraphics-mobipocket kdegraphics-thumbnailers kdenetwork-filesharing kdenlive kdepim-addons kdeplasma-addons kimageformats kinfocenter kio-admin kio-extras kio-fuse kio-gdrive kio-snapshot kio-zeroconf kitty kmail kmscon konsole kontact korganizer krdp kscreen ksshaskpass kup kwallet-pam kwalletmanager kwayland-integration kwrited lib32-vulkan-intel libappindicator libayatana-appindicator libreoffice-fresh-ar libreoffice-fresh-en-gb lsp-plugins-lv2 malcontent man-db mda.lv2 namcap net-tools networkmanager-l2tp networkmanager-pptp nix nm-connection-editor npm nss-mdns obsidian obs-studio okular onnxruntime-cpu openbsd-netcat orca packagekit-qt6 phonon-qt6-vlc pkgstats plasma5-integration plasma-browser-integration plasma-disks plasma-firewall plasma-keyboard plasma-systemmonitor plasma-thunderbolt plasma-vault plymouth-kcm podman-compose print-manager proton-cachyos-slr proton-vpn-cli proton-vpn-gtk-app python-pip qalculate-qt qbittorrent qt6-multimedia-gstreamer radvd ripgrep rnote rust rygel samba seahorse shellcheck-bin shelly smartmontools snapshot spectacle sshfs starship steam stow swtpm system-config-printer telegram-desktop tesseract-data-eng throttled tlp-pd tlp-rdw tlpui tmux traceroute trash-cli unarchiver unrar usb_modeswitch vim visual-studio-code-bin vulkan-intel vulkan-tools waydroid wdiff wget wl-clipboard yay yt-dlp zam-plugins-lv2 zip
+pacman -Syyuu --needed --noconfirm linux-cachyos linux-cachyos-headers linux-cachyos-zfs linux-lts linux-lts-headers alsa-firmware alsa-utils dkms guestfs-tools intel-ucode linux-firmware linux-tools-meta mdadm mkinitcpio-firmware plymouth scx-tools snap-pac sof-firmware wireless-regdb zfs-utils base-devel bash-completion bees devtools edk2-shell efibootmgr firejail fwupd libglvnd noto-fonts noto-fonts-cjk noto-fonts-emoji-3d noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-ibmplex-mono-nerd ttf-jetbrains-mono-nerd ttf-noto-nerd zram-generator plasma-desktop plasma-login-manager plasma-nm plasma-pa qemu-full qemu-guest-agent qemu-user-static-binfmt virt-manager 7zip akonadi-calendar-tools akonadiconsole akregator android-tools appmenu-gtk-module arch-wiki-docs ardour ark at bind bluedevil bluez-cups bluez-obex bluez-utils breeze5 breeze-gtk btrfs-assistant calf cdrtools chrony claude-code cloudflare-warp-bin colordiff cronie crun cryfs cups-pdf dconf-editor discord discover distrobox drkonqi dnsmasq dolphin-plugins easyeffects ebook-tools element-desktop ethtool fail2ban fastfetch fd ffmpegthumbs filelight firefox-i18n-en-gb firefox-i18n-ar firewall-applet flatpak-kcm flatpak-xdg-utils fzf gimp github-cli glab google-chrome gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gwenview haruna hunspell-en_gb hunspell-en_us hwdetect inetutils intel-compute-runtime-legacy intel-gmmlib-legacy intel-gpu-tools intel-graphics-compiler-legacy intel-media-sdk iwd jdk-openjdk kaddressbook kamoso kcolorchooser kde-gtk-config kdeconnect kdegraphics-mobipocket kdegraphics-thumbnailers kdenetwork-filesharing kdenlive kdepim-addons kdeplasma-addons kimageformats kinfocenter kio-admin kio-extras kio-fuse kio-gdrive kio-snapshot kio-zeroconf kitty kmail kmscon konsole kontact korganizer krdp kscreen ksshaskpass kup kwallet-pam kwalletmanager kwayland-integration kwrited lib32-vulkan-intel libappindicator libayatana-appindicator libreoffice-fresh-ar libreoffice-fresh-en-gb lm_sensors lsp-plugins-lv2 malcontent man-db mda.lv2 namcap net-tools networkmanager-l2tp networkmanager-pptp nix nm-connection-editor npm nss-mdns obsidian obs-studio okular onnxruntime-cpu openbsd-netcat orca packagekit-qt6 phonon-qt6-vlc pkgstats plasma5-integration plasma-browser-integration plasma-disks plasma-firewall plasma-keyboard plasma-systemmonitor plasma-thunderbolt plasma-vault plymouth-kcm podman-compose print-manager proton-cachyos-slr proton-vpn-cli proton-vpn-gtk-app python-pip qalculate-qt qbittorrent qt6-multimedia-gstreamer radvd ripgrep rnote rust rygel samba seahorse shellcheck-bin shelly smartmontools snapshot spectacle sshfs starship steam stow swtpm system-config-printer telegram-desktop tesseract-data-eng throttled tlp-pd tlp-rdw tlpui tmux traceroute trash-cli unarchiver unrar usb_modeswitch vim visual-studio-code-bin vulkan-intel vulkan-tools waydroid wdiff wget wl-clipboard yay yt-dlp zam-plugins-lv2 zip
+
+sed -i -e '/^PRESETS/d' -e '/^#PRESETS/s/#//g' -e '/^#fallback_image/s/#//g' -e '/^#fallback_options/s/#//g' /etc/mkinitcpio.d/linux-lts.preset
+
+mkinitcpio -p linux-lts
 
 printf '%s%s %s %s %s\n' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee /etc/kernel/cmdline
 
@@ -34,20 +41,17 @@ bootctl --variables=no install
 printf '%s\t%s\n' 'default' '@saved' | tee /boot/loader/loader.conf
 printf '%s\t%s\n' 'title' 'CachyOS Linux' 'sort-key' '0' 'linux' '/vmlinuz-linux-cachyos' 'initrd' '/initramfs-linux-cachyos.img' 'options' "$(< /etc/kernel/cmdline)" | tee /boot/loader/entries/cachyos-linux.conf
 printf '%s\t%s\n' 'title' 'Arch Linux LTS' 'sort-key' '1' 'linux' '/vmlinuz-linux-lts' 'initrd' '/initramfs-linux-lts.img' 'options' "$(< /etc/kernel/cmdline)" | tee /boot/loader/entries/arch-linux-lts.conf
+printf '%s\t%s\n' 'title' 'Arch Linux LTS (Fallback)' 'sort-key' '2' 'linux' '/vmlinuz-linux-lts' 'initrd' '/initramfs-linux-lts-fallback.img' 'options' "$(< /etc/kernel/cmdline)" | tee /boot/loader/entries/arch-linux-lts.conf
 
 cp /usr/share/edk2-shell/x64/Shell_Full.efi /boot/shellx64.efi
 
 printf '%s\n' "UUID=${UUID}" 'DB_SIZE=1073741824' | tee /etc/bees/beesd_root.conf
-
-printf '%s\n' "${PASSWD}" "${PASSWD}" | passwd root
 
 printf '%s\n' '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/00-wheel
 
 printf '%s\n' 'polkit.addRule(function(action, subject) { if (subject.isInGroup("wheel")) { return polkit.Result.YES; }});' | tee /etc/polkit-1/rules.d/00-wheel.rules
 
 sed -i -e '/^#WIRELESS_REGDOM="SA"/s/^#//' /etc/conf.d/wireless-regdom
-
-printf '%s\n' 'options psmouse synaptics_intertouch=1' | tee /etc/modprobe.d/psmouse.conf
 
 printf '%s\n' '[zram0]' 'zram-size=ram' 'compression-algorithm=zstd' | tee /etc/systemd/zram-generator.conf
 
@@ -106,12 +110,12 @@ mv /opt/configs/wallpapers/PixelArtCity /usr/share/wallpapers/
 
 flatpak override --filesystem='xdg-config/fontconfig'
 
-printf '%s\n' '--enable-features=AcceleratedVideoDecodeLinuxGL,TouchpadOverscrollHistoryNavigation' | tee "/etc/skel/.config/chrome-flags.conf"
+printf '%s\n' '--enable-features=AcceleratedVideoDecodeLinuxGL,TouchpadOverscrollHistoryNavigation' | tee /etc/skel/.config/chrome-flags.conf
 
 printf '%s\n' 'pref("general.config.filename", "firefox.cfg");' 'pref("general.config.obscure_value", 0);' | tee /usr/lib/firefox/defaults/pref/autoconfig.js
 mv /opt/configs/firefox/firefox.cfg /usr/lib/firefox/
 
-git clone --depth 1 'https://github.com/BayouGuru67/Linux_Audio.git' "/etc/skel/.config/easyeffects/output/"
+git clone --depth 1 'https://github.com/BayouGuru67/Linux_Audio.git' /etc/skel/.config/easyeffects/output/
 
 printf '%s\n' '--cookies-from-browser chrome -f "bv+ba/b" -S "ext" -o "${HOME}/Videos/%(webpage_url_domain)s/%(id)s-%(title)s.%(ext)s"' | tee /etc/yt-dlp.conf
 
@@ -119,7 +123,7 @@ stow -d /etc/ -t /root/ skel
 
 systemctl disable getty@.service
 
-systemctl enable atd.service avahi-daemon.service "beesd@${UUID}.service" bluetooth.service chronyd.service cronie.service cups.service fail2ban.service firewalld.service fstrim.timer fwupd-refresh.timer kmsconvt@.service ModemManager.service NetworkManager.service paccache.timer plasmalogin.service sshd.service systemd-boot-update.service systemd-resolved.service throttled.service tlp.service tlp-pd.service virtinterfaced.service virtlockd.service virtlogd.service virtnetworkd.service virtnodedevd.service virtnwfilterd.service virtqemud.service virtsecretd.service virtstoraged.service warp-svc.service wpa_supplicant.service
+systemctl enable atd.service avahi-daemon.service "beesd@${UUID}.service" bluetooth.service chronyd.service cronie.service cups.service fail2ban.service firewalld.service fstrim.timer fwupd-refresh.timer kmsconvt@.service ModemManager.service NetworkManager.service paccache.timer plasmalogin.service smartd.service sshd.service systemd-boot-update.service systemd-resolved.service throttled.service tlp.service tlp-pd.service virtinterfaced.service virtlockd.service virtlogd.service virtnetworkd.service virtnodedevd.service virtnwfilterd.service virtqemud.service virtsecretd.service virtstoraged.service warp-svc.service wpa_supplicant.service
 
 systemctl mask NetworkManager-initrd.service systemd-timesyncd.service
 
