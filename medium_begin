@@ -21,6 +21,7 @@ genID() {
 }
 
 blkdiscard -f -z "${DISK}"
+
 partprobe "${DISK}"
 
 sgdisk -U "$(genUUID 'd5')" -I -n 1:0:+1G -t 1:ef00 -c 1:'BOOT' -u 1:"$(genUUID 'd9')" -N 2 -t 2:8304 -c 2:'root' -u 2:"$(genUUID 'd9')" "${DISK}"

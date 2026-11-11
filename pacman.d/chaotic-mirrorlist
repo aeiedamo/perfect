@@ -1,2 +1,3 @@
 Server = https://builds.garudalinux.org/repos/$repo/$arch
+Server = https://br-1-mirror.chaotic.cx/$repo/$arch
 Server = https://geo-mirror.chaotic.cx/$repo/$arch
