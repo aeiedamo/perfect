@@ -1,2 +1,2 @@
-Server = https://alhp.dev/$repo/os/$arch
-Server = https://mirrors.dotsrc.org/alhp/$repo/os/$arch
+Server = http://alhp.dev/$repo/os/$arch
+Server = http://mirrors.dotsrc.org/alhp/$repo/os/$arch

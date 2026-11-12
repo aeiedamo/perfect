@@ -4,7 +4,7 @@ set -a -e -o pipefail -u
 
 UUID="$(blkid -o value -s UUID "${ROOT}")"
 
-sed -i -e '/^#ar_EG.UTF-8 UTF-8/s/^#//' -e '/^#en_GB.UTF-8 UTF-8/s/^#//' -e '/^#en_US.UTF-8 UTF-8/s/^#//' /etc/locale.gen
+sed -i '/^#ar_EG.UTF-8 UTF-8/s/^#// ; /^#en_GB.UTF-8 UTF-8/s/^#// ; /^#en_US.UTF-8 UTF-8/s/^#//' /etc/locale.gen
 locale-gen
 printf '%s\n' 'LANG=en_GB.UTF-8' | tee /etc/locale.conf
 
@@ -17,9 +17,9 @@ printf '%s\n' 'KEYMAP=us' 'FONT=default8x16' | tee /etc/vconsole.conf
 
 printf '%s\n' 'aeiedamo' | tee /etc/hostname
 
-sed -i -e "/^#MAKEFLAGS/s/=.*$/=\"-j$(nproc)\"/" -e '/^#MAKEFLAGS/s/^#//' -e '/^OPTIONS/s/debug/!&/' /etc/makepkg.conf
+sed -i "/^#MAKEFLAGS/s/=.*$/=\"-j$(nproc)\"/ ; /^#MAKEFLAGS/s/^#//" /etc/makepkg.conf
 
-sed -i -e '/^MODULES/s/(/&i915/' -e '/^HOOKS/s/systemd/& plymouth/' -e '/^HOOKS/s/filesystems/mdadm_udev sd-encrypt &/' /etc/mkinitcpio.conf
+sed -i '/^MODULES/s/(/&i915/ ; /^HOOKS/s/systemd/& plymouth/ ; /^HOOKS/s/filesystems/mdadm_udev sd-encrypt &/' /etc/mkinitcpio.conf
 
 printf '%s\n' 'options i915 enable_guc=2' | tee /etc/modprobe.d/i915.conf
 printf '%s\n' 'options psmouse synaptics_intertouch=1' | tee /etc/modprobe.d/psmouse.conf
@@ -32,9 +32,11 @@ pacman-key --populate archlinux alhp cachyos chaotic
 curl -f -s -S -L 'https://mega.nz/linux/repo/Arch_Extra/x86_64/DEB_Arch_Extra.key' | pacman-key -a -
 pacman-key --lsign-key 'B01C811880480C854C73EC7E1A664B787094A482'
 
-pacman -Syyuu --needed --noconfirm linux-cachyos linux-cachyos-headers linux-cachyos-zfs linux-lts linux-lts-headers alsa-firmware alsa-utils dkms guestfs-tools intel-ucode linux-firmware linux-tools-meta mdadm mkinitcpio-firmware plymouth sbctl scx-tools snap-pac sof-firmware wireless-regdb zfs-utils base-devel bash-completion bees devtools edk2-shell efibootmgr firejail fwupd libglvnd noto-fonts noto-fonts-cjk noto-fonts-emoji-3d noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-ibmplex-mono-nerd ttf-jetbrains-mono-nerd ttf-noto-nerd zram-generator plasma-desktop plasma-login-manager plasma-nm plasma-pa qemu-full qemu-guest-agent qemu-user-static-binfmt virt-manager 7zip akonadi-calendar-tools akonadiconsole akregator android-tools appmenu-gtk-module arch-wiki-docs ardour ark at bind bluedevil bluez-cups bluez-obex bluez-utils breeze5 breeze-gtk btrfs-assistant calf cdrtools chrony claude-code cloudflare-warp-bin colordiff cronie crun cryfs cups-pdf dconf-editor discord discover distrobox drkonqi dnsmasq dolphin-plugins dolphin-megasync easyeffects ebook-tools element-desktop ethtool fail2ban fastfetch fd ffmpegthumbs filelight firefox-i18n-en-gb firefox-i18n-ar firefox-ublock-origin firewall-applet flatpak-kcm flatpak-xdg-utils fzf geoclue gimp-plugin-gmic github-cli glab google-chrome gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gwenview haruna hunspell-en_gb hunspell-en_us hwdetect inetutils intel-compute-runtime-legacy intel-gmmlib-legacy intel-gpu-tools intel-graphics-compiler-legacy intel-media-sdk iwd jdk-openjdk kaddressbook kamoso kcolorchooser kde-gtk-config kdeconnect kdegraphics-mobipocket kdegraphics-thumbnailers kdenetwork-filesharing kdenlive kdepim-addons kdeplasma-addons kimageformats kinfocenter kio-admin kio-extras kio-fuse kio-gdrive kio-snapshot kio-zeroconf kitty kmail kmscon konsole kontact korganizer krdp krita-plugin-gmic kscreen ksshaskpass kup kwallet-pam kwalletmanager kwayland-integration kwrited libappindicator libayatana-appindicator libreoffice-fresh-ar libreoffice-fresh-en-gb lm_sensors lsp-plugins-lv2 malcontent man-db mda.lv2 mpv-mpris namcap net-tools networkmanager-l2tp networkmanager-pptp nix nm-connection-editor npm nss-mdns obsidian obs-studio okular onnxruntime-cpu openbsd-netcat orca packagekit-qt6 phonon-qt6-vlc pkgstats plasma5-integration plasma-browser-integration plasma-disks plasma-firewall plasma-keyboard plasma-sdk plasma-systemmonitor plasma-thunderbolt plasma-vault plymouth-kcm podman-compose print-manager proton-vpn-cli proton-vpn-gtk-app python-pip qalculate-qt qbittorrent qt6-multimedia-gstreamer radvd ripgrep rnote rust rygel samba seahorse shellcheck-bin shelly smartmontools snapshot spectacle sshfs starship stow swtpm system-config-printer telegram-desktop tesseract-data-eng throttled tlp-pd tlp-rdw tlpui tmux traceroute trash-cli unarchiver unrar usb_modeswitch vim visual-studio-code-bin vulkan-intel vulkan-tools waydroid wdiff wget wl-clipboard yay yt-dlp zam-plugins-lv2 zip
+pacman -Syyuu --needed --noconfirm linux-cachyos linux-cachyos-headers linux-cachyos-zfs linux-lts linux-lts-headers alsa-firmware alsa-utils dkms guestfs-tools intel-ucode linux-firmware linux-tools-meta mdadm mkinitcpio-firmware plymouth sbctl scx-tools snap-pac sof-firmware wireless-regdb zfs-utils base-devel bash-completion bees devtools edk2-shell efibootmgr firejail fwupd libglvnd noto-fonts noto-fonts-cjk noto-fonts-emoji-3d noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-ibmplex-mono-nerd ttf-jetbrains-mono-nerd ttf-noto-nerd zram-generator plasma-desktop plasma-login-manager plasma-nm plasma-pa qemu-full qemu-guest-agent qemu-user-static-binfmt virt-manager 7zip akonadi-calendar-tools akonadiconsole akregator android-tools appmenu-gtk-module arch-wiki-docs ardour ark at bind bluedevil bluez-cups bluez-obex bluez-utils breeze5 breeze-gtk btrfs-assistant calf cdrtools chrony claude-code cloudflare-warp-bin colordiff cronie crun cryfs cups-pdf dconf-editor discord discover distrobox drkonqi dnsmasq dolphin-plugins dolphin-megasync easyeffects ebook-tools element-desktop ethtool fail2ban fastfetch fd ffmpegthumbs filelight firefox-i18n-en-gb firefox-i18n-ar firefox-ublock-origin firewall-applet flatpak-kcm flatpak-xdg-utils fzf geoclue gimp-plugin-gmic github-cli glab google-chrome gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gwenview haruna hunspell-en_gb hunspell-en_us hwdetect ibus inetutils intel-compute-runtime-legacy intel-gmmlib-legacy intel-gpu-tools intel-graphics-compiler-legacy intel-media-sdk iwd jdk-openjdk kaddressbook kamoso kcolorchooser kde-gtk-config kdeconnect kdegraphics-mobipocket kdegraphics-thumbnailers kdenetwork-filesharing kdenlive kdepim-addons kdeplasma-addons kimageformats kinfocenter kio-admin kio-extras kio-fuse kio-gdrive kio-snapshot kio-zeroconf kitty kmail kmscon konsole kontact korganizer krdp krita-plugin-gmic kscreen ksshaskpass kup kwallet-pam kwalletmanager kwayland-integration kwrited libappindicator libayatana-appindicator libreoffice-fresh-ar libreoffice-fresh-en-gb lm_sensors lsp-plugins-lv2 malcontent man-db mda.lv2 mpv-mpris namcap net-tools networkmanager-l2tp networkmanager-pptp nix nm-connection-editor npm nss-mdns obsidian obs-studio okular onnxruntime-cpu openbsd-netcat orca packagekit-qt6 phonon-qt6-vlc pkgstats plasma5-integration plasma-browser-integration plasma-disks plasma-firewall plasma-keyboard plasma-sdk plasma-systemmonitor plasma-thunderbolt plasma-vault plymouth-kcm podman-compose print-manager proton-vpn-cli proton-vpn-gtk-app python-pip qalculate-qt qbittorrent qt6-multimedia-gstreamer radvd ripgrep rnote rust rygel samba seahorse shellcheck-bin shelly smartmontools snapshot spectacle sshfs starship stow swtpm system-config-printer telegram-desktop tesseract-data-eng throttled tlp-pd tlp-rdw tlpui tmux traceroute trash-cli unarchiver unrar usb_modeswitch vim visual-studio-code-bin vulkan-intel vulkan-tools waydroid wdiff wget wl-clipboard yay yt-dlp zam-plugins-lv2 zip
 
-sed -i -e '/^PRESETS/d' -e '/^#PRESETS/s/#//g' -e '/^#fallback_image/s/#//g' -e '/^#fallback_options/s/#//g' /etc/mkinitcpio.d/linux-lts.preset
+sed -i '/^###REPO for MEGA###/,+4d' /etc/pacman.conf
+
+sed -i '/^PRESETS/d ; /^#PRESETS/s/#//g ; /^#fallback_image/s/#//g ; /^#fallback_options/s/#//g' /etc/mkinitcpio.d/linux-lts.preset
 
 mkinitcpio -p linux-lts
 
@@ -60,7 +62,7 @@ printf '%s\n' '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/00-wheel
 
 printf '%s\n' 'polkit.addRule(function(action, subject) { if (subject.isInGroup("wheel")) { return polkit.Result.YES; }});' | tee /etc/polkit-1/rules.d/00-wheel.rules
 
-sed -i -e '/^#WIRELESS_REGDOM="SA"/s/^#//' /etc/conf.d/wireless-regdom
+sed -i '/^#WIRELESS_REGDOM="SA"/s/^#//' /etc/conf.d/wireless-regdom
 
 mkdir -p /etc/systemd/system.conf.d/ /etc/systemd/user.conf.d/
 printf '%s\n' '[Manager]' 'DefaultTimeoutStopSec=15s' | tee /etc/systemd/system.conf.d/00-timeout.conf /etc/systemd/user.conf.d/00-timeout.conf
@@ -72,7 +74,7 @@ printf '%s\n' '[zram0]' 'zram-size=ram' 'compression-algorithm=zstd' | tee /etc/
 mkdir -p /etc/systemd/logind.conf.d/
 printf '%s\n' '[Login]' 'HandleLidSwitch=ignore' 'HandleLidSwitchExternalPower=ignore' | tee /etc/systemd/logind.conf.d/00-lid.conf
 
-sed -i -e '/^#MulticastDNS/s/yes/resolve/' -e '/^#MulticastDNS/s/^#//' /etc/systemd/resolved.conf
+sed -i '/^#MulticastDNS/s/yes/resolve/ ; /^#MulticastDNS/s/^#//' /etc/systemd/resolved.conf
 
 printf '%s\n' 'ListenAddress aeiedamo.local' | tee /etc/ssh/sshd_config.d/00-local.conf
 
@@ -82,11 +84,13 @@ printf '%s\n' "export EDITOR='vim' VISUAL='vim'" | tee /etc/profile.d/00-editor.
 
 printf '%s\n' 'export XDG_CONFIG_HOME="${HOME}/.config" XDG_CACHE_HOME="${HOME}/.cache" XDG_DATA_HOME="${HOME}/.local/share" XDG_STATE_HOME="${HOME}/.local/state" PATH="${HOME}/.local/bin:${PATH}"' | tee /etc/profile.d/01-xdg.sh
 
+printf '%s\n' "export GTK_IM_MODULE='wayland' XMODIFIERS='@im=ibus' QT_IM_MODULES='wayland;ibus' QT_IM_MODULE='ibus'" | tee /etc/profile.d/02-ibus.sh
+
 printf '%s\n' '' 'export HISTSIZE=' 'export HISTFILESIZE=' 'export HISTTIMEFORMAT="[%F %T] "' | tee -a /etc/bash.bashrc
 
 mkdir -p /etc/skel/.cache /etc/skel/.config/easyeffects/ /etc/skel/.config/fontconfig/ /etc/skel/.local/bin /etc/skel/.local/share/images /etc/skel/.local/state
 
-sed -i -e '/^PS1\b/d' /etc/skel/.bashrc
+sed -i '/^PS1\b/d' /etc/skel/.bashrc
 printf '%s\n' "PS1=' \[\e[92;1;4m\]⇐ \A | \u | \w | \$? ⇒\[\e[0m\] '" 'eval "$(starship init bash)"' | tee -a /etc/skel/.bashrc
 
 starship preset gruvbox-rainbow -o /etc/skel/.config/starship.toml
@@ -95,9 +99,9 @@ printf '%s\n' '"\e[A": history-search-backward' '"\e[B": history-search-forward'
 
 printf '%s\n' '[uefi_capsule]' 'DisableShimForSecureBoot=true' | tee -a /etc/fwupd/fwupd.conf
 
-sed -i -e '/^hosts/s/myhostname //' -e '/^hosts/s/resolve \[\!UNAVAIL=return\]/myhostname mdns_minimal \[NOTFOUND=return\] &/' -e '/^hosts/s/$/& libvirt libvirt_guest/' /etc/nsswitch.conf
+sed -i '/^hosts/s/myhostname // ; /^hosts/s/resolve \[\!UNAVAIL=return\]/myhostname mdns_minimal \[NOTFOUND=return\] &/ ; /^hosts/s/$/& libvirt libvirt_guest/' /etc/nsswitch.conf
 
-sed -i -e '/^DefaultZone/s/=.*$/=trusted/' /etc/firewalld/firewalld.conf
+sed -i '/^DefaultZone/s/=.*$/=trusted/' /etc/firewalld/firewalld.conf
 
 printf '%s\n' '[main]' 'dns=systemd-resolved' | tee /etc/NetworkManager/conf.d/00-dns.conf
 

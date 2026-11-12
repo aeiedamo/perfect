@@ -82,7 +82,7 @@ mdadm -D -s | tee -a /mnt/etc/mdadm.conf
 
 rm -f -r /mnt/etc/pacman.d/
 cp -r /root/perfect/pacman.d/ /mnt/etc/
-sed -i -e 's/root\/perfect/etc/g' /mnt/etc/pacman.d/pacman.conf
+sed -i 's/root\/perfect/etc/g' /mnt/etc/pacman.d/pacman.conf
 mv /mnt/etc/pacman.d/pacman.conf /mnt/etc/
 
 install -m 0777 /root/perfect/perfect_install /mnt/usr/local/bin/
