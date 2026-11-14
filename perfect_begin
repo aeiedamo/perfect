@@ -76,9 +76,11 @@ chattr +C /mnt/var
 
 pacstrap -C /root/perfect/pacman.d/pacman.conf -K -M /mnt base iptables mkinitcpio alhp-keyring cachyos-keyring chaotic-keyring
 
+mdadm -D -s | tee -a /mnt/etc/mdadm.conf
+
 genfstab -U /mnt | tee -a /mnt/etc/fstab
 
-mdadm -D -s | tee -a /mnt/etc/mdadm.conf
+mount -m --bind /run/dbus /mnt/run/dbus
 
 rm -f -r /mnt/etc/pacman.d/
 cp -r /root/perfect/pacman.d/ /mnt/etc/
