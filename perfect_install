@@ -56,7 +56,7 @@ printf '%s\t%s\n' 'title' 'CachyOS Linux' 'sort-key' '0' 'linux' '/vmlinuz-linux
 printf '%s\t%s\n' 'title' 'Arch Linux LTS' 'sort-key' '1' 'linux' '/vmlinuz-linux-lts' 'initrd' '/initramfs-linux-lts.img' 'options' "$(< /etc/kernel/cmdline)" | tee /boot/loader/entries/arch-linux-lts.conf
 printf '%s\t%s\n' 'title' 'Arch Linux LTS (Fallback)' 'sort-key' '2' 'linux' '/vmlinuz-linux-lts' 'initrd' '/initramfs-linux-lts-fallback.img' 'options' "$(< /etc/kernel/cmdline)" | tee /boot/loader/entries/arch-linux-lts.conf
 
-printf '%s\n' "UUID=${UUID}" 'DB_SIZE=1073741824' | tee /etc/bees/beesd_root.conf
+printf '%s\n' "UUID=${UUID}" 'DB_SIZE=536870912' | tee /etc/bees/beesd_root.conf
 
 printf '%s\n' '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/00-wheel
 

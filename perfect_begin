@@ -4,6 +4,8 @@ set -a -e -o pipefail -u
 
 read -p 'Enter Password: ' -r PASSWD
 
+TERM='xterm-256color'
+
 DISK0="$(realpath '/dev/disk/by-id/nvme-nvme.1e4b-30303335363230303030303532-4e452d3154422032323432-00000001')"
 DISK1="$(realpath '/dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b47f32f0c')"
 POOLP0="${DISK0}p2"
@@ -74,7 +76,7 @@ mount -m -o 'nosuid,nodev,noexec,nosymfollow,fmask=0177,dmask=0077' "${BOOT}" /m
 
 chattr +C /mnt/var
 
-pacstrap -C /root/perfect/pacman.d/pacman.conf -K -M /mnt base iptables mkinitcpio alhp-keyring cachyos-keyring chaotic-keyring
+pacstrap -C /root/perfect/pacman.d/pacman.conf -K -M /mnt base iptables mkinitcpio zlib-ng alhp-keyring cachyos-keyring chaotic-keyring
 
 mdadm -D -s | tee -a /mnt/etc/mdadm.conf
 

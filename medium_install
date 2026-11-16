@@ -50,7 +50,7 @@ printf '%s\t%s\n' 'title' 'Arch Linux LTS (Fallback)' 'sort-key' '2' 'linux' '/v
 
 cp /usr/share/edk2-shell/x64/Shell_Full.efi /boot/shellx64.efi
 
-printf '%s\n' "UUID=${UUID}" 'DB_SIZE=1073741824' | tee /etc/bees/beesd_root.conf
+printf '%s\n' "UUID=${UUID}" 'DB_SIZE=67108864' | tee /etc/bees/beesd_root.conf
 
 printf '%s\n' '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/00-wheel
 

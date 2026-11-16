@@ -2,6 +2,8 @@
 
 set -a -e -o pipefail -u
 
+TERM='xterm-256color'
+
 read -p 'Enter Password: ' -r PASSWD
 
 DISK="$(realpath '/dev/disk/by-id/ata-SAMSUNG_MZVLB256HAHQ-000_S45UNX0N104146')"
@@ -42,7 +44,7 @@ mount -m -o 'nosuid,nodev,noexec,nosymfollow,fmask=0177,dmask=0077' "${BOOT}" /m
 
 chattr +C /mnt/var
 
-pacstrap -C /root/perfect/pacman.d/pacman.conf -K -M /mnt base iptables mkinitcpio alhp-keyring cachyos-keyring chaotic-keyring
+pacstrap -C /root/perfect/pacman.d/pacman.conf -K -M /mnt base iptables mkinitcpio zlib-ng alhp-keyring cachyos-keyring chaotic-keyring
 
 genfstab -U /mnt | tee -a /mnt/etc/fstab
 
