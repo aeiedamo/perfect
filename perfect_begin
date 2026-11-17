@@ -99,7 +99,7 @@ cp -r /root/perfect/configs /mnt/opt/
 ln -f -s /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 
 arch-chroot /mnt /usr/local/bin/perfect_install
-arch-chroot -S -u am /mnt /usr/bin/yay -Syu --needed --noconfirm hunspell-ar otf-ibm-plex ttf-apple-emoji
+arch-chroot -u am /mnt /usr/bin/yay -Syu --needed --noconfirm hunspell-ar otf-ibm-plex ttf-apple-emoji
 
 rm -f /mnt/usr/local/bin/perfect_install
 

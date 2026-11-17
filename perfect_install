@@ -21,6 +21,9 @@ sed -i "/^#MAKEFLAGS/s/=.*$/=\"-j$(nproc)\"/ ; /^#MAKEFLAGS/s/^#//" /etc/makepkg
 
 sed -i '/^MODULES/s/(/&i915/ ; /^HOOKS/s/systemd/& plymouth/ ; /^HOOKS/s/filesystems/mdadm_udev sd-encrypt &/' /etc/mkinitcpio.conf
 
+mkdir -p /etc/plymouth/
+printf '%s\n' '[Daemon]' 'Theme=bgrt' 'UseFirmwareBackground=true' | tee /etc/plymouth/plymouthd.conf
+
 printf '%s\n' 'options i915 enable_guc=2' | tee /etc/modprobe.d/i915.conf
 printf '%s\n' 'options psmouse synaptics_intertouch=1' | tee /etc/modprobe.d/psmouse.conf
 
