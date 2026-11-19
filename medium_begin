@@ -48,8 +48,6 @@ pacstrap -C /root/perfect/pacman.d/pacman.conf -K -M /mnt base iptables mkinitcp
 
 genfstab -U /mnt | tee -a /mnt/etc/fstab
 
-mount -m --bind /run/dbus /mnt/run/dbus
-
 rm -f -r /mnt/etc/pacman.d/
 cp -r /root/perfect/pacman.d/ /mnt/etc/
 sed -i 's/root\/perfect/etc/g' /mnt/etc/pacman.d/pacman.conf

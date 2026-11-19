@@ -8,21 +8,10 @@ sudo systemd-cryptenroll --tpm2-device /dev/tpmrm0 --tpm2-pcrs 7 "${POOL}"
 
 chattr +C "${XDG_DATA_HOME}/images"
 
-sudo umount /.snapshots
-sudo rm -f -r /.snapshots
-sudo snapper -c root create-config /
-sudo snapper -c root set-config 'ALLOW_GROUPS=wheel' 'SYNC_ACL=yes' 'TIMELINE_LIMIT_HOURLY=3' 'TIMELINE_LIMIT_DAILY=3' 'TIMELINE_LIMIT_WEEKLY=4' 'TIMELINE_LIMIT_MONTHLY=0' 'TIMELINE_LIMIT_YEARLY=0' 'NUMBER_LIMIT=15' 'NUMBER_CLEANUP=yes'
-sudo snapper -c home create-config /home
-sudo snapper -c home set-config 'ALLOW_GROUPS=wheel' 'SYNC_ACL=yes' 'TIMELINE_LIMIT_HOURLY=3' 'TIMELINE_LIMIT_DAILY=3' 'TIMELINE_LIMIT_WEEKLY=4' 'TIMELINE_LIMIT_MONTHLY=0' 'TIMELINE_LIMIT_YEARLY=0' 'NUMBER_LIMIT=15' 'NUMBER_CLEANUP=yes'
-sudo btrfs subvolume delete /.snapshots
-sudo mkdir /.snapshots
-sudo systemctl daemon-reload
-sudo mount -a
-
 warp-cli generate-completions bash | sudo tee /usr/share/bash-completion/completions/warp-cli
 
 sudo waydroid init -s GAPPS
 
-sudo systemctl enable snapper-boot.timer snapper-cleanup.timer snapshot_sdboot.service waydroid-container.service
+sudo systemctl enable snapshot_sdboot.service waydroid-container.service
 
 sudo rm -f -r /opt/configs /usr/local/bin/perfect_setup

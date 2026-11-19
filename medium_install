@@ -21,9 +21,6 @@ sed -i "/^#MAKEFLAGS/s/=.*$/=\"-j$(nproc)\"/ ; /^#MAKEFLAGS/s/^#//" /etc/makepkg
 
 sed -i '/^MODULES/s/(/&i915/ ; /^HOOKS/s/systemd/& plymouth/' /etc/mkinitcpio.conf
 
-mkdir -p /etc/plymouth/
-printf '%s\n' '[Daemon]' 'Theme=bgrt' 'UseFirmwareBackground=true' | tee /etc/plymouth/plymouthd.conf
-
 printf '%s\n' 'options i915 enable_guc=2' | tee /etc/modprobe.d/i915.conf
 printf '%s\n' 'options psmouse synaptics_intertouch=1' | tee /etc/modprobe.d/psmouse.conf
 
@@ -35,13 +32,13 @@ pacman-key --populate archlinux alhp cachyos chaotic
 curl -f -s -S -L 'https://mega.nz/linux/repo/Arch_Extra/x86_64/DEB_Arch_Extra.key' | pacman-key -a -
 pacman-key --lsign-key 'B01C811880480C854C73EC7E1A664B787094A482'
 
-pacman -Syyuu --needed --noconfirm linux-cachyos linux-cachyos-headers linux-cachyos-zfs linux-lts linux-lts-headers alsa-firmware alsa-utils dkms guestfs-tools intel-ucode linux-firmware linux-tools-meta mdadm mkinitcpio-firmware plymouth scx-tools snap-pac sof-firmware wireless-regdb zfs-utils base-devel bash-completion bees devtools edk2-shell efibootmgr firejail fwupd libglvnd noto-fonts noto-fonts-cjk noto-fonts-emoji-3d noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack ttf-ibmplex-mono-nerd ttf-jetbrains-mono-nerd ttf-noto-nerd zram-generator plasma-desktop plasma-login-manager plasma-nm plasma-pa qemu-full qemu-guest-agent qemu-user-static-binfmt virt-manager 7zip akonadi-calendar-tools akonadiconsole akregator appmenu-gtk-module arch-wiki-docs ardour ark at bind bluedevil bluez-cups bluez-obex bluez-utils breeze5 breeze-gtk btrfs-assistant cachyos-gaming-meta calf cdrtools chrony claude-code cloudflare-warp-bin colordiff cronie crun cryfs cups-pdf dconf-editor digikam discord discover distrobox drkonqi dnsmasq dolphin-plugins dolphin-megasync easyeffects ebook-tools element-desktop ethtool fail2ban fastfetch fd ffmpegthumbs filelight firefox-i18n-en-gb firefox-i18n-ar firefox-ublock-origin firewall-applet flatpak-kcm flatpak-xdg-utils fzf geoclue gimp-plugin-gmic github-cli glab google-chrome gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gwenview hardinfo2 haruna hunspell-en_gb hunspell-en_us hwdetect ibus inetutils intel-compute-runtime-legacy intel-gmmlib-legacy intel-gpu-tools intel-graphics-compiler-legacy intel-media-sdk iwd jdk-openjdk kaddressbook kamoso kcolorchooser kde-gtk-config kdeconnect kdegraphics-mobipocket kdegraphics-thumbnailers kdenetwork-filesharing kdenlive kdepim-addons kdeplasma-addons kdiskmark kimageformats kinfocenter kio-admin kio-extras kio-fuse kio-gdrive kio-snapshot kio-zeroconf kitty kmail kmscon kontact korganizer krdp krita-plugin-gmic kscreen ksshaskpass kup kwallet-pam kwalletmanager kwayland-integration kwrited lib32-vulkan-intel libappindicator libayatana-appindicator libpwquality libreoffice-fresh-ar libreoffice-fresh-en-gb lm_sensors lsp-plugins-lv2 malcontent man-db mda.lv2 mpv-mpris namcap net-tools networkmanager-l2tp networkmanager-pptp nix nm-connection-editor npm nss-mdns obsidian obs-studio okular onnxruntime-cpu openai-codex openbsd-netcat orca packagekit-qt6 phonon-qt6-vlc pkgstats plasma5-integration plasma-browser-integration plasma-disks plasma-firewall plasma-keyboard plasma-sdk plasma-systemmonitor plasma-thunderbolt plasma-vault plymouth-kcm podman-compose print-manager proton-vpn-cli proton-vpn-gtk-app python-pip python-pipx qalculate-qt qbittorrent qt6-multimedia-ffmpeg radvd ripgrep rnote rust rygel samba seahorse scrcpy shellcheck-bin shelly smartmontools snapshot spectacle sshfs starship steam stow swtpm system-config-printer telegram-desktop tesseract-data-eng throttled tlp-pd tlp-rdw tlpui tmux traceroute trash-cli unarchiver unrar usb_modeswitch vim visual-studio-code-bin vulkan-intel vulkan-tools waydroid wdiff wget wl-clipboard yakuake yay yt-dlp zam-plugins-lv2 zip
+pacman -Syyuu --needed --noconfirm linux-cachyos linux-cachyos-headers linux-cachyos-zfs linux-lts linux-lts-headers alsa-firmware alsa-utils dkms guestfs-tools intel-ucode linux-firmware linux-tools-meta mdadm mkinitcpio-firmware plymouth scx-tools snap-pac sof-firmware wireless-regdb zfs-utils base-devel bash-completion bees devtools edk2-shell efibootmgr firejail fwupd libglvnd noto-fonts noto-fonts-cjk noto-fonts-emoji-3d noto-fonts-extra nvme-cli pipewire-alsa pipewire-jack pipewire-zeroconf ttf-ibmplex-mono-nerd ttf-jetbrains-mono-nerd ttf-noto-nerd zram-generator plasma-desktop plasma-login-manager plasma-nm plasma-pa qemu-full qemu-guest-agent qemu-user-static-binfmt virt-manager 7zip akonadi-calendar-tools akonadiconsole akregator amarok appmenu-gtk-module arch-wiki-docs ark at bind bluedevil bluez-cups bluez-obex bluez-utils breeze5 breeze-gtk btrfs-assistant cachyos-gaming-meta calf cdrtools chrony claude-code cloudflare-warp-bin colordiff cronie crun cryfs cups-pdf dconf-editor digikam discord discover distrobox drkonqi dnsmasq dolphin-plugins dolphin-megasync easyeffects ebook-tools element-desktop ethtool fail2ban fastfetch fd ffmpegthumbs filelight firefox-i18n-en-gb firefox-i18n-ar firefox-ublock-origin firewall-applet flatpak-kcm flatpak-xdg-utils fzf geoclue gimp-plugin-gmic github-cli glab google-chrome gparted gst-plugins-bad gst-plugins-ugly gst-plugin-va gwenview hardinfo2 haruna hunspell-en_gb hunspell-en_us hwdetect ibus inetutils intel-compute-runtime-legacy intel-gmmlib-legacy intel-gpu-tools intel-graphics-compiler-legacy intel-media-sdk iwd jdk-openjdk kaddressbook kamoso kcolorchooser kde-gtk-config kdeconnect kdegraphics-mobipocket kdegraphics-thumbnailers kdenetwork-filesharing kdenlive kdepim-addons kdeplasma-addons kdiskmark kimageformats kinfocenter kio-admin kio-extras kio-fuse kio-gdrive kio-snapshot kio-zeroconf kitty kmail kmscon kontact korganizer krdp krita-plugin-gmic kscreen ksshaskpass kup kwallet-pam kwalletmanager kwayland-integration kwrited lib32-vulkan-intel libappindicator libayatana-appindicator libpwquality libreoffice-fresh-ar libreoffice-fresh-en-gb lm_sensors lsp-plugins-lv2 malcontent man-db mda.lv2 mpv-mpris namcap net-tools networkmanager-l2tp networkmanager-pptp nix nm-connection-editor npm nss-mdns obsidian obs-studio okular onnxruntime-cpu openai-codex openbsd-netcat orca phonon-qt6-vlc pkgstats plasma5-integration plasma-browser-integration plasma-disks plasma-firewall plasma-keyboard plasma-sdk plasma-systemmonitor plasma-thunderbolt plasma-vault plymouth-kcm podman-compose print-manager proton-vpn-cli proton-vpn-gtk-app python-pip python-pipx qalculate-qt qbittorrent qt6-multimedia-ffmpeg radvd ripgrep rnote rust rygel samba seahorse scrcpy shellcheck-bin shelly smartmontools snapshot spectacle sshfs starship steam stow swtpm system-config-printer telegram-desktop tesseract-data-eng throttled tlp-pd tlp-rdw tlpui tmux traceroute trash-cli unarchiver unrar usb_modeswitch vim visual-studio-code-bin vulkan-intel vulkan-tools waydroid wdiff wget wl-clipboard yakuake yay yt-dlp zam-plugins-lv2 zip
 
 sed -i '/^###REPO for MEGA###/,+4d' /etc/pacman.conf
 
 sed -i '/^PRESETS/d ; /^#PRESETS/s/#//g ; /^#fallback_image/s/#//g ; /^#fallback_options/s/#//g' /etc/mkinitcpio.d/linux-lts.preset
 
-mkinitcpio -p linux-lts
+printf '%s\n' '[Daemon]' 'Theme=bgrt' 'UseFirmwareBackground=true' | tee /etc/plymouth/plymouthd.conf
 
 printf '%s%s %s %s %s\n' 'root=UUID=' "${UUID}" 'rw rootflags=compress=zstd,subvol=/@' 'lsm=landlock,lockdown,yama,integrity,apparmor,bpf intel_iommu=on iommu=pt' 'quiet splash' | tee /etc/kernel/cmdline
 
@@ -54,6 +51,16 @@ printf '%s\t%s\n' 'title' 'Arch Linux LTS (Fallback)' 'sort-key' '2' 'linux' '/v
 cp /usr/share/edk2-shell/x64/Shell_Full.efi /boot/shellx64.efi
 
 printf '%s\n' "UUID=${UUID}" 'DB_SIZE=67108864' | tee /etc/bees/beesd_root.conf
+
+umount /mnt/.snapshots
+rm -f -r /mnt/.snapshots
+snapper -c root --no-dbus create-config /
+snapper -c root --no-dbus set-config 'ALLOW_GROUPS=wheel' 'SYNC_ACL=yes' 'TIMELINE_LIMIT_HOURLY=3' 'TIMELINE_LIMIT_DAILY=3' 'TIMELINE_LIMIT_WEEKLY=4' 'TIMELINE_LIMIT_MONTHLY=0' 'TIMELINE_LIMIT_YEARLY=0' 'NUMBER_LIMIT=15' 'NUMBER_CLEANUP=yes'
+snapper -c home --no-dbus create-config /home
+snapper -c home --no-dbus set-config 'ALLOW_GROUPS=wheel' 'SYNC_ACL=yes' 'TIMELINE_LIMIT_HOURLY=3' 'TIMELINE_LIMIT_DAILY=3' 'TIMELINE_LIMIT_WEEKLY=4' 'TIMELINE_LIMIT_MONTHLY=0' 'TIMELINE_LIMIT_YEARLY=0' 'NUMBER_LIMIT=15' 'NUMBER_CLEANUP=yes'
+btrfs subvolume delete /.snapshots
+mkdir /.snapshots
+mount -a
 
 printf '%s\n' '%wheel ALL=(ALL:ALL) NOPASSWD: ALL' | tee /etc/sudoers.d/00-wheel
 
@@ -147,9 +154,11 @@ stow -d /etc/ -t /root/ skel
 
 systemctl disable getty@.service
 
-systemctl enable apparmor.service atd.service avahi-daemon.service "beesd@${UUID}.service" bluetooth.service chronyd.service cronie.service cups.service fail2ban.service firewalld.service fstrim.timer fwupd-refresh.timer kmsconvt@.service ModemManager.service NetworkManager.service paccache.timer plasmalogin.service smartd.service sshd.service systemd-boot-update.service systemd-resolved.service throttled.service tlp.service tlp-pd.service virtinterfaced.service virtlockd.service virtlogd.service virtnetworkd.service virtnodedevd.service virtnwfilterd.service virtqemud.service virtsecretd.service virtstoraged.service warp-svc.service wpa_supplicant.service
+systemctl enable apparmor.service atd.service avahi-daemon.service "beesd@${UUID}.service" bluetooth.service chronyd.service cronie.service cups.service fail2ban.service firewalld.service fstrim.timer fwupd-refresh.timer kmsconvt@.service ModemManager.service NetworkManager.service paccache.timer plasmalogin.service smartd.service snapper-boot.timer snapper-cleanup.timer sshd.service systemd-boot-update.service systemd-resolved.service throttled.service tlp.service tlp-pd.service virtinterfaced.service virtlockd.service virtlogd.service virtnetworkd.service virtnodedevd.service virtnwfilterd.service virtqemud.service virtsecretd.service virtstoraged.service warp-svc.service wpa_supplicant.service
 
 systemctl mask NetworkManager-initrd.service systemd-timesyncd.service
+
+mkinitcpio -P
 
 useradd -c 'AlaEldin Mohamed' -G audio,disk,kvm,libvirt,log,storage,wheel -m -s /usr/bin/bash am
 printf '%s\n' "${PASSWD}" "${PASSWD}" | passwd am
