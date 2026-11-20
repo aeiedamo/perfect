@@ -55,6 +55,7 @@ mv /mnt/etc/pacman.d/pacman.conf /mnt/etc/
 
 install -m 0777 /root/perfect/medium_install /mnt/usr/local/bin/
 install -m 0777 /root/perfect/medium_setup /mnt/usr/local/bin/
+install -m 0777 /root/perfect/snapshot_sdboot /mnt/usr/local/bin/
 install -m 0777 /root/perfect/git_keys_config /mnt/usr/local/bin/
 
 cp -r /root/perfect/configs /mnt/opt/
