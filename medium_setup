@@ -4,8 +4,4 @@ set -a -e -u
 
 chattr +C "${XDG_DATA_HOME}/images"
 
-sudo sed -i '/^\[root\]/,+1s/False/True/' /etc/snap-pac.ini
-
-sudo systemctl enable snapper-boot.timer snapper-cleanup.timer snapper-timeline.timer snapshot_sdboot.service
-
 sudo rm -f -r /opt/configs /usr/local/bin/medium_setup
