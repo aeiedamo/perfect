@@ -1,7 +1,0 @@
-#!/usr/bin/bash
-
-set -a -e -u
-
-chattr +C "${XDG_DATA_HOME}/images"
-
-sudo rm -f -r /opt/configs /usr/local/bin/medium_setup

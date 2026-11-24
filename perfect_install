@@ -180,4 +180,6 @@ printf '%s\n' "${PASSWD}" "${PASSWD}" | passwd am
 
 runuser -l am -c 'xdg-user-dirs-update'
 
+runuser -l am -c 'chattr +C "${XDG_DATA_HOME}/images"'
+
 runuser -l am -c 'yay -Syu --needed --noconfirm hunspell-ar otf-ibm-plex ttf-apple-emoji'

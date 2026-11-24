@@ -54,7 +54,6 @@ sed -i 's/root\/perfect/etc/g' /mnt/etc/pacman.d/pacman.conf
 mv /mnt/etc/pacman.d/pacman.conf /mnt/etc/
 
 install -m 0777 /root/perfect/medium_install /mnt/usr/local/bin/
-install -m 0777 /root/perfect/medium_setup /mnt/usr/local/bin/
 install -m 0777 /root/perfect/snapshot_sdboot /mnt/usr/local/bin/
 install -m 0777 /root/perfect/git_keys_config /mnt/usr/local/bin/
 
@@ -64,7 +63,7 @@ ln -f -s /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 
 arch-chroot /mnt /usr/local/bin/medium_install
 
-rm -f /mnt/usr/local/bin/medium_install
+rm -f -r /mnt/opt/configs /mnt/usr/local/bin/medium_install
 
 umount -R /mnt
 udisksctl power-off -b "${DISK}"

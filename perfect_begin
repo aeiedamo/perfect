@@ -98,7 +98,7 @@ ln -f -s /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 
 arch-chroot /mnt /usr/local/bin/perfect_install
 
-rm -f /mnt/usr/local/bin/perfect_install
+rm -f -r /mnt/opt/configs /mnt/usr/local/bin/perfect_install
 
 umount -R /mnt
 cryptsetup close root
