@@ -88,7 +88,6 @@ sed -i 's/root\/perfect/etc/g' /mnt/etc/pacman.d/pacman.conf
 mv /mnt/etc/pacman.d/pacman.conf /mnt/etc/
 
 install -m 0777 /root/perfect/perfect_install /mnt/usr/local/bin/
-install -m 0777 /root/perfect/perfect_setup /mnt/usr/local/bin/
 install -m 0777 /root/perfect/snapshot_sdboot /mnt/usr/local/bin/
 install -m 0777 /root/perfect/git_keys_config /mnt/usr/local/bin/
 

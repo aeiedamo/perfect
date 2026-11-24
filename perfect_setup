@@ -1,9 +1,0 @@
-#!/usr/bin/bash
-
-set -a -e -u
-
-POOL="/dev/md/pool"
-
-sudo systemd-cryptenroll --tpm2-device /dev/tpmrm0 --tpm2-pcrs 7 "${POOL}"
-
-sudo rm -f /usr/local/bin/perfect_setup
