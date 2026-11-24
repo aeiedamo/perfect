@@ -177,3 +177,7 @@ mkinitcpio -P
 
 useradd -c 'AlaEldin Mohamed' -G audio,disk,kvm,libvirt,log,storage,wheel -m -s /usr/bin/bash am
 printf '%s\n' "${PASSWD}" "${PASSWD}" | passwd am
+
+runuser -l am -c 'xdg-user-dirs-update'
+
+runuser -l am -c 'yay -Syu --needed --noconfirm hunspell-ar otf-ibm-plex ttf-apple-emoji'
