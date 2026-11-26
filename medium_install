@@ -130,7 +130,7 @@ printf '%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n%s\n' 'Section "InputClass"' 'Id
 
 mv /opt/configs/kmscon/kmscon.conf /etc/kmscon/
 
-mv /opt/configs/xdg/mimeapps.list /etc/xdg/
+mv /opt/configs/xdg/mimeapps.list /etc/skel/.config
 
 printf '%s\n' '[User]' 'Session=plasma' 'Icon=/var/lib/AccountsService/icons/am' 'SystemAccount=false' | tee /var/lib/AccountsService/users/am
 mv /opt/configs/pfp/am /var/lib/AccountsService/icons/
@@ -138,12 +138,16 @@ mv /opt/configs/pfp/am /var/lib/AccountsService/icons/
 mkdir -p /usr/share/wallpapers/
 mv /opt/configs/wallpapers/PixelArtCity /usr/share/wallpapers/
 
+# mv /opt/configs/kde/* /etc/skel/.config/
+
 flatpak override --filesystem='xdg-config/fontconfig'
 
 mkdir -p /etc/skel/.gnupg/
 printf '%s\n' 'pinentry-program /usr/bin/pinentry-qt' | tee /etc/skel/.gnupg/gpg-agent.conf
 
 warp-cli --accept-tos generate-completions bash | tee /usr/share/bash-completion/completions/warp-cli
+
+# mv /opt/configs/kitty/ /etc/skel/.config/
 
 printf '%s\n' '--enable-features=AcceleratedVideoDecodeLinuxGL,TouchpadOverscrollHistoryNavigation' | tee /etc/skel/.config/chrome-flags.conf
 
@@ -163,7 +167,7 @@ stow -d /etc/ -t /root/ skel
 
 systemctl disable getty@.service
 
-systemctl enable apparmor.service atd.service avahi-daemon.service "beesd@${UUID}.service" bluetooth.service chronyd.service cronie.service cups.service fail2ban.service firewalld.service fstrim.timer fwupd-refresh.timer kmsconvt@.service ModemManager.service NetworkManager.service paccache.timer plasmalogin.service smartd.service snapper-boot.timer snapper-cleanup.timer snapper-timeline.timer snapshot_sdboot.service sshd.service systemd-boot-update.service systemd-resolved.service throttled.service tlp.service tlp-pd.service virtinterfaced.service virtlockd.service virtlogd.service virtnetworkd.service virtnodedevd.service virtnwfilterd.service virtqemud.service virtsecretd.service virtstoraged.service warp-svc.service waydroid-container.service wpa_supplicant.service
+systemctl enable apparmor.service atd.service avahi-daemon.service "beesd@${UUID}.service" bluetooth.service chronyd.service cronie.service cups.service fail2ban.service firewalld.service fstrim.timer fwupd-refresh.timer kmsconvt@.service ModemManager.service NetworkManager.service paccache.timer plasmalogin.service smartd.service snapper-boot.timer snapper-cleanup.timer snapper-timeline.timer snapshot_sdboot.service sshd.service systemd-boot-update.service systemd-resolved.service throttled.service tlp.service tlp-pd.service virtinterfaced.socket virtlockd.socket virtlogd.socket virtnetworkd.socket virtnodedevd.socket virtnwfilterd.socket virtqemud.socket virtsecretd.socket virtstoraged.socket warp-svc.service waydroid-container.service wpa_supplicant.service
 
 systemctl mask NetworkManager-initrd.service systemd-timesyncd.service
 
@@ -173,7 +177,5 @@ useradd -c 'AlaEldin Mohamed' -G audio,disk,kvm,libvirt,log,storage,wheel -m -s 
 printf '%s\n' "${PASSWD}" "${PASSWD}" | passwd am
 
 runuser -l am -c 'xdg-user-dirs-update'
-
-runuser -l am -c 'chattr +C "${XDG_DATA_HOME}/images"'
 
 runuser -l am -c 'yay -Syu --needed --noconfirm hunspell-ar otf-ibm-plex ttf-apple-emoji'
