@@ -32,14 +32,14 @@ mkfs.fat -I -F 32 -i "$(genID)" -n 'BOOT' "${BOOT}"
 
 mkfs.btrfs -f -L 'root' -d single -m single -U "$(genUUID 'bf')" --device-uuid "$(genUUID 'bf')" "${ROOT}"
 
-mount -o 'compress=zstd' "${ROOT}" /mnt
+mount -o 'compress=zstd:1,subvol=/' "${ROOT}" /mnt
 btrfs subvolume create /mnt/@ /mnt/@var /mnt/@home /mnt/@snapshots
 umount /mnt
 
-mount -o 'compress=zstd,subvol=/@' "${ROOT}" /mnt
-mount -m -o 'compress=zstd,subvol=/@var' "${ROOT}" /mnt/var
-mount -m -o 'compress=zstd,subvol=/@home' "${ROOT}" /mnt/home
-mount -m -o 'compress=zstd,subvol=/@snapshots' "${ROOT}" /mnt/.snapshots
+mount -o 'compress=zstd:1,subvol=/@' "${ROOT}" /mnt
+mount -m -o 'compress=zstd:1,subvol=/@var' "${ROOT}" /mnt/var
+mount -m -o 'compress=zstd:1,subvol=/@home' "${ROOT}" /mnt/home
+mount -m -o 'compress=zstd:1,subvol=/@snapshots' "${ROOT}" /mnt/.snapshots
 mount -m -o 'nosuid,nodev,noexec,nosymfollow,fmask=0177,dmask=0077' "${BOOT}" /mnt/boot
 
 chattr +C /mnt/var
